@@ -8,6 +8,8 @@ Connect arbitrary events that fired in different GameObjects, Components.
 upm add package dev.monry.upm.eventconnector
 ```
 
+Please refer to [this repository](https://github.com/upm-packages/upm-cli) about the `upm` command.
+
 ## Usages
 
 ![EventConnector](https://user-images.githubusercontent.com/838945/61065477-b732d400-a43e-11e9-8392-150bddb666db.gif)
