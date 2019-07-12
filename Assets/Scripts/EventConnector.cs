@@ -15,13 +15,30 @@ namespace EventConnector
         [SerializeField]
         [Tooltip("Specify identifiers of IEventConnector that resolve from Zenject.DiContainer")]
         private List<string> sourceConnectorIds = default;
+        [SerializeField]
+        [Tooltip("Check if you want to act as Receiver")]
+        private bool actAsReceiver = false;
 
         private IEnumerable<IEventConnector> SourceConnectors =>
             new List<IEventConnector>()
                 .Concat(sourceConnectorInstances ?? new List<EventConnector>())
                 .Concat((sourceConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnector>));
+        private bool ActAsReceiver => actAsReceiver;
 
         [Inject] private DiContainer Container { get; }
+
+        protected virtual void Start()
+        {
+            if (ActAsReceiver)
+            {
+                ((IEventConnector) this)
+                    .ConnectAsObservable()
+                    .Take(1)
+                    .RepeatSafe()
+                    .Subscribe()
+                    .AddTo(this);
+            }
+        }
 
         IObservable<EventMessages> IEventConnector.ConnectAsObservable()
         {
@@ -37,6 +54,6 @@ namespace EventConnector
         private IObservable<EventMessages> GenerateSourceObservable() =>
             HasSourceConnectors()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
-                : Observable.Return(EventMessages.Create());
+                : Observable.Defer(() => Observable.Return(EventMessages.Create()));
     }
 }
