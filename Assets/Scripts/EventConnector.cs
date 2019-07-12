@@ -23,15 +23,20 @@ namespace EventConnector
 
         [Inject] private DiContainer Container { get; }
 
-        IObservable<EventMessages> IEventConnector.ConnectAsObservable(EventMessages eventMessages) =>
-            GenerateSourceObservable(eventMessages)
+        IObservable<EventMessages> IEventConnector.ConnectAsObservable()
+        {
+            return GenerateSourceObservable()
                 .SelectMany(Connect);
-
-        private IObservable<EventMessages> GenerateSourceObservable(EventMessages eventMessages) =>
-            SourceConnectors.Any()
-                ? SourceConnectors.Select(x => x.ConnectAsObservable(eventMessages)).Merge()
-                : Observable.Return(eventMessages);
+        }
 
         protected abstract IObservable<EventMessages> Connect(EventMessages eventMessages);
+
+        private bool HasSourceConnectors() =>
+            SourceConnectors.Any();
+
+        private IObservable<EventMessages> GenerateSourceObservable() =>
+            HasSourceConnectors()
+                ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
+                : Observable.Return(EventMessages.Create());
     }
 }
