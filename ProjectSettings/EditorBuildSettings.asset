@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tests/PlayMode/Scenes/Basic/UIBehaviourEventTrigger.unity
     guid: 9b00383bb15e845de98b9e907a9191a1
+  - enabled: 1
+    path: Assets/Tests/PlayMode/Scenes/WithoutReceiver/WithoutReceiver.unity
+    guid: 393ff75797c7a4285b4b4624e82db452
   m_configObjects: {}
