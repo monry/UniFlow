@@ -21,6 +21,7 @@ namespace EventConnector
 {
     public class EventConnectorTest : ZenjectIntegrationTestFixture
     {
+        private const string ScenePath = "Tests/PlayMode/Scenes/Basic/";
         private bool HasAssert { get; set; }
 
         [SetUp]
@@ -32,84 +33,94 @@ namespace EventConnector
         [UnityTest]
         public IEnumerator All()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("All", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            typeof(IPointerDownHandler)
-                .GetMethod("OnPointerDown")?
-                .Invoke(Object.FindObjectOfType<ObservablePointerDownTrigger>(), new object[] {new PointerEventData(EventSystem.current)});
-            yield return UniTask.Delay(TimeSpan.FromSeconds(2.1)).ToCoroutine();
-            AssertAll(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("All");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "All",
+                    AssertAll,
+                    () =>
+                        typeof(IPointerDownHandler)
+                            .GetMethod("OnPointerDown")?
+                            .Invoke(Object.FindObjectOfType<ObservablePointerDownTrigger>(), new object[] {new PointerEventData(EventSystem.current)}),
+                    3.1
+                );
+        }
+
+        [UnityTest]
+        public IEnumerator Multiple()
+        {
+            yield return
+                RunAssert(
+                    "All",
+                    AssertAll,
+                    () =>
+                        typeof(IPointerDownHandler)
+                            .GetMethod("OnPointerDown")?
+                            .Invoke(Object.FindObjectOfType<ObservablePointerDownTrigger>(), new object[] {new PointerEventData(EventSystem.current)}),
+                    3.1,
+                    2
+                );
         }
 
         [UnityTest]
         public IEnumerator UIBehaviourEventTrigger()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("UIBehaviourEventTrigger", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            typeof(IPointerClickHandler)
-                .GetMethod("OnPointerClick")?
-                .Invoke(Object.FindObjectOfType<ObservablePointerClickTrigger>(), new object[] {new PointerEventData(EventSystem.current)});
-            AssertUIBehaviourEventTrigger(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("UIBehaviourEventTrigger");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "UIBehaviourEventTrigger",
+                    AssertUIBehaviourEventTrigger,
+                    () =>
+                        typeof(IPointerClickHandler)
+                            .GetMethod("OnPointerClick")?
+                            .Invoke(Object.FindObjectOfType<ObservablePointerClickTrigger>(), new object[] {new PointerEventData(EventSystem.current)})
+                );
         }
 
         [UnityTest]
         public IEnumerator AnimationEvent()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("AnimationEvent", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            yield return UniTask.Delay(TimeSpan.FromSeconds(1.1)).ToCoroutine();
-            AssertAnimationEvent(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("AnimationEvent");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "AnimationEvent",
+                    AssertAnimationEvent,
+                    null,
+                    1.1
+                );
         }
 
         [UnityTest]
         public IEnumerator AnimatorTrigger()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("AnimatorTrigger", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            yield return UniTask.Delay(TimeSpan.FromSeconds(1.1)).ToCoroutine();
-            AssertAnimatorTrigger(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("AnimatorTrigger");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "AnimatorTrigger",
+                    AssertAnimatorTrigger,
+                    null,
+                    1.1
+                );
         }
 
         [UnityTest]
         public IEnumerator TimelineSignal()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("TimelineSignal", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            yield return UniTask.Delay(TimeSpan.FromSeconds(1.1)).ToCoroutine();
-            AssertTimelineSignal(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("TimelineSignal");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "TimelineSignal",
+                    AssertTimelineSignal,
+                    null,
+                    1.1
+                );
         }
 
         [UnityTest]
         public IEnumerator PlayableController()
         {
-            PreInstall();
-            yield return SceneManager.LoadSceneAsync("PlayableController", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(1).ToCoroutine();
-            yield return UniTask.Delay(TimeSpan.FromSeconds(1.1)).ToCoroutine();
-            AssertPlayableController(Object.FindObjectOfType<TestComponent>().SentEventMessages);
-            Assert.True(HasAssert);
-            yield return SceneManager.UnloadSceneAsync("PlayableController");
-            PostInstall();
+            yield return
+                RunAssert(
+                    "PlayableController",
+                    AssertPlayableController,
+                    null,
+                    1.1
+                );
         }
 
         private void AssertAll(EventMessages eventMessages)
@@ -212,6 +223,26 @@ namespace EventConnector
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("PlayableControllerTest", timelineEvent.StringParameter);
             HasAssert = true;
+        }
+
+        private IEnumerator RunAssert(string sceneName, Action<EventMessages> assertCallback, Action beforeAssertCallback, double waitBeforeAssert = 0, int invokeCount = 1)
+        {
+            PreInstall();
+            yield return SceneManager.LoadSceneAsync($"{ScenePath}{sceneName}", LoadSceneMode.Additive);
+            yield return UniTask.DelayFrame(10).ToCoroutine();
+            for (var i = 0; i < invokeCount; i++)
+            {
+                beforeAssertCallback?.Invoke();
+                if (waitBeforeAssert > 0)
+                {
+                    yield return UniTask.Delay(TimeSpan.FromSeconds(waitBeforeAssert)).ToCoroutine();
+                }
+                assertCallback(Object.FindObjectOfType<TestComponent>().SentEventMessages);
+            }
+            Assert.AreEqual(invokeCount, Object.FindObjectOfType<TestComponent>().ReceiveCount);
+            Assert.True(HasAssert);
+            yield return SceneManager.UnloadSceneAsync($"{ScenePath}{sceneName}");
+            PostInstall();
         }
     }
 }
