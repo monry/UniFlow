@@ -237,9 +237,9 @@ namespace EventConnector
                 {
                     yield return UniTask.Delay(TimeSpan.FromSeconds(waitBeforeAssert)).ToCoroutine();
                 }
-                assertCallback(Object.FindObjectOfType<TestComponent>().SentEventMessages);
+                assertCallback(Object.FindObjectOfType<TestReceiver>().SentEventMessages);
             }
-            Assert.AreEqual(invokeCount, Object.FindObjectOfType<TestComponent>().ReceiveCount);
+            Assert.AreEqual(invokeCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
             Assert.True(HasAssert);
             yield return SceneManager.UnloadSceneAsync($"{ScenePath}{sceneName}");
             PostInstall();
