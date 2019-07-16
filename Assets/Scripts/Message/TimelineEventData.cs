@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace EventConnector.Message
 {
     [Serializable][PublicAPI]
-    public class TimelineEvent
+    public class TimelineEventData
     {
         [SerializeField] private int intParameter;
         [SerializeField] private float floatParameter;
@@ -17,19 +17,19 @@ namespace EventConnector.Message
         public string StringParameter => stringParameter;
         public Object ObjectReferenceParameter => objectReferenceParameter;
 
-        public TimelineEvent(float floatValue) : this(default, floatValue)
+        public TimelineEventData(float floatValue) : this(default, floatValue)
         {
         }
 
-        public TimelineEvent(string stringValue) : this(default, default, stringValue)
+        public TimelineEventData(string stringValue) : this(default, default, stringValue)
         {
         }
 
-        public TimelineEvent(Object objectValue) : this(default, default, default, objectValue)
+        public TimelineEventData(Object objectValue) : this(default, default, default, objectValue)
         {
         }
 
-        public TimelineEvent(int intParameter = default, float floatParameter = default, string stringParameter = default, Object objectReferenceParameter = default)
+        public TimelineEventData(int intParameter = default, float floatParameter = default, string stringParameter = default, Object objectReferenceParameter = default)
         {
             this.intParameter = intParameter;
             this.floatParameter = floatParameter;

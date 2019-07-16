@@ -20,7 +20,7 @@ namespace EventConnector.Connector
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
             Animator.SetTrigger(TriggerId);
-            return Observable.Return(eventMessages.Append((Animator, AnimatorTriggerEvent.Create(TriggerName))));
+            return Observable.Return(eventMessages.Append((Animator, AnimatorTriggerEventData.Create(TriggerName))));
         }
     }
 }

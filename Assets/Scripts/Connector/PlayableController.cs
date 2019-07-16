@@ -17,7 +17,7 @@ namespace EventConnector.Connector
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
             PlayableDirector.Play();
-            return Observable.Return(eventMessages.Append((PlayableDirector, PlayableControllerEvent.Create())));
+            return Observable.Return(eventMessages.Append((PlayableDirector, PlayableControllerEventData.Create())));
         }
     }
 }

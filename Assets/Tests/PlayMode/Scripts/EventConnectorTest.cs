@@ -131,7 +131,7 @@ namespace EventConnector
             Assert.IsInstanceOf<PointerEventData>(eventMessages[0].eventData);
 
             Assert.IsInstanceOf<Animator>(eventMessages[1].sender);
-            Assert.IsInstanceOf<AnimatorTriggerEvent>(eventMessages[1].eventData);
+            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[1].eventData);
 
             Assert.IsInstanceOf<AnimationEvent>(eventMessages[2].sender);
             Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[2].eventData);
@@ -144,11 +144,11 @@ namespace EventConnector
             Assert.AreEqual("All", animationEvent.objectReferenceParameter.name);
 
             Assert.IsInstanceOf<PlayableDirector>(eventMessages[3].sender);
-            Assert.IsInstanceOf<PlayableControllerEvent>(eventMessages[3].eventData);
+            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[3].eventData);
 
             Assert.IsInstanceOf<TimelineSignal>(eventMessages[4].sender);
-            Assert.IsInstanceOf<TimelineEvent>(eventMessages[4].eventData);
-            var timelineEvent = eventMessages[4].eventData as TimelineEvent;
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[4].eventData);
+            var timelineEvent = eventMessages[4].eventData as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual(999, timelineEvent.IntParameter);
             HasAssert = true;
@@ -184,7 +184,7 @@ namespace EventConnector
             Assert.AreEqual(2, eventMessages.Count);
 
             Assert.IsInstanceOf<Animator>(eventMessages[0].sender);
-            Assert.IsInstanceOf<AnimatorTriggerEvent>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[0].eventData);
 
             Assert.IsInstanceOf<AnimationEvent>(eventMessages[1].sender);
             Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[1].eventData);
@@ -203,8 +203,8 @@ namespace EventConnector
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].sender);
-            Assert.IsInstanceOf<TimelineEvent>(eventMessages[0].eventData);
-            var timelineEvent = eventMessages[0].eventData as TimelineEvent;
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].eventData);
+            var timelineEvent = eventMessages[0].eventData as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("TimelineSignalTest", timelineEvent.StringParameter);
             HasAssert = true;
@@ -215,11 +215,11 @@ namespace EventConnector
             Assert.AreEqual(2, eventMessages.Count);
 
             Assert.IsInstanceOf<PlayableDirector>(eventMessages[0].sender);
-            Assert.IsInstanceOf<PlayableControllerEvent>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[0].eventData);
 
             Assert.IsInstanceOf<TimelineSignal>(eventMessages[1].sender);
-            Assert.IsInstanceOf<TimelineEvent>(eventMessages[1].eventData);
-            var timelineEvent = eventMessages[1].eventData as TimelineEvent;
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[1].eventData);
+            var timelineEvent = eventMessages[1].eventData as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("PlayableControllerTest", timelineEvent.StringParameter);
             HasAssert = true;
