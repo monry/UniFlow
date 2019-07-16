@@ -16,7 +16,7 @@ namespace EventConnector.Message
         public ParticleEventType EventType { get; }
         public GameObject GameObject { get; }
 
-        public static ParticleEventData Create(ParticleEventType eventType, GameObject collision) =>
-            new ParticleEventData(eventType, collision);
+        public static ParticleEventData Create(ParticleEventType eventType, GameObject gameObject) =>
+            new ParticleEventData(eventType, gameObject);
     }
 }
