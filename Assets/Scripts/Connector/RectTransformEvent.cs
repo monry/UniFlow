@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class RectTransformEvent : EventConnector
     {
-        [SerializeField] private RectTransformEventType rectTransformEventType;
-        private RectTransformEventType RectTransformEventType => rectTransformEventType;
-
+        [SerializeField] private RectTransformEventType rectTransformEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private RectTransformEventType RectTransformEventType => rectTransformEventType;
         private Component Component => component ? component : component = this;
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)

@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class CameraEvent : EventConnector
     {
-        [SerializeField] private CameraEventType cameraEventType;
-        private CameraEventType CameraEventType => cameraEventType;
-
+        [SerializeField] private CameraEventType cameraEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private CameraEventType CameraEventType => cameraEventType;
         private Component Component => component ? component : component = this;
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)

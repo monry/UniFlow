@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class ParticleEvent : EventConnector
     {
-        [SerializeField] private ParticleEventType particleEventType;
-        private ParticleEventType ParticleEventType => particleEventType;
-
+        [SerializeField] private ParticleEventType particleEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private ParticleEventType ParticleEventType => particleEventType;
         private Component Component => component ? component : component = this;
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)

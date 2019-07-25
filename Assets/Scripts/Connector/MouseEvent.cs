@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class MouseEvent : EventConnector
     {
-        [SerializeField] private MouseEventType mouseEventType;
-        private MouseEventType MouseEventType => mouseEventType;
-
+        [SerializeField] private MouseEventType mouseEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private MouseEventType MouseEventType => mouseEventType;
         private Component Component => component ? component : component = this;
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)

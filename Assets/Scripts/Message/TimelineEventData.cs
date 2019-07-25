@@ -8,10 +8,10 @@ namespace EventConnector.Message
     [Serializable][PublicAPI]
     public class TimelineEventData
     {
-        [SerializeField] private int intParameter;
-        [SerializeField] private float floatParameter;
-        [SerializeField] private string stringParameter;
-        [SerializeField] private Object objectReferenceParameter;
+        [SerializeField] private int intParameter = default;
+        [SerializeField] private float floatParameter = default;
+        [SerializeField] private string stringParameter = default;
+        [SerializeField] private Object objectReferenceParameter = default;
         public int IntParameter => intParameter;
         public float FloatParameter => floatParameter;
         public string StringParameter => stringParameter;

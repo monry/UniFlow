@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class PhysicsTriggerEvent : EventConnector
     {
-        [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType;
-        private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
-
+        [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
         private Component Component => component ? component : component = this;
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)

@@ -8,12 +8,12 @@ namespace EventConnector.Connector
 {
     public class LifecycleEvent : EventConnector
     {
-        [SerializeField] private LifecycleEventType lifecycleEventType;
-        private LifecycleEventType LifecycleEventType => lifecycleEventType;
-
+        [SerializeField] private LifecycleEventType lifecycleEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used self instance")]
-        private Component component;
+        private Component component = default;
+
+        private LifecycleEventType LifecycleEventType => lifecycleEventType;
         private Component Component => component ? component : component = this;
 
         private ISubject<bool> StartSubject { get; } = new BehaviorSubject<bool>(false);
