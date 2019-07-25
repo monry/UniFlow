@@ -94,13 +94,13 @@ namespace EventConnector
         {
             PreInstall();
             yield return SceneManager.LoadSceneAsync($"{ScenePath}{sceneName}", LoadSceneMode.Additive);
-            yield return Observable.TimerFrame(10);
+            yield return Observable.TimerFrame(10).StartAsCoroutine();
             for (var i = 0; i < invokeCount; i++)
             {
                 beforeAssertCallback?.Invoke();
                 if (waitBeforeAssert > 0)
                 {
-                    yield return Observable.Timer(TimeSpan.FromSeconds(waitBeforeAssert));
+                    yield return Observable.Timer(TimeSpan.FromSeconds(waitBeforeAssert)).StartAsCoroutine();
                 }
                 assertCallback(Object.FindObjectOfType<TestConnector>().LatestEventMessages);
             }
