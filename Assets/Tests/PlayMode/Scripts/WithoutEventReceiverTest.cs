@@ -3,7 +3,7 @@ using System.Collections;
 using EventConnector.Connector;
 using EventConnector.Message;
 using NUnit.Framework;
-using UniRx.Async;
+using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -94,13 +94,13 @@ namespace EventConnector
         {
             PreInstall();
             yield return SceneManager.LoadSceneAsync($"{ScenePath}{sceneName}", LoadSceneMode.Additive);
-            yield return UniTask.DelayFrame(10).ToCoroutine();
+            yield return Observable.TimerFrame(10);
             for (var i = 0; i < invokeCount; i++)
             {
                 beforeAssertCallback?.Invoke();
                 if (waitBeforeAssert > 0)
                 {
-                    yield return UniTask.Delay(TimeSpan.FromSeconds(waitBeforeAssert)).ToCoroutine();
+                    yield return Observable.Timer(TimeSpan.FromSeconds(waitBeforeAssert));
                 }
                 assertCallback(Object.FindObjectOfType<TestConnector>().LatestEventMessages);
             }
