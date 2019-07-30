@@ -33,8 +33,10 @@ namespace EventConnector
                 }
                 assertCallback(Object.FindObjectOfType<TestReceiver>().SentEventMessages);
             }
-            Assert.AreEqual(invokeCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
+            Assert.GreaterOrEqual(Object.FindObjectOfType<TestReceiver>().ReceiveCount, invokeCount);
             Assert.True(HasAssert);
+
+
             yield return SceneManager.UnloadSceneAsync($"{ScenePath}{sceneName}");
             PostInstall();
         }
