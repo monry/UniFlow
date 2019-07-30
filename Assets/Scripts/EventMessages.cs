@@ -22,6 +22,16 @@ namespace EventConnector
             return this;
         }
 
+        public EventMessages ClearIfNeeded(IEventConnectable eventConnectable)
+        {
+            if (!eventConnectable.HasSourceConnectors())
+            {
+                Clear();
+            }
+
+            return this;
+        }
+
         public static EventMessages Create()
         {
             return new EventMessages();

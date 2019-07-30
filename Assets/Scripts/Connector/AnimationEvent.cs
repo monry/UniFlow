@@ -9,11 +9,12 @@ namespace EventConnector.Connector
     [AddComponentMenu("Event Connector/AnimationEvent")]
     public class AnimationEvent : EventConnector
     {
-        private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
+        private ISubject<UnityEngine.AnimationEvent> Subject { get; set; } = new Subject<UnityEngine.AnimationEvent>();
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
             Subject
-                .Select(x => eventMessages.Append((this, x)));
+                .Select(x => eventMessages.Append((this, x)))
+                .FirstOrDefault();
 
         public void Dispatch(UnityEngine.AnimationEvent animationEvent)
         {

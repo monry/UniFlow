@@ -7,7 +7,7 @@ using Zenject;
 
 namespace EventConnector
 {
-    public abstract class EventConnector : MonoBehaviour, IEventConnector
+    public abstract class EventConnector : MonoBehaviour, IEventConnector, IEventConnectable
     {
         [SerializeField]
         [Tooltip("Specify instances of IEventConnector directly")]
@@ -33,8 +33,6 @@ namespace EventConnector
             {
                 ((IEventConnector) this)
                     .ConnectAsObservable()
-                    .Take(1)
-                    .RepeatSafe()
                     .Subscribe()
                     .AddTo(this);
             }
@@ -42,17 +40,16 @@ namespace EventConnector
 
         IObservable<EventMessages> IEventConnector.ConnectAsObservable()
         {
-            return GenerateSourceObservable()
-                .SelectMany(Connect);
+            return GenerateSourceObservable().SelectMany(Connect);
         }
 
         protected abstract IObservable<EventMessages> Connect(EventMessages eventMessages);
 
-        private bool HasSourceConnectors() =>
+        bool IEventConnectable.HasSourceConnectors() =>
             SourceConnectors.Any();
 
         private IObservable<EventMessages> GenerateSourceObservable() =>
-            HasSourceConnectors()
+            ((IEventConnectable) this).HasSourceConnectors()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
                 : Observable.Defer(() => Observable.Return(EventMessages.Create()));
     }

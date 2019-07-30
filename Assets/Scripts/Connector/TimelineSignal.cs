@@ -11,11 +11,12 @@ namespace EventConnector.Connector
     [AddComponentMenu("Event Connector/TimelineSignal")]
     public class TimelineSignal : EventConnector
     {
-        private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();
+        private ISubject<TimelineEventData> Subject { get; set; } = new Subject<TimelineEventData>();
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
             Subject
-                .Select(x => eventMessages.Append((this, x)));
+                .Select(x => eventMessages.Append((this, x)))
+                .FirstOrDefault();
 
         public void Dispatch()
         {

@@ -26,17 +26,15 @@ namespace EventConnector
         private void Start()
         {
             GenerateSourceObservable()
-                .Take(1)
-                .RepeatSafe()
                 .Subscribe(Receive)
                 .AddTo(this);
         }
+
+        protected abstract void Receive(EventMessages eventMessages);
 
         private IObservable<EventMessages> GenerateSourceObservable() =>
             SourceConnectors.Any()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
                 : Observable.Defer(() => Observable.Return(EventMessages.Create()));
-
-        protected abstract void Receive(EventMessages eventMessages);
     }
 }
