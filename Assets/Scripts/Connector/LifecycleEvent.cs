@@ -20,7 +20,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(_ => eventMessages.Append((Component, LifecycleEventData.Create(LifecycleEventType))));
+            return OnEventAsObservable().Select(_ => eventMessages.Append((EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType))));
         }
 
         protected override void Start()

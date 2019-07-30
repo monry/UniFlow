@@ -4,19 +4,19 @@ using JetBrains.Annotations;
 namespace EventConnector
 {
     [PublicAPI]
-    public class EventMessages : List<(object sender, object eventData)>
+    public class EventMessages : List<(EventType eventType, object sender, object eventData)>
     {
         private EventMessages()
         {
         }
 
-        public EventMessages Append((object sender, object eventData) eventMessage)
+        public EventMessages Append((EventType eventType, object sender, object eventData) eventMessage)
         {
             Add(eventMessage);
             return this;
         }
 
-        public EventMessages AppendRange(IEnumerable<(object sender, object eventData)> eventMessages)
+        public EventMessages AppendRange(IEnumerable<(EventType eventType, object sender, object eventData)> eventMessages)
         {
             AddRange(eventMessages);
             return this;
@@ -37,7 +37,7 @@ namespace EventConnector
             return new EventMessages();
         }
 
-        public static EventMessages Create((object sender, object eventData) eventMessage)
+        public static EventMessages Create((EventType eventType, object sender, object eventData) eventMessage)
         {
             return new EventMessages {eventMessage};
         }

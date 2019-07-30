@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(_ => eventMessages.Append((Component, TransformEventData.Create(TransformEventType))));
+            return OnEventAsObservable().Select(_ => eventMessages.Append((EventType.TransformEvent, Component, TransformEventData.Create(TransformEventType))));
         }
 
         private IObservable<Unit> OnEventAsObservable()

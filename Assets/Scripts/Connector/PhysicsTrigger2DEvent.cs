@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(x => eventMessages.Append((Component, PhysicsTrigger2DEventData.Create(PhysicsTrigger2DEventType, x))));
+            return OnEventAsObservable().Select(x => eventMessages.Append((EventType.PhysicsTrigger2DEvent, Component, PhysicsTrigger2DEventData.Create(PhysicsTrigger2DEventType, x))));
         }
 
         private IObservable<Collider2D> OnEventAsObservable()

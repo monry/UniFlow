@@ -12,7 +12,7 @@ namespace EventConnector.Connector
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
-                .Select(_ => eventMessages.Append((this, Seconds)))
+                .Select(_ => eventMessages.Append((EventType.Timer, this, Seconds)))
                 .FirstOrDefault();
     }
 }

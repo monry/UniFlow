@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(_ => eventMessages.Append((Component, CameraEventData.Create(CameraEventType))));
+            return OnEventAsObservable().Select(_ => eventMessages.Append((EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType))));
         }
 
         private IObservable<Unit> OnEventAsObservable()

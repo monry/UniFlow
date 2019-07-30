@@ -19,7 +19,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
             OnEventTriggerAsObservable()
-                .Select(x => eventMessages.ClearIfNeeded(this).Append((UIBehaviour, x)));
+                .Select(x => eventMessages.ClearIfNeeded(this).Append((EventType.UIBehaviourEventTrigger, UIBehaviour, x)));
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
         {

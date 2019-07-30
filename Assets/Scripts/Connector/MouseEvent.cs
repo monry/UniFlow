@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(_ => eventMessages.Append((Component, MouseEventData.Create(MouseEventType))));
+            return OnEventAsObservable().Select(_ => eventMessages.Append((EventType.MouseEvent, Component, MouseEventData.Create(MouseEventType))));
         }
 
         private IObservable<Unit> OnEventAsObservable()

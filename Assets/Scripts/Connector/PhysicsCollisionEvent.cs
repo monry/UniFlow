@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(x => eventMessages.Append((Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x))));
+            return OnEventAsObservable().Select(x => eventMessages.Append((EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x))));
         }
 
         private IObservable<Collision> OnEventAsObservable()
