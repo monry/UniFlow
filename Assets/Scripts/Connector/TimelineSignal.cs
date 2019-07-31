@@ -16,7 +16,8 @@ namespace EventConnector.Connector
         protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
             Subject
                 .Select(x => eventMessages.Append((EventType.TimelineSignal, this, x)))
-                .FirstOrDefault();
+//                .FirstOrDefault()
+        ;
 
         public void Dispatch()
         {
