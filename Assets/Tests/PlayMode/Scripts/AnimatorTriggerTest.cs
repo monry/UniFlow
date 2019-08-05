@@ -7,7 +7,7 @@ using AnimationEvent = EventConnector.Connector.AnimationEvent;
 
 namespace EventConnector
 {
-    public class AnimationTriggerTest : EventConnectorTestBase
+    public class AnimatorTriggerTest : EventConnectorTestBase
     {
         [UnityTest]
         public IEnumerator AnimatorTrigger()
