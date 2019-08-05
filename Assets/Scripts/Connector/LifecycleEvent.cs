@@ -24,7 +24,7 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .SubscribeWithState(
                     eventMessages,
-                    (_, em) => em.Append(EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)))
+                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType))))
                 );
         }
 
