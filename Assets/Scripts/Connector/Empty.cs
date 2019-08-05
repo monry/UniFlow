@@ -1,13 +1,10 @@
-using System;
-using UniRx;
-
 namespace EventConnector.Connector
 {
     public class Empty : EventConnector
     {
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
+        protected override void Connect(EventMessages eventMessages)
         {
-            return Observable.Return(eventMessages.Append((EventType.Empty, this, null)));
+            OnConnect(eventMessages.Append(EventMessage.Create(EventType.Empty, this)));
         }
     }
 }

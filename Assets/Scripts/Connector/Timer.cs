@@ -9,10 +9,9 @@ namespace EventConnector.Connector
         [SerializeField] private float seconds = default;
         private float Seconds => seconds;
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
+        protected override void Connect(EventMessages eventMessages) =>
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
-                .Select(_ => eventMessages.Append((EventType.Timer, this, Seconds)))
-                .FirstOrDefault();
+                .SubscribeWithState(eventMessages, (_, em) => em.Append(EventMessage.Create(EventType.Timer, this, Seconds)));
     }
 }

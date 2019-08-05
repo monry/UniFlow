@@ -60,12 +60,12 @@ namespace EventConnector
             Assert.NotNull(eventMessages);
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
 
-            Assert.NotNull(eventMessages[0].eventData);
+            Assert.NotNull(eventMessages[0].EventData);
 
-            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].eventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].EventData).EventType);
 
             HasAssert = true;
         }
@@ -75,12 +75,12 @@ namespace EventConnector
             Assert.NotNull(eventMessages);
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
 
-            Assert.NotNull(eventMessages[0].eventData);
+            Assert.NotNull(eventMessages[0].EventData);
 
-            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].eventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].EventData).EventType);
 
             HasAssert = true;
         }

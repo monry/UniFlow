@@ -24,9 +24,9 @@ namespace EventConnector
         {
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].eventData);
-            var timelineEvent = eventMessages[0].eventData as TimelineEventData;
+            Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].EventData);
+            var timelineEvent = eventMessages[0].EventData as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("TimelineSignalTest", timelineEvent.StringParameter);
             HasAssert = true;

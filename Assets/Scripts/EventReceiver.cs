@@ -35,6 +35,6 @@ namespace EventConnector
         private IObservable<EventMessages> GenerateSourceObservable() =>
             SourceConnectors.Any()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
-                : Observable.Defer(() => Observable.Return(EventMessages.Create()));
+                : Observable.Return(EventMessages.Create());
     }
 }

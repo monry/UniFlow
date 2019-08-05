@@ -18,9 +18,13 @@ namespace EventConnector.Connector
 
         private ISubject<bool> StartSubject { get; } = new BehaviorSubject<bool>(false);
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
+        protected override void Connect(EventMessages eventMessages)
         {
-            return OnEventAsObservable().Select(_ => eventMessages.Append((EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType))));
+            OnEventAsObservable()
+                .SubscribeWithState(
+                    eventMessages,
+                    (_, em) => em.Append(EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)))
+                );
         }
 
         protected override void Start()

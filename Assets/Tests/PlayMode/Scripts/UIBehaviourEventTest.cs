@@ -28,8 +28,8 @@ namespace EventConnector
         {
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.IsInstanceOf<Image>(eventMessages[0].sender);
-            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<Image>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].EventData);
             HasAssert = true;
         }
     }

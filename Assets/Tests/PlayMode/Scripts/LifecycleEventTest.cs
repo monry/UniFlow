@@ -100,10 +100,10 @@ namespace EventConnector
             Assert.NotNull(eventMessages);
             Assert.GreaterOrEqual(eventMessages.Count, 1);
 
-            Assert.IsInstanceOf<LifecycleEvent>(eventMessages[0].sender);
-            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<LifecycleEvent>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].EventData);
 
-            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].eventData).EventType);
+            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].EventData).EventType);
 
             HasAssert = true;
         }

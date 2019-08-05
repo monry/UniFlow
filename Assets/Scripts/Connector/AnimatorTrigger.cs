@@ -1,6 +1,4 @@
-using System;
 using EventConnector.Message;
-using UniRx;
 using UnityEngine;
 
 namespace EventConnector.Connector
@@ -17,10 +15,10 @@ namespace EventConnector.Connector
         private string TriggerName => triggerName;
         private int TriggerId => Animator.StringToHash(TriggerName);
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
+        protected override void Connect(EventMessages eventMessages)
         {
             Animator.SetTrigger(TriggerId);
-            return Observable.Return(eventMessages.Append((EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))));
+            OnConnect(eventMessages.Append(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))));
         }
     }
 }

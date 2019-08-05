@@ -25,12 +25,12 @@ namespace EventConnector
         {
             Assert.AreEqual(2, eventMessages.Count);
 
-            Assert.IsInstanceOf<Animator>(eventMessages[0].sender);
-            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[0].eventData);
+            Assert.IsInstanceOf<Animator>(eventMessages[0].Sender);
+            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[0].EventData);
 
-            Assert.IsInstanceOf<AnimationEvent>(eventMessages[1].sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[1].eventData);
-            var animationEvent = eventMessages[1].eventData as UnityEngine.AnimationEvent;
+            Assert.IsInstanceOf<AnimationEvent>(eventMessages[1].Sender);
+            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[1].EventData);
+            var animationEvent = eventMessages[1].EventData as UnityEngine.AnimationEvent;
             Assert.NotNull(animationEvent);
             Assert.AreEqual(22.2f, animationEvent.floatParameter);
             Assert.AreEqual(33, animationEvent.intParameter);

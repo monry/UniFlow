@@ -1,8 +1,6 @@
-using System;
 using EventConnector.Message;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace EventConnector.Connector
 {
@@ -12,36 +10,34 @@ namespace EventConnector.Connector
     public class TimelineSignal : EventConnector
     {
         private ISubject<TimelineEventData> Subject { get; set; } = new Subject<TimelineEventData>();
+        private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
-            Subject
-                .Select(x => eventMessages.Append((EventType.TimelineSignal, this, x)))
-//                .FirstOrDefault()
-        ;
+        protected override void Connect(EventMessages eventMessages) =>
+            EventMessages = eventMessages;
 
         public void Dispatch()
         {
-            Subject.OnNext(new TimelineEventData());
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData())));
         }
 
         public void Dispatch(float floatParameter)
         {
-            Subject.OnNext(new TimelineEventData(floatParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(floatParameter))));
         }
 
         public void Dispatch(int intParameter)
         {
-            Subject.OnNext(new TimelineEventData(intParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(intParameter))));
         }
 
         public void Dispatch(string stringParameter)
         {
-            Subject.OnNext(new TimelineEventData(stringParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(stringParameter))));
         }
 
         public void Dispatch(Object objectReferenceParameter)
         {
-            Subject.OnNext(new TimelineEventData(objectReferenceParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(objectReferenceParameter))));
         }
     }
 }
