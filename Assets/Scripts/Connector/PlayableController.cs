@@ -1,4 +1,5 @@
 using EventConnector.Message;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -15,7 +16,13 @@ namespace EventConnector.Connector
         protected override void Connect(EventMessages eventMessages)
         {
             PlayableDirector.Play();
-            OnConnect(eventMessages.Append(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create())));
+            Observable
+                .EveryEndOfFrame()
+                .Take(1)
+                .SubscribeWithState(
+                    eventMessages,
+                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create())))
+                );
         }
     }
 }

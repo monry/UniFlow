@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -28,8 +29,18 @@ namespace EventConnector
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Start()
+        protected virtual IEnumerator Start()
         {
+            if (!MainThreadDispatcher.IsInitialized)
+            {
+                MainThreadDispatcher.Initialize();
+
+                while (!MainThreadDispatcher.IsInitialized)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+
             if (ActAsReceiver)
             {
                 ((IEventConnector) this)
@@ -59,7 +70,7 @@ namespace EventConnector
         private IObservable<EventMessages> GenerateSourceObservable() =>
             ((IEventConnectable) this).HasSourceConnectors()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
-                : Observable.Return(EventMessages.Create());
+                : Observable.Defer(() => Observable.Return(EventMessages.Create()));
 
         void IObserver<EventMessages>.OnCompleted()
         {

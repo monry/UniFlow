@@ -7,9 +7,9 @@ namespace EventConnector
 
         protected override void Connect(EventMessages eventMessages)
         {
+            // Do not invoke eventMessage.Append()
             LatestEventMessages = eventMessages;
             InvokedCount++;
-            OnConnect(eventMessages.Append(EventMessage.Create(EventType.Empty, this, null)));
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using EventConnector.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -27,9 +28,9 @@ namespace EventConnector.Connector
                 );
         }
 
-        protected override void Start()
+        protected override IEnumerator Start()
         {
-            base.Start();
+            yield return base.Start();
             StartSubject.OnNext(true);
         }
 

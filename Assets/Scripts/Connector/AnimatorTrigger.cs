@@ -1,4 +1,5 @@
 using EventConnector.Message;
+using UniRx;
 using UnityEngine;
 
 namespace EventConnector.Connector
@@ -18,7 +19,13 @@ namespace EventConnector.Connector
         protected override void Connect(EventMessages eventMessages)
         {
             Animator.SetTrigger(TriggerId);
-            OnConnect(eventMessages.Append(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))));
+            Observable
+                .EveryEndOfFrame()
+                .Take(1)
+                .SubscribeWithState(
+                    eventMessages,
+                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))))
+                );
         }
     }
 }
