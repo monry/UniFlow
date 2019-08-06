@@ -9,6 +9,7 @@ namespace EventConnector
         AnimatorTrigger,
         AnimationEvent,
         TimelineSignal,
+        AudioController,
         AudioEvent,
         PhysicsCollisionEvent,
         PhysicsCollision2DEvent,
