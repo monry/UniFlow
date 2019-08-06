@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Tests/PlayMode/Scenes/Basic/AnimatorTrigger.unity
     guid: d591b31731ab048b88b7cce6cb1aa3d9
   - enabled: 1
+    path: Assets/Tests/PlayMode/Scenes/Basic/AudioController.unity
+    guid: 465e02d42eb934543b04fd8441c46d93
+  - enabled: 1
     path: Assets/Tests/PlayMode/Scenes/Basic/AudioEvent.unity
     guid: c0b9f1f0360ee43338a634bc59aad3d9
   - enabled: 1
