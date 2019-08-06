@@ -76,7 +76,7 @@ namespace EventConnector
             return List.Remove(item);
         }
 
-        public int Count => List.Count;
+        public int Count => List?.Count ?? 0;
         public bool IsReadOnly => true;
 
         public int IndexOf(EventMessage item)
