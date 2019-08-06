@@ -14,7 +14,7 @@
   "category": "",
   "dependencies": {
     "com.stevevermeulen.extenject": "9.0.0",
-    "jp.cysharp.unirx": "7.0.0"
+    "jp.cysharp.unirx": "7.1.0"
   },
   "repository": {
     "type": "git",
