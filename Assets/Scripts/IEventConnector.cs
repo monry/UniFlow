@@ -2,8 +2,8 @@ using System;
 
 namespace EventConnector
 {
-    public interface IEventConnector
+    public interface IEventConnector : IObserver<EventMessages>, IObservable<EventMessages>
     {
-        IObservable<EventMessages> ConnectAsObservable(EventMessages eventMessages);
+        IObservable<EventMessages> ConnectAsObservable();
     }
 }

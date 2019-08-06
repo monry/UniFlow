@@ -1,45 +1,43 @@
-using System;
 using EventConnector.Message;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace EventConnector.Connector
 {
     // Timeline SignalReceiver cannot serialize [Serializable] class
-    // So I provide overloads to construct TimelineEvent
+    // So I provide overloads to construct TimelineEventData
     [AddComponentMenu("Event Connector/TimelineSignal")]
     public class TimelineSignal : EventConnector
     {
-        private ISubject<TimelineEvent> Subject { get; } = new Subject<TimelineEvent>();
+        private ISubject<TimelineEventData> Subject { get; set; } = new Subject<TimelineEventData>();
+        private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
-            Subject
-                .Select(x => eventMessages.Append((this, x)));
+        protected override void Connect(EventMessages eventMessages) =>
+            EventMessages = eventMessages;
 
         public void Dispatch()
         {
-            Subject.OnNext(new TimelineEvent());
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData())));
         }
 
         public void Dispatch(float floatParameter)
         {
-            Subject.OnNext(new TimelineEvent(floatParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(floatParameter))));
         }
 
         public void Dispatch(int intParameter)
         {
-            Subject.OnNext(new TimelineEvent(intParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(intParameter))));
         }
 
         public void Dispatch(string stringParameter)
         {
-            Subject.OnNext(new TimelineEvent(stringParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(stringParameter))));
         }
 
         public void Dispatch(Object objectReferenceParameter)
         {
-            Subject.OnNext(new TimelineEvent(objectReferenceParameter));
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.TimelineSignal, this, new TimelineEventData(objectReferenceParameter))));
         }
     }
 }

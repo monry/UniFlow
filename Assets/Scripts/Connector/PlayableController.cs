@@ -1,4 +1,3 @@
-using System;
 using EventConnector.Message;
 using UniRx;
 using UnityEngine;
@@ -14,10 +13,16 @@ namespace EventConnector.Connector
         private PlayableDirector playableDirector = default;
         private PlayableDirector PlayableDirector => playableDirector ? playableDirector : playableDirector = GetComponent<PlayableDirector>();
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages)
+        protected override void Connect(EventMessages eventMessages)
         {
             PlayableDirector.Play();
-            return Observable.Return(eventMessages.Append((PlayableDirector, PlayableControllerEvent.Create())));
+            Observable
+                .EveryEndOfFrame()
+                .Take(1)
+                .SubscribeWithState(
+                    eventMessages,
+                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create())))
+                );
         }
     }
 }
