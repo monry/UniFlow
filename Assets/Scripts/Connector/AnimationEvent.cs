@@ -1,5 +1,3 @@
-using System;
-using UniRx;
 using UnityEngine;
 
 namespace EventConnector.Connector
@@ -9,15 +7,18 @@ namespace EventConnector.Connector
     [AddComponentMenu("Event Connector/AnimationEvent")]
     public class AnimationEvent : EventConnector
     {
-        private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
+        private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
-            Subject
-                .Select(x => eventMessages.Append((this, x)));
+        protected override void Connect(EventMessages eventMessages) =>
+            EventMessages = eventMessages;
 
+        /// <summary>
+        /// Invoked from AnimationEvent
+        /// </summary>
+        /// <param name="animationEvent"></param>
         public void Dispatch(UnityEngine.AnimationEvent animationEvent)
         {
-            Subject.OnNext(animationEvent);
+            OnConnect(EventMessages.Append(EventMessage.Create(EventType.AnimationEvent, this, animationEvent)));
         }
     }
 }

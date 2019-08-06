@@ -17,9 +17,12 @@ namespace EventConnector.Connector
         private UIBehaviour uiBehaviour = default;
         private UIBehaviour UIBehaviour => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
 
-        protected override IObservable<EventMessages> Connect(EventMessages eventMessages) =>
+        protected override void Connect(EventMessages eventMessages) =>
             OnEventTriggerAsObservable()
-                .Select(x => eventMessages.Append((UIBehaviour, x)));
+                .SubscribeWithState(
+                    eventMessages,
+                    (x, em) => OnConnect(em.Append(EventMessage.Create(EventType.UIBehaviourEventTrigger, UIBehaviour, x)))
+                );
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
         {

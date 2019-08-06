@@ -313,6 +313,7 @@ MonoBehaviour:
   sourceConnectorInstances:
   - {fileID: 1729537389}
   sourceConnectorIds: []
+  actAsReceiver: 0
   playableDirector: {fileID: 2024507138}
 --- !u!4 &578503983
 Transform:
@@ -440,7 +441,7 @@ GameObject:
   - component: {fileID: 853980134}
   - component: {fileID: 853980133}
   m_Layer: 5
-  m_Name: Connnector0
+  m_Name: Connector0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -460,7 +461,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceConnectorInstances: []
   sourceConnectorIds: []
+  actAsReceiver: 0
   eventTriggerType: 2
+  uiBehaviour: {fileID: 0}
 --- !u!114 &853980134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,6 +632,7 @@ MonoBehaviour:
   sourceConnectorInstances:
   - {fileID: 853980133}
   sourceConnectorIds: []
+  actAsReceiver: 0
   animator: {fileID: 1729537390}
   triggerName: TestTrigger
 --- !u!1 &1729537387
@@ -678,6 +682,7 @@ MonoBehaviour:
   sourceConnectorInstances:
   - {fileID: 1565437862}
   sourceConnectorIds: []
+  actAsReceiver: 0
 --- !u!95 &1729537390
 Animator:
   serializedVersion: 3
@@ -746,6 +751,7 @@ MonoBehaviour:
   sourceConnectorInstances:
   - {fileID: 578503981}
   sourceConnectorIds: []
+  actAsReceiver: 0
 --- !u!114 &2024507136
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -85,3 +85,8 @@ If you do not specify instance of `PlayableDirector` will be obtained by `GameOb
 This component observes Timeline Signals emission.
 
 Specify `TimelineSignal.Dispatch()` in the destination method of the `UnityEngine.Timeline.SignalReceiver` component
+
+## License
+
+* [OtoLogic (https://otologic.jp)](https://otologic.jp) (CC BY 4.0)
+    * `Assets/Tests/Runtime/Sounds/TimeReport.mp3`

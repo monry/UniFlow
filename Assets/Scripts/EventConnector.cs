@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -7,7 +8,7 @@ using Zenject;
 
 namespace EventConnector
 {
-    public abstract class EventConnector : MonoBehaviour, IEventConnector
+    public abstract class EventConnector : MonoBehaviour, IEventConnector, IEventConnectable
     {
         [SerializeField]
         [Tooltip("Specify instances of IEventConnector directly")]
@@ -24,17 +25,26 @@ namespace EventConnector
                 .Concat(sourceConnectorInstances ?? new List<EventConnector>())
                 .Concat((sourceConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnector>));
         private bool ActAsReceiver => actAsReceiver;
+        private ISubject<EventMessages> Subject { get; } = new Subject<EventMessages>();
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Start()
+        protected virtual IEnumerator Start()
         {
+            if (!MainThreadDispatcher.IsInitialized)
+            {
+                MainThreadDispatcher.Initialize();
+
+                while (!MainThreadDispatcher.IsInitialized)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+
             if (ActAsReceiver)
             {
                 ((IEventConnector) this)
                     .ConnectAsObservable()
-                    .Take(1)
-                    .RepeatSafe()
                     .Subscribe()
                     .AddTo(this);
             }
@@ -42,18 +52,44 @@ namespace EventConnector
 
         IObservable<EventMessages> IEventConnector.ConnectAsObservable()
         {
-            return GenerateSourceObservable()
-                .SelectMany(Connect);
+            // SourceConnector が無いなら new する
+            GenerateSourceObservable().Subscribe(x => ((IObserver<EventMessages>) this).OnNext(x));
+            return this;
         }
 
-        protected abstract IObservable<EventMessages> Connect(EventMessages eventMessages);
+        protected abstract void Connect(EventMessages eventMessages);
 
-        private bool HasSourceConnectors() =>
+        protected void OnConnect(EventMessages eventMessages)
+        {
+            Subject.OnNext(eventMessages);
+        }
+
+        bool IEventConnectable.HasSourceConnectors() =>
             SourceConnectors.Any();
 
         private IObservable<EventMessages> GenerateSourceObservable() =>
-            HasSourceConnectors()
+            ((IEventConnectable) this).HasSourceConnectors()
                 ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
                 : Observable.Defer(() => Observable.Return(EventMessages.Create()));
+
+        void IObserver<EventMessages>.OnCompleted()
+        {
+            Subject.OnCompleted();
+        }
+
+        void IObserver<EventMessages>.OnError(Exception error)
+        {
+            Subject.OnError(error);
+        }
+
+        void IObserver<EventMessages>.OnNext(EventMessages value)
+        {
+            Connect(value);
+        }
+
+        IDisposable IObservable<EventMessages>.Subscribe(IObserver<EventMessages> observer)
+        {
+            return Subject.Subscribe(observer);
+        }
     }
 }

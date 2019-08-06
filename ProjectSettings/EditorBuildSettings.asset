@@ -15,6 +15,15 @@ EditorBuildSettings:
     path: Assets/Tests/PlayMode/Scenes/Basic/AnimatorTrigger.unity
     guid: d591b31731ab048b88b7cce6cb1aa3d9
   - enabled: 1
+    path: Assets/Tests/PlayMode/Scenes/Basic/AudioEvent.unity
+    guid: c0b9f1f0360ee43338a634bc59aad3d9
+  - enabled: 1
+    path: Assets/Tests/PlayMode/Scenes/Basic/CameraEvent.unity
+    guid: 0727bd128d56047c9ace09189d53c445
+  - enabled: 1
+    path: Assets/Tests/PlayMode/Scenes/Basic/LifecycleEvent.unity
+    guid: ea7e6f3e808cb4c7ab400839bc0663b1
+  - enabled: 1
     path: Assets/Tests/PlayMode/Scenes/Basic/PlayableController.unity
     guid: 498b6ead3ff304c7abad2da54b0d13e0
   - enabled: 1
