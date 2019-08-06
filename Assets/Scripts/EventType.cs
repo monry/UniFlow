@@ -2,7 +2,7 @@ namespace EventConnector
 {
     public enum EventType
     {
-        Timer,
+        Timer = 1,
         Empty,
         UIBehaviourEventTrigger,
         PlayableController,
