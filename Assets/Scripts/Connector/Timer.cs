@@ -12,6 +12,6 @@ namespace EventConnector.Connector
         protected override void Connect(EventMessages eventMessages) =>
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
-                .SubscribeWithState(eventMessages, (_, em) => em.Append(EventMessage.Create(EventType.Timer, this, Seconds)));
+                .SubscribeWithState(eventMessages, (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.Timer, this, Seconds))));
     }
 }
