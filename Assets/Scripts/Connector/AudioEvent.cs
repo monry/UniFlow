@@ -8,7 +8,7 @@ namespace EventConnector.Connector
     [RequireComponent(typeof(AudioSource))]
     public class AudioEvent : EventConnector
     {
-        [SerializeField] private AudioEventType audioEventType;
+        [SerializeField] private AudioEventType audioEventType = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
         private AudioSource audioSource = default;

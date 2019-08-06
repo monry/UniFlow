@@ -7,7 +7,7 @@ namespace EventConnector.Connector
 {
     public class AudioController : EventConnector
     {
-        [SerializeField] private AudioControlMethod audioControlMethod;
+        [SerializeField] private AudioControlMethod audioControlMethod = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
         private AudioSource audioSource = default;
