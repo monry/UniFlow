@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private RectTransformEventType RectTransformEventType => rectTransformEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(_ => EventMessage.Create(EventType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

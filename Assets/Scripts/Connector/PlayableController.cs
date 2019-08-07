@@ -1,3 +1,4 @@
+using System;
 using EventConnector.Message;
 using UniRx;
 using UnityEngine;
@@ -13,6 +14,19 @@ namespace EventConnector.Connector
         private PlayableDirector playableDirector = default;
         private PlayableDirector PlayableDirector => playableDirector ? playableDirector : playableDirector = GetComponent<PlayableDirector>();
 
+        private IDisposable Disposable { get; } = new CompositeDisposable();
+
+        public override IObservable<EventMessage> FooAsObservable() =>
+            Observable
+                .Create<EventMessage>(
+                    observer =>
+                    {
+                        PlayableDirector.Play();
+                        observer.OnNext(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create()));
+                        return Disposable;
+                    }
+                );
+
         protected override void Connect(EventMessages eventMessages)
         {
             PlayableDirector.Play();
@@ -23,6 +37,11 @@ namespace EventConnector.Connector
                     eventMessages,
                     (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create())))
                 );
+        }
+
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
         }
     }
 }

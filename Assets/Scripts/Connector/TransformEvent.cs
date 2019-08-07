@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private TransformEventType TransformEventType => transformEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(_ => EventMessage.Create(EventType.TransformEvent, Component, TransformEventData.Create(TransformEventType)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

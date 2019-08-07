@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private PhysicsCollisionEventType PhysicsCollisionEventType => physicsCollisionEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(x => EventMessage.Create(EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

@@ -1,3 +1,4 @@
+using System;
 using EventConnector.Message;
 using UniRx;
 using UnityEngine;
@@ -16,6 +17,19 @@ namespace EventConnector.Connector
         private string TriggerName => triggerName;
         private int TriggerId => Animator.StringToHash(TriggerName);
 
+        private IDisposable Disposable { get; } = new CompositeDisposable();
+
+        public override IObservable<EventMessage> FooAsObservable() =>
+            Observable
+                .Create<EventMessage>(
+                    observer =>
+                    {
+                        Animator.SetTrigger(TriggerId);
+                        observer.OnNext(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName)));
+                        return Disposable;
+                    }
+                );
+
         protected override void Connect(EventMessages eventMessages)
         {
             Animator.SetTrigger(TriggerId);
@@ -26,6 +40,11 @@ namespace EventConnector.Connector
                     eventMessages,
                     (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))))
                 );
+        }
+
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
         }
     }
 }

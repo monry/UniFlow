@@ -50,6 +50,8 @@ namespace EventConnector
             }
         }
 
+        public abstract IObservable<EventMessage> FooAsObservable();
+
         IObservable<EventMessages> IEventConnector.ConnectAsObservable()
         {
             // SourceConnector が無いなら new する

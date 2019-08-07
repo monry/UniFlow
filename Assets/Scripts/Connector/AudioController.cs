@@ -15,7 +15,32 @@ namespace EventConnector.Connector
         private AudioControlMethod AudioControlMethod => audioControlMethod;
         private AudioSource AudioSource => audioSource ? audioSource : audioSource = GetComponent<AudioSource>();
 
+        private IDisposable Disposable { get; } = new CompositeDisposable();
+
+        public override IObservable<EventMessage> FooAsObservable() =>
+            Observable
+                .Create<EventMessage>(
+                    observer =>
+                    {
+                        InvokeAudioSourceMethod();
+                        observer.OnNext(EventMessage.Create(EventType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod)));
+                        return Disposable;
+                    }
+                );
+
         protected override void Connect(EventMessages eventMessages)
+        {
+            InvokeAudioSourceMethod();
+            Observable
+                .EveryEndOfFrame()
+                .Take(1)
+                .SubscribeWithState(
+                    eventMessages,
+                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod))))
+                );
+        }
+
+        private void InvokeAudioSourceMethod()
         {
             switch (AudioControlMethod)
             {
@@ -34,14 +59,11 @@ namespace EventConnector.Connector
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
 
-            Observable
-                .EveryEndOfFrame()
-                .Take(1)
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod))))
-                );
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
         }
     }
 

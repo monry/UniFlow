@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private ParticleEventType ParticleEventType => particleEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(x => EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private CameraEventType CameraEventType => cameraEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(_ => EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

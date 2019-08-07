@@ -16,6 +16,10 @@ namespace EventConnector.Connector
         private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
         private Component Component => component ? component : component = this;
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnEventAsObservable()
+                .Select(x => EventMessage.Create(EventType.PhysicsTriggerEvent, Component, PhysicsTriggerEventData.Create(PhysicsTriggerEventType, x)));
+
         protected override void Connect(EventMessages eventMessages)
         {
             OnEventAsObservable()

@@ -18,6 +18,10 @@ namespace EventConnector.Connector
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
+        public override IObservable<EventMessage> FooAsObservable() =>
+            OnAudioEventAsObservable()
+                .Select(x => EventMessage.Create(EventType.AudioEvent, AudioSource, AudioEventData.Create(x)));
+
         protected override void Connect(EventMessages eventMessages) =>
             OnAudioEventAsObservable()
                 .SubscribeWithState(
