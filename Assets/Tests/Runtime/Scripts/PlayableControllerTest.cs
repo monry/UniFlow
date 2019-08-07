@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class PlayableControllerTest : EventConnectorTestBase
     {

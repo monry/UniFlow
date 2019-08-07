@@ -4,7 +4,7 @@ using EventConnector.Message;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class TimelineSignalTest : EventConnectorTestBase
     {

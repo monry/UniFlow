@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using Object = UnityEngine.Object;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public abstract class EventConnectorTestBase : ZenjectIntegrationTestFixture
     {
-        private const string ScenePath = "Tests/PlayMode/Scenes/Basic/";
+        private const string ScenePath = "Tests/Runtime/Scenes/Basic/";
         protected bool HasAssert { private get; set; }
 
         [SetUp]

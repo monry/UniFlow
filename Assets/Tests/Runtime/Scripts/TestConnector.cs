@@ -1,4 +1,4 @@
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class TestConnector : EventConnector
     {

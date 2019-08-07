@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class UIBehaviourEventTest : EventConnectorTestBase
     {

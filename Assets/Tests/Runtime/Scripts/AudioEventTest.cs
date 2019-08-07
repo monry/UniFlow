@@ -8,8 +8,9 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using Object = UnityEngine.Object;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class AudioEventTest : EventConnectorTestBase
     {
@@ -208,7 +209,7 @@ namespace EventConnector
         {
             Assert.NotNull(eventMessages);
             Assert.AreEqual(1, eventMessages.Count);
-            Assert.AreEqual(receiveCount, UnityEngine.Object.FindObjectOfType<TestReceiver>().ReceiveCount);
+            Assert.AreEqual(receiveCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
 
             Assert.IsInstanceOf<AudioSource>(eventMessages[0].Sender);
             Assert.IsInstanceOf<AudioEventData>(eventMessages[0].EventData);
