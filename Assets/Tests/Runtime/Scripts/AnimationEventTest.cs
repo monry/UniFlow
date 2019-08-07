@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using AnimationEvent = EventConnector.Connector.AnimationEvent;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class AnimationEventTest : EventConnectorTestBase
     {

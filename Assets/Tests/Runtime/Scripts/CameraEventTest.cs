@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class CameraEventTest : EventConnectorTestBase
     {

@@ -1,4 +1,5 @@
 using System.Collections;
+using EventConnector;
 using EventConnector.Connector;
 using EventConnector.Message;
 using NUnit.Framework;
@@ -10,7 +11,7 @@ using UnityEngine.TestTools;
 using UnityEngine.UI;
 using AnimationEvent = EventConnector.Connector.AnimationEvent;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class AllTest : EventConnectorTestBase
     {

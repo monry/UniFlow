@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class LifecycleEventTest : EventConnectorTestBase
     {

@@ -15,11 +15,11 @@ using Zenject;
 using AnimationEvent = EventConnector.Connector.AnimationEvent;
 using Object = UnityEngine.Object;
 
-namespace EventConnector
+namespace EventConnector.Tests.Runtime
 {
     public class WithoutEventReceiverTest : ZenjectIntegrationTestFixture
     {
-        private const string ScenePath = "Tests/PlayMode/Scenes/WithoutReceiver/";
+        private const string ScenePath = "Tests/Runtime/Scenes/WithoutReceiver/";
         private bool HasAssert { get; set; }
 
         [SetUp]
