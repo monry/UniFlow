@@ -18,6 +18,9 @@ namespace EventConnector
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         private bool actAsTrigger = false;
 
+        [SerializeField] [Tooltip("Set true to allow to act as the receiver")]
+        private bool actAsReceiver = false;
+
         private IEnumerable<IEventConnector> TargetConnectors =>
             new List<IEventConnector>()
                 .Concat(targetConnectorInstances ?? new List<EventConnector>())
@@ -26,6 +29,7 @@ namespace EventConnector
                 .ToArray();
 
         private bool ActAsTrigger => actAsTrigger;
+        private bool ActAsReceiver => actAsReceiver;
         [Inject] private DiContainer Container { get; }
 
         protected virtual void Start()
@@ -52,6 +56,11 @@ namespace EventConnector
                 .OfType<IEventReceiver>()
                 .ToList()
                 .ForEach(x => observable.Subscribe(x.OnReceive));
+
+            if (ActAsReceiver)
+            {
+                observable.Subscribe();
+            }
         }
 
         public abstract IObservable<EventMessage> OnPublishAsObservable();
