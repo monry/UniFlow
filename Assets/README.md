@@ -26,7 +26,7 @@ Implement Component what inherits `EventReceiver`.
 
 Implement the process you want to execute when the event is received in the `OnReceive()` method that needs to override by `EventReceiver`.
 
-This method will be passed `EventMessages` what contrains all propagated event informations.
+This method will be passed `EventMessages` what contains all propagated event informations.
 
 #### 3. Connect EventConnectors and EventReceiver
 
@@ -40,7 +40,7 @@ It is also possible to solve with `Zenject.ResolveIdAll<T>()` by setting ID in *
 
 #### Target Connector Instances
 
-Specify instances what inhreits `EventPublisher` or `EventReceiver` into this field.
+Specify instances what inherits `EventPublisher` or `EventReceiver` into this field.
 
 Fire messages at the correct time for each component.
 
@@ -232,7 +232,7 @@ Note: Currently, parameter invocation such as `SetInt()` is not supported.
 
 #### `AnimationEvent`
 
-This component observes AnimationEvent fireing.
+This component observes AnimationEvent firing.
 
 To receive AnimationEvent, Component needs to be attached to the same GameObject as Animator.
 
@@ -242,7 +242,7 @@ This component will fire `AudioSource.Xxx()`.
 
 If you do not specify instance of `AudioSource` will be obtained by `GetComponent<AudioSource>()`
 
-Suppoeted methods are listed below.
+Supported methods are listed below.
 
 * Play
 * Stop
@@ -255,7 +255,7 @@ This component observes state changes of AudioSource.
 
 If you do not specify instance of `AudioSource` will be obtained by `GetComponent<AudioSource>()`
 
-Suppoeted events are listed below.
+Supported events are listed below.
 
 * Play
 * Stop
