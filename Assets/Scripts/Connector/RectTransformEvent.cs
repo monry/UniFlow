@@ -20,15 +20,6 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => em.Append(EventMessage.Create(EventType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)))
-                );
-        }
-
         private IObservable<Unit> OnEventAsObservable()
         {
             switch (RectTransformEventType)

@@ -20,15 +20,6 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)));
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => em.Append(EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)))
-                );
-        }
-
         private IObservable<GameObject> OnEventAsObservable()
         {
             switch (ParticleEventType)

@@ -1,6 +1,7 @@
 namespace EventConnector
 {
-    public interface IEventReceiver
+    public interface IEventReceiver : IEventConnector
     {
+        void Receive(EventMessages eventMessages);
     }
 }

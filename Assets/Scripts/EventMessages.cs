@@ -8,7 +8,7 @@ namespace EventConnector
     public struct EventMessages : IList<EventMessage>
     {
         private List<EventMessage> List { get; set; }
-        private bool HasInitialized { get; set; }
+        public bool HasInitialized { get; private set; }
 
         public EventMessages Append(EventMessage eventMessage)
         {

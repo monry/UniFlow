@@ -13,9 +13,6 @@ namespace EventConnector.Connector
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
         private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
-        protected override void Connect(EventMessages eventMessages) =>
-            EventMessages = eventMessages;
-
         public override IObservable<EventMessage> FooAsObservable() =>
             Subject
                 .Select(x => EventMessage.Create(EventType.AnimationEvent, this, x));
@@ -28,7 +25,6 @@ namespace EventConnector.Connector
         public void Dispatch(UnityEngine.AnimationEvent animationEvent)
         {
             Subject.OnNext(animationEvent);
-            OnConnect(EventMessages.Append(EventMessage.Create(EventType.AnimationEvent, this, animationEvent)));
         }
     }
 }

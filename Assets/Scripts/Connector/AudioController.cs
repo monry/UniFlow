@@ -28,18 +28,6 @@ namespace EventConnector.Connector
                     }
                 );
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            InvokeAudioSourceMethod();
-            Observable
-                .EveryEndOfFrame()
-                .Take(1)
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod))))
-                );
-        }
-
         private void InvokeAudioSourceMethod()
         {
             switch (AudioControlMethod)

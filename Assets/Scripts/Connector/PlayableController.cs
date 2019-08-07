@@ -27,18 +27,6 @@ namespace EventConnector.Connector
                     }
                 );
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            PlayableDirector.Play();
-            Observable
-                .EveryEndOfFrame()
-                .Take(1)
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create())))
-                );
-        }
-
         private void OnDestroy()
         {
             Disposable.Dispose();

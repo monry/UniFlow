@@ -30,18 +30,6 @@ namespace EventConnector.Connector
                     }
                 );
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            Animator.SetTrigger(TriggerId);
-            Observable
-                .EveryEndOfFrame()
-                .Take(1)
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName))))
-                );
-        }
-
         private void OnDestroy()
         {
             Disposable.Dispose();

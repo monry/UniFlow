@@ -20,15 +20,6 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x)));
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => em.Append(EventMessage.Create(EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x)))
-                );
-        }
-
         private IObservable<Collision> OnEventAsObservable()
         {
             switch (PhysicsCollisionEventType)

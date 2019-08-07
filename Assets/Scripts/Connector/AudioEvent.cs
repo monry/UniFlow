@@ -22,13 +22,6 @@ namespace EventConnector.Connector
             OnAudioEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.AudioEvent, AudioSource, AudioEventData.Create(x)));
 
-        protected override void Connect(EventMessages eventMessages) =>
-            OnAudioEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => OnConnect(em.Append(EventMessage.Create(EventType.AudioEvent, AudioSource, AudioEventData.Create(x))))
-                );
-
         private IObservable<AudioEventType> OnAudioEventAsObservable()
         {
             TimePair = AudioSource

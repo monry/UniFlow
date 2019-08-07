@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -8,90 +7,43 @@ using Zenject;
 
 namespace EventConnector
 {
-    public abstract class EventConnector : MonoBehaviour, IEventConnector, IEventConnectable
+    public abstract class EventConnector : MonoBehaviour, IEventConnector
     {
         [SerializeField]
         [Tooltip("Specify instances of IEventConnector directly")]
-        private List<EventConnector> sourceConnectorInstances = default;
+        private List<EventConnector> targetConnectorInstances = default;
         [SerializeField]
         [Tooltip("Specify identifiers of IEventConnector that resolve from Zenject.DiContainer")]
-        private List<string> sourceConnectorIds = default;
-        [SerializeField]
-        [Tooltip("Check if you want to act as Receiver")]
-        private bool actAsReceiver = false;
+        private List<string> targetConnectorIds = default;
 
-        private IEnumerable<IEventConnector> SourceConnectors =>
+        public IEnumerable<IEventConnector> TargetConnectors =>
             new List<IEventConnector>()
-                .Concat(sourceConnectorInstances ?? new List<EventConnector>())
-                .Concat((sourceConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnector>));
-        private bool ActAsReceiver => actAsReceiver;
-        private ISubject<EventMessages> Subject { get; } = new Subject<EventMessages>();
+                .Concat(targetConnectorInstances ?? new List<EventConnector>())
+                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnector>));
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual IEnumerator Start()
+        public void Con(EventMessages eventMessages)
         {
-            if (!MainThreadDispatcher.IsInitialized)
-            {
-                MainThreadDispatcher.Initialize();
-
-                while (!MainThreadDispatcher.IsInitialized)
-                {
-                    yield return new WaitForEndOfFrame();
-                }
-            }
-
-            if (ActAsReceiver)
-            {
-                ((IEventConnector) this)
-                    .ConnectAsObservable()
-                    .Subscribe()
-                    .AddTo(this);
-            }
+            FooAsObservable()
+                .ForEachAsync(
+                    eventMessage =>
+                    {
+                        eventMessages.Append(eventMessage);
+                        TargetConnectors
+                            .Where(x => !ReferenceEquals(x, this))
+                            .Where(x => !(x is IEventReceiver))
+                            .ToList()
+                            .ForEach(x =>x.Con(eventMessages));
+                        TargetConnectors
+                            .Where(x => !ReferenceEquals(x, this))
+                            .OfType<IEventReceiver>()
+                            .ToList()
+                            .ForEach(x => x.Receive(eventMessages));
+                    }
+                );
         }
 
         public abstract IObservable<EventMessage> FooAsObservable();
-
-        IObservable<EventMessages> IEventConnector.ConnectAsObservable()
-        {
-            // SourceConnector が無いなら new する
-            GenerateSourceObservable().Subscribe(x => ((IObserver<EventMessages>) this).OnNext(x));
-            return this;
-        }
-
-        protected abstract void Connect(EventMessages eventMessages);
-
-        protected void OnConnect(EventMessages eventMessages)
-        {
-            Subject.OnNext(eventMessages);
-        }
-
-        bool IEventConnectable.HasSourceConnectors() =>
-            SourceConnectors.Any();
-
-        private IObservable<EventMessages> GenerateSourceObservable() =>
-            ((IEventConnectable) this).HasSourceConnectors()
-                ? SourceConnectors.Select(x => x.ConnectAsObservable()).Merge()
-                : Observable.Defer(() => Observable.Return(EventMessages.Create()));
-
-        void IObserver<EventMessages>.OnCompleted()
-        {
-            Subject.OnCompleted();
-        }
-
-        void IObserver<EventMessages>.OnError(Exception error)
-        {
-            Subject.OnError(error);
-        }
-
-        void IObserver<EventMessages>.OnNext(EventMessages value)
-        {
-            Connect(value);
-        }
-
-        IDisposable IObservable<EventMessages>.Subscribe(IObserver<EventMessages> observer)
-        {
-            return Subject.Subscribe(observer);
-        }
     }
 }

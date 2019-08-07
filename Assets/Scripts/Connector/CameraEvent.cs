@@ -20,15 +20,6 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
 
-        protected override void Connect(EventMessages eventMessages)
-        {
-            OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType))))
-                );
-        }
-
         private IObservable<Unit> OnEventAsObservable()
         {
             switch (CameraEventType)

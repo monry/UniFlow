@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace EventConnector
 {
-    public interface IEventConnector : IObserver<EventMessages>, IObservable<EventMessages>
+    public interface IEventConnector
     {
-        IObservable<EventMessages> ConnectAsObservable();
+        IEnumerable<IEventConnector> TargetConnectors { get; }
+        void Con(EventMessages eventMessages);
         IObservable<EventMessage> FooAsObservable();
     }
 }

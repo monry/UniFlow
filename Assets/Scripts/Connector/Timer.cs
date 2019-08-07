@@ -13,10 +13,5 @@ namespace EventConnector.Connector
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
                 .Select(_ => EventMessage.Create(EventType.Timer, this, Seconds));
-
-        protected override void Connect(EventMessages eventMessages) =>
-            Observable
-                .Timer(TimeSpan.FromSeconds(Seconds))
-                .SubscribeWithState(eventMessages, (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.Timer, this, Seconds))));
     }
 }

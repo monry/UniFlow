@@ -21,13 +21,6 @@ namespace EventConnector.Connector
             OnEventTriggerAsObservable()
                 .Select(x => EventMessage.Create(EventType.UIBehaviourEventTrigger, UIBehaviour, x));
 
-        protected override void Connect(EventMessages eventMessages) =>
-            OnEventTriggerAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => OnConnect(em.Append(EventMessage.Create(EventType.UIBehaviourEventTrigger, UIBehaviour, x)))
-                );
-
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
         {
             switch (EventTriggerType)

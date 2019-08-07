@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using EventConnector.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -23,18 +22,8 @@ namespace EventConnector.Connector
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
 
-        protected override void Connect(EventMessages eventMessages)
+        private void Start()
         {
-            OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType))))
-                );
-        }
-
-        protected override IEnumerator Start()
-        {
-            yield return base.Start();
             StartSubject.OnNext(true);
         }
 
