@@ -1,24 +1,30 @@
+using System;
+using JetBrains.Annotations;
+using UniRx;
 using UnityEngine;
 
 namespace EventConnector.Connector
 {
     // AnimationEvent cannot fire to Component attaching to another GameObject
     [RequireComponent(typeof(Animator))]
-    [AddComponentMenu("Event Connector/AnimationEvent")]
-    public class AnimationEvent : EventConnector
+    [AddComponentMenu("Event Connector/AnimationEvent", 301)]
+    public class AnimationEvent : EventPublisher
     {
-        private EventMessages EventMessages { get; set; } = EventMessages.Create();
+        private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
-        protected override void Connect(EventMessages eventMessages) =>
-            EventMessages = eventMessages;
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
+            Subject
+                .Take(1)
+                .Select(x => EventMessage.Create(EventType.AnimationEvent, this, x));
 
         /// <summary>
         /// Invoked from AnimationEvent
         /// </summary>
         /// <param name="animationEvent"></param>
+        [UsedImplicitly]
         public void Dispatch(UnityEngine.AnimationEvent animationEvent)
         {
-            OnConnect(EventMessages.Append(EventMessage.Create(EventType.AnimationEvent, this, animationEvent)));
+            Subject.OnNext(animationEvent);
         }
     }
 }

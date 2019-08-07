@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class PhysicsCollisionEvent : EventConnector
+    [AddComponentMenu("Event Connector/PhysicsCollisionEvent", 200)]
+    public class PhysicsCollisionEvent : EventPublisher
     {
         [SerializeField] private PhysicsCollisionEventType physicsCollisionEventType = default;
         [SerializeField]
@@ -16,14 +17,9 @@ namespace EventConnector.Connector
         private PhysicsCollisionEventType PhysicsCollisionEventType => physicsCollisionEventType;
         private Component Component => component ? component : component = this;
 
-        protected override void Connect(EventMessages eventMessages)
-        {
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => em.Append(EventMessage.Create(EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x)))
-                );
-        }
+                .Select(x => EventMessage.Create(EventType.PhysicsCollisionEvent, Component, PhysicsCollisionEventData.Create(PhysicsCollisionEventType, x)));
 
         private IObservable<Collision> OnEventAsObservable()
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using EventConnector.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -7,7 +6,8 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class LifecycleEvent : EventConnector
+    [AddComponentMenu("Event Connector/LifecycleEvent", 100)]
+    public class LifecycleEvent : EventPublisher
     {
         [SerializeField] private LifecycleEventType lifecycleEventType = default;
         [SerializeField]
@@ -17,21 +17,33 @@ namespace EventConnector.Connector
         private LifecycleEventType LifecycleEventType => lifecycleEventType;
         private Component Component => component ? component : component = this;
 
-        private ISubject<bool> StartSubject { get; } = new BehaviorSubject<bool>(false);
+        private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
+        private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        protected override void Connect(EventMessages eventMessages)
-        {
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType))))
-                );
+                .Select(_ => EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
+
+        private void Awake()
+        {
+            OnEnableProperty.Value = enabled;
         }
 
-        protected override IEnumerator Start()
+        protected override void Start()
         {
-            yield return base.Start();
-            StartSubject.OnNext(true);
+            base.Start();
+
+            StartProperty.Value = true;
+        }
+
+        private void OnEnable()
+        {
+            OnEnableProperty.Value = true;
+        }
+
+        private void OnDisable()
+        {
+            OnEnableProperty.Value = false;
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -40,7 +52,7 @@ namespace EventConnector.Connector
             {
                 case LifecycleEventType.Start:
                     // Only the `Start()` method is handled by its own instance
-                    return StartSubject.Where(x => x).AsUnitObservable();
+                    return StartProperty.Where(x => x).AsUnitObservable();
                 case LifecycleEventType.Update:
                     return Component.UpdateAsObservable();
                 case LifecycleEventType.FixedUpdate:
@@ -50,9 +62,9 @@ namespace EventConnector.Connector
                 case LifecycleEventType.Destroy:
                     return Component.OnDestroyAsObservable();
                 case LifecycleEventType.Enable:
-                    return Component.OnEnableAsObservable();
+                    return OnEnableProperty.Where(x => x).AsUnitObservable();
                 case LifecycleEventType.Disable:
-                    return Component.OnDisableAsObservable();
+                    return OnEnableProperty.Where(x => !x).AsUnitObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
