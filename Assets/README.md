@@ -18,11 +18,11 @@ Please refer to [this repository](https://github.com/upm-packages/upm-cli) about
 
 #### 1. Attach EventPublishers
 
-Attach one or more Components what inherits `EventPublisher` listed below into GameObject.
+Attach one or more Components what implements `IEventConnectable` listed below into GameObject.
 
 #### 2. Implement EventReceiver
 
-Implement Component what inherits `EventConnector.EventReceiver`.
+Implement Component what inherits `EventReceiver`.
 
 Implement the process you want to execute when the event is received in the `OnReceive()` method that needs to override by `EventReceiver`.
 
@@ -30,9 +30,9 @@ This method will be passed `EventMessages` what contrains all propagated event i
 
 #### 3. Connect EventConnectors and EventReceiver
 
-Set **Previous EventConnector** into *Source Connector Instances* field for each EventConnectors and EventReceiver.
+Set **Next IEventConnectable** into *Target Connector Instances* field for each EventPublisher.
 
-It is also possible to solve with `Zenject.ResolveIdAll<T>()` by setting ID in *Source Connector Ids* field
+It is also possible to solve with `Zenject.ResolveIdAll<T>()` by setting ID in *Target Connector Ids* field
 
 ### Inspector
 
