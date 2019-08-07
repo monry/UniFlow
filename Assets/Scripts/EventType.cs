@@ -2,25 +2,28 @@ namespace EventConnector
 {
     public enum EventType
     {
-        Timer = 1,
-        Empty,
+        LifecycleEvent = 1,
         UIBehaviourEventTrigger,
-        AnimatorTrigger,
-        AnimationEvent,
-        PlayableController,
-        TimelineSignal,
-        AudioController,
-        AudioEvent,
+        TransformEvent,
+        RectTransformEvent,
+        CameraEvent,
+        ParticleEvent,
+        MouseEvent,
+
         PhysicsCollisionEvent,
         PhysicsCollision2DEvent,
         PhysicsTriggerEvent,
         PhysicsTrigger2DEvent,
-        MouseEvent,
-        CameraEvent,
-        ParticleEvent,
-        LifecycleEvent,
-        TransformEvent,
-        RectTransformEvent,
+
+        AnimatorTrigger,
+        AnimationEvent,
+        AudioController,
+        AudioEvent,
+        PlayableController,
+        TimelineSignal,
+
+        Timer,
         Interval,
+        Empty,
     }
 }
