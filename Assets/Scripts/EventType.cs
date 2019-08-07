@@ -21,5 +21,6 @@ namespace EventConnector
         LifecycleEvent,
         TransformEvent,
         RectTransformEvent,
+        Interval,
     }
 }
