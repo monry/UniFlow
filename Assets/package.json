@@ -13,7 +13,7 @@
   "keywords": [],
   "category": "",
   "dependencies": {
-    "com.stevevermeulen.extenject": "9.0.0",
+    "com.stevevermeulen.extenject": "9.1.0",
     "jp.cysharp.unirx": "7.1.0"
   },
   "repository": {
