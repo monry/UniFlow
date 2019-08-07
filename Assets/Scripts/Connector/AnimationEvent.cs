@@ -8,12 +8,12 @@ namespace EventConnector.Connector
     // AnimationEvent cannot fire to Component attaching to another GameObject
     [RequireComponent(typeof(Animator))]
     [AddComponentMenu("Event Connector/AnimationEvent")]
-    public class AnimationEvent : EventConnector
+    public class AnimationEvent : EventConnector, IEventPublisher
     {
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
         private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             Subject
                 .Select(x => EventMessage.Create(EventType.AnimationEvent, this, x));
 
