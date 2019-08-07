@@ -94,8 +94,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -149,9 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 3
   component: {fileID: 0}
 --- !u!4 &3220956
@@ -267,9 +268,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 2
   component: {fileID: 0}
 --- !u!4 &299709601
@@ -315,9 +317,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 5
   component: {fileID: 0}
 --- !u!4 &332282162
@@ -363,9 +366,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 4
   component: {fileID: 0}
 --- !u!4 &430516635
@@ -502,9 +506,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 6
   component: {fileID: 0}
 --- !u!4 &915226898
@@ -550,9 +555,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 0
   component: {fileID: 0}
 --- !u!4 &1177792347
@@ -598,9 +604,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
-  actAsReceiver: 0
+  targetConnectorInstances:
+  - {fileID: 2041475155}
+  targetConnectorIds: []
+  actAsTrigger: 1
   lifecycleEventType: 1
   component: {fileID: 0}
 --- !u!4 &1503752816
@@ -646,15 +653,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances:
-  - {fileID: 1177792346}
-  - {fileID: 1503752815}
-  - {fileID: 299709600}
-  - {fileID: 3220955}
-  - {fileID: 430516634}
-  - {fileID: 332282161}
-  - {fileID: 915226897}
-  sourceConnectorIds: []
+  targetConnectorInstances: []
+  targetConnectorIds: []
+  actAsTrigger: 0
 --- !u!4 &2041475156
 Transform:
   m_ObjectHideFlags: 0
