@@ -3,7 +3,7 @@
   "displayName": "Event Connector",
   "version": "0.0.4-preview.5",
   "unity": "2019.2",
-  "description": "Connect presentation events",
+  "description": "EventConnector is a library that can connect various Unity events including user interaction without writing any C# script. Processes such as \"Tutorial that accepts user interaction\" and \"Waiting for the end of playback of Animation, Audio, Timeline, etc.\" can be implemented easily.",
   "author": {
     "name": "Tetsuya Mori",
     "url": "https://me.monry.dev/",
