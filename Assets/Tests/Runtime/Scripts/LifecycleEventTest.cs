@@ -61,7 +61,8 @@ namespace EventConnector.Tests.Runtime
         public IEnumerator LifecycleEnableEvent()
         {
             yield return RunAssertInternal(
-                LifecycleEventType.Enable
+                LifecycleEventType.Enable,
+                go => Observable.Timer(TimeSpan.FromSeconds(0.1f)).Subscribe(_ => go.GetComponent<LifecycleEvent>().enabled = true)
             );
         }
 

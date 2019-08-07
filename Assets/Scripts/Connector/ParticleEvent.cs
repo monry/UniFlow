@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class ParticleEvent : EventConnector
+    [AddComponentMenu("Event Connector/ParticleEvent", 105)]
+    public class ParticleEvent : EventPublisher
     {
         [SerializeField] private ParticleEventType particleEventType = default;
         [SerializeField]
@@ -16,14 +17,9 @@ namespace EventConnector.Connector
         private ParticleEventType ParticleEventType => particleEventType;
         private Component Component => component ? component : component = this;
 
-        protected override void Connect(EventMessages eventMessages)
-        {
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (x, em) => em.Append(EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)))
-                );
-        }
+                .Select(x => EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)));
 
         private IObservable<GameObject> OnEventAsObservable()
         {

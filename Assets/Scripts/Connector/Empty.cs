@@ -1,18 +1,13 @@
+using System;
 using UniRx;
+using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class Empty : EventConnector
+    [AddComponentMenu("Event Connector/Empty", 10000)]
+    public class Empty : EventPublisher
     {
-        protected override void Connect(EventMessages eventMessages)
-        {
-            Observable
-                .EveryEndOfFrame()
-                .Take(1)
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.Empty, this)))
-                );
-        }
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
+            Observable.Return(EventMessage.Create(EventType.Empty, this));
     }
 }

@@ -94,8 +94,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -315,9 +315,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7897bf78af8d443e83a6786b2e4fdfda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances:
-  - {fileID: 951080160}
-  sourceConnectorIds: []
+  targetConnectorInstances:
+  - {fileID: 951080161}
+  targetConnectorIds: []
+  actAsTrigger: 0
 --- !u!114 &951080156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,8 +418,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c15fc42dc5482199932c4a3305f962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances: []
-  sourceConnectorIds: []
+  targetConnectorInstances:
+  - {fileID: 951080155}
+  targetConnectorIds: []
+  actAsTrigger: 1
+  playableDirector: {fileID: 0}
 --- !u!114 &951080161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,9 +435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceConnectorInstances:
-  - {fileID: 951080155}
-  sourceConnectorIds: []
+  targetConnectorInstances: []
+  targetConnectorIds: []
+  actAsTrigger: 0
 --- !u!1 &2126485662
 GameObject:
   m_ObjectHideFlags: 0

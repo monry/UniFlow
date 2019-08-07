@@ -5,7 +5,7 @@ namespace EventConnector.Tests.Runtime
         public EventMessages SentEventMessages { get; private set; }
         public int ReceiveCount { get; private set; }
 
-        protected override void Receive(EventMessages eventMessages)
+        public override void OnReceive(EventMessages eventMessages)
         {
             SentEventMessages = eventMessages;
             ReceiveCount++;

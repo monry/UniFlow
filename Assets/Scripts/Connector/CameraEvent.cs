@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class CameraEvent : EventConnector
+    [AddComponentMenu("Event Connector/CameraEvent", 104)]
+    public class CameraEvent : EventPublisher
     {
         [SerializeField] private CameraEventType cameraEventType = default;
         [SerializeField]
@@ -16,14 +17,9 @@ namespace EventConnector.Connector
         private CameraEventType CameraEventType => cameraEventType;
         private Component Component => component ? component : component = this;
 
-        protected override void Connect(EventMessages eventMessages)
-        {
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .SubscribeWithState(
-                    eventMessages,
-                    (_, em) => OnConnect(em.Append(EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType))))
-                );
-        }
+                .Select(_ => EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
 
         private IObservable<Unit> OnEventAsObservable()
         {
