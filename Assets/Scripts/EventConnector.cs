@@ -28,11 +28,11 @@ namespace EventConnector
         private bool ActAsTrigger => actAsTrigger;
         [Inject] private DiContainer Container { get; }
 
-        private void Start()
+        protected virtual void Start()
         {
             if (ActAsTrigger)
             {
-                ((IEventConnector) this).Connect(Observable.Defer(() => Observable.Return<EventMessages>(default)));
+                ((IEventConnector) this).Connect(Observable.Return<EventMessages>(default));
             }
         }
 
@@ -51,7 +51,7 @@ namespace EventConnector
             TargetConnectors
                 .OfType<IEventReceiver>()
                 .ToList()
-                .ForEach(x => observable.Subscribe(x.OnReceive).AddTo(this));
+                .ForEach(x => observable.Subscribe(x.OnReceive));
         }
     }
 }

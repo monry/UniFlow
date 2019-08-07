@@ -122,7 +122,7 @@ namespace EventConnector.Tests.Runtime
                         Assert.NotNull(go);
                         go.SetActive(true);
                         var audioSource = go.GetComponent<AudioSource>();
-                        Observable.Timer(TimeSpan.FromSeconds(0.1)).Subscribe(_ => audioSource.enabled = true);
+                        Observable.Timer(TimeSpan.FromSeconds(0.2)).Subscribe(_ => audioSource.enabled = true);
                     },
                     0.5
                 );
@@ -197,9 +197,9 @@ namespace EventConnector.Tests.Runtime
                         Assert.NotNull(go);
                         go.SetActive(true);
                         var audioSource = go.GetComponent<AudioSource>();
-                        Observable.Timer(TimeSpan.FromSeconds(0.1)).Subscribe(_ => audioSource.Play());
-                        Observable.Timer(TimeSpan.FromSeconds(1.1)).Subscribe(_ => audioSource.Pause());
-                        Observable.Timer(TimeSpan.FromSeconds(1.6)).Subscribe(_ => audioSource.UnPause());
+                        Observable.Timer(TimeSpan.FromSeconds(0.2)).Subscribe(_ => audioSource.Play());
+                        Observable.Timer(TimeSpan.FromSeconds(1.2)).Subscribe(_ => audioSource.Pause());
+                        Observable.Timer(TimeSpan.FromSeconds(1.7)).Subscribe(_ => audioSource.UnPause());
                     },
                     10.0
                 );
