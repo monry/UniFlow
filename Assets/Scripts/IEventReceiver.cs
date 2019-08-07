@@ -1,6 +1,6 @@
 namespace EventConnector
 {
-    public interface IEventReceiver : IEventConnector
+    public interface IEventReceiver : IEventConnectable
     {
         void OnReceive(EventMessages eventMessages);
     }
