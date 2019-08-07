@@ -7,12 +7,12 @@ using Zenject;
 
 namespace EventConnector
 {
-    public abstract class EventPublisher : EventConnector, IEventPublisher
+    public abstract class EventPublisher : EventConnectable, IEventPublisher
     {
-        [SerializeField] [Tooltip("Specify instances of IEventConnector directly")]
-        private List<EventConnector> targetConnectorInstances = default;
+        [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
+        private List<EventConnectable> targetConnectorInstances = default;
 
-        [SerializeField] [Tooltip("Specify identifiers of IEventConnector that resolve from Zenject.DiContainer")]
+        [SerializeField] [Tooltip("Specify identifiers of IEventConnectable that resolve from Zenject.DiContainer")]
         private List<string> targetConnectorIds = default;
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
@@ -21,10 +21,10 @@ namespace EventConnector
         [SerializeField] [Tooltip("Set true to allow to act as the receiver")]
         private bool actAsReceiver = false;
 
-        private IEnumerable<IEventConnector> TargetConnectors =>
-            new List<IEventConnector>()
-                .Concat(targetConnectorInstances ?? new List<EventConnector>())
-                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnector>))
+        private IEnumerable<IEventConnectable> TargetConnectors =>
+            new List<IEventConnectable>()
+                .Concat(targetConnectorInstances ?? new List<EventConnectable>())
+                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnectable>))
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
