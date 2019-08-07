@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 
 namespace EventConnector.Connector
 {
-    [AddComponentMenu("Event Connector/PlayableController")]
+    [AddComponentMenu("Event Connector/PlayableController", 304)]
     public class PlayableController : EventPublisher
     {
         [SerializeField]

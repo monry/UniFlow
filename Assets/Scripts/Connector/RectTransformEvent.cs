@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
+    [AddComponentMenu("Event Connector/RectTransformEvent", 103)]
     public class RectTransformEvent : EventPublisher
     {
         [SerializeField] private RectTransformEventType rectTransformEventType = default;

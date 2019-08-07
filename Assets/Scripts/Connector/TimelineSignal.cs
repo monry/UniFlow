@@ -9,7 +9,7 @@ namespace EventConnector.Connector
 {
     // Timeline SignalReceiver cannot serialize [Serializable] class
     // So I provide overloads to construct TimelineEventData
-    [AddComponentMenu("Event Connector/TimelineSignal")]
+    [AddComponentMenu("Event Connector/TimelineSignal", 305)]
     public class TimelineSignal : EventPublisher
     {
         private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();

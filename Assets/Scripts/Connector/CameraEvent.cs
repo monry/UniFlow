@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
+    [AddComponentMenu("Event Connector/CameraEvent", 104)]
     public class CameraEvent : EventPublisher
     {
         [SerializeField] private CameraEventType cameraEventType = default;

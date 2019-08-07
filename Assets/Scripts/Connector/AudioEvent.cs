@@ -6,6 +6,7 @@ using UnityEngine;
 namespace EventConnector.Connector
 {
     [RequireComponent(typeof(AudioSource))]
+    [AddComponentMenu("Event Connector/AudioEvent", 303)]
     public class AudioEvent : EventPublisher
     {
         [SerializeField] private AudioEventType audioEventType = default;

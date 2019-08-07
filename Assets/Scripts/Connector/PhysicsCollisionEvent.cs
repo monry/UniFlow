@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
+    [AddComponentMenu("Event Connector/PhysicsCollisionEvent", 200)]
     public class PhysicsCollisionEvent : EventPublisher
     {
         [SerializeField] private PhysicsCollisionEventType physicsCollisionEventType = default;

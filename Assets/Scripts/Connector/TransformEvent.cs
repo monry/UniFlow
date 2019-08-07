@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
+    [AddComponentMenu("Event Connector/TransformEvent", 102)]
     public class TransformEvent : EventPublisher
     {
         [SerializeField] private TransformEventType transformEventType = default;
