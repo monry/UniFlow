@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class PhysicsTrigger2DEvent : EventConnector, IEventPublisher
+    public class PhysicsTrigger2DEvent : EventPublisher
     {
         [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private PhysicsTrigger2DEventType PhysicsTrigger2DEventType => physicsTrigger2DEventType;
         private Component Component => component ? component : component = this;
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.PhysicsTrigger2DEvent, Component, PhysicsTrigger2DEventData.Create(PhysicsTrigger2DEventType, x)));
 

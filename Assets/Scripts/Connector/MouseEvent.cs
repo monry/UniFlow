@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class MouseEvent : EventConnector, IEventPublisher
+    public class MouseEvent : EventPublisher
     {
         [SerializeField] private MouseEventType mouseEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private MouseEventType MouseEventType => mouseEventType;
         private Component Component => component ? component : component = this;
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.MouseEvent, Component, MouseEventData.Create(MouseEventType)));
 

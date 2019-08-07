@@ -3,9 +3,9 @@ using UniRx;
 
 namespace EventConnector.Connector
 {
-    public class Empty : EventConnector, IEventPublisher
+    public class Empty : EventPublisher
     {
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             Observable.Return(EventMessage.Create(EventType.Empty, this));
     }
 }

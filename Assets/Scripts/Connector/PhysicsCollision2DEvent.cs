@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class PhysicsCollision2DEvent : EventConnector, IEventPublisher
+    public class PhysicsCollision2DEvent : EventPublisher
     {
         [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private PhysicsCollision2DEventType PhysicsCollision2DEventType => physicsCollision2DEventType;
         private Component Component => component ? component : component = this;
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.PhysicsCollision2DEvent, Component, PhysicsCollision2DEventData.Create(PhysicsCollision2DEventType, x)));
 

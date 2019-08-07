@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class LifecycleEvent : EventConnector, IEventPublisher
+    public class LifecycleEvent : EventPublisher
     {
         [SerializeField] private LifecycleEventType lifecycleEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace EventConnector.Connector
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
 

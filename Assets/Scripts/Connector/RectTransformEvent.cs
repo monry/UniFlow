@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class RectTransformEvent : EventConnector, IEventPublisher
+    public class RectTransformEvent : EventPublisher
     {
         [SerializeField] private RectTransformEventType rectTransformEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private RectTransformEventType RectTransformEventType => rectTransformEventType;
         private Component Component => component ? component : component = this;
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
 

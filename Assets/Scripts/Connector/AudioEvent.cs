@@ -6,7 +6,7 @@ using UnityEngine;
 namespace EventConnector.Connector
 {
     [RequireComponent(typeof(AudioSource))]
-    public class AudioEvent : EventConnector, IEventPublisher
+    public class AudioEvent : EventPublisher
     {
         [SerializeField] private AudioEventType audioEventType = default;
         [SerializeField]
@@ -18,7 +18,7 @@ namespace EventConnector.Connector
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnAudioEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.AudioEvent, AudioSource, AudioEventData.Create(x)));
 

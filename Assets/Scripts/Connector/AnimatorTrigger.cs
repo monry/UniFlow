@@ -6,7 +6,7 @@ using UnityEngine;
 namespace EventConnector.Connector
 {
     [AddComponentMenu("Event Connector/AnimatorTrigger")]
-    public class AnimatorTrigger : EventConnector, IEventPublisher
+    public class AnimatorTrigger : EventPublisher
     {
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
@@ -19,7 +19,7 @@ namespace EventConnector.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             Observable
                 .Create<EventMessage>(
                     observer =>

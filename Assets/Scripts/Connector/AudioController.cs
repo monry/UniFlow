@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class AudioController : EventConnector, IEventPublisher
+    public class AudioController : EventPublisher
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
         [SerializeField]
@@ -17,7 +17,7 @@ namespace EventConnector.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             Observable
                 .Create<EventMessage>(
                     observer =>

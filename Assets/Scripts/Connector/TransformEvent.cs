@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class TransformEvent : EventConnector, IEventPublisher
+    public class TransformEvent : EventPublisher
     {
         [SerializeField] private TransformEventType transformEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private TransformEventType TransformEventType => transformEventType;
         private Component Component => component ? component : component = this;
 
-        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(EventType.TransformEvent, Component, TransformEventData.Create(TransformEventType)));
 
