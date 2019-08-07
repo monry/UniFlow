@@ -1,103 +1,30 @@
-using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace EventConnector
 {
     [PublicAPI]
-    public struct EventMessages : IList<EventMessage>
+    public class EventMessages : List<EventMessage>
     {
-        private List<EventMessage> List { get; set; }
-        public bool HasInitialized { get; private set; }
+        private EventMessages()
+        {
+        }
 
         public EventMessages Append(EventMessage eventMessage)
         {
-            InitializeIfNecessary();
-            List.Add(eventMessage);
+            Add(eventMessage);
             return this;
         }
 
         public EventMessages AppendRange(IEnumerable<EventMessage> eventMessages)
         {
-            InitializeIfNecessary();
-            List.AddRange(eventMessages);
+            AddRange(eventMessages);
             return this;
         }
 
         public static EventMessages Create()
         {
             return new EventMessages();
-        }
-
-        private void InitializeIfNecessary()
-        {
-            if (HasInitialized)
-            {
-                return;
-            }
-
-            List = new List<EventMessage>();
-            HasInitialized = true;
-        }
-
-
-        public IEnumerator<EventMessage> GetEnumerator()
-        {
-            return List.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(EventMessage item)
-        {
-            List.Add(item);
-        }
-
-        public void Clear()
-        {
-            List.Clear();
-        }
-
-        public bool Contains(EventMessage item)
-        {
-            return List.Contains(item);
-        }
-
-        public void CopyTo(EventMessage[] array, int arrayIndex)
-        {
-            List.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(EventMessage item)
-        {
-            return List.Remove(item);
-        }
-
-        public int Count => List?.Count ?? 0;
-        public bool IsReadOnly => true;
-
-        public int IndexOf(EventMessage item)
-        {
-            return List.IndexOf(item);
-        }
-
-        public void Insert(int index, EventMessage item)
-        {
-            List.Insert(index, item);
-        }
-
-        public void RemoveAt(int index)
-        {
-            List.RemoveAt(index);
-        }
-
-        public EventMessage this[int index]
-        {
-            get => List[index];
-            set => List[index] = value;
         }
     }
 

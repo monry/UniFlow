@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 namespace EventConnector.Connector
 {
     [AddComponentMenu("Event Connector/UIBehaviourEventTrigger")]
-    public class UIBehaviourEventTrigger : EventConnector
+    public class UIBehaviourEventTrigger : EventConnector, IEventPublisher
     {
         [SerializeField] private EventTriggerType eventTriggerType = default;
         private EventTriggerType EventTriggerType => eventTriggerType;
@@ -17,7 +17,7 @@ namespace EventConnector.Connector
         private UIBehaviour uiBehaviour = default;
         private UIBehaviour UIBehaviour => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             OnEventTriggerAsObservable()
                 .Select(x => EventMessage.Create(EventType.UIBehaviourEventTrigger, UIBehaviour, x));
 

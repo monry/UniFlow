@@ -1,4 +1,9 @@
-$HEADER$namespace $NAMESPACE$
+using System;
+
+namespace EventConnector
 {
-  public interface $INTERFACE$ {$END$}
+    public interface IEventPublisher : IEventConnector
+    {
+        IObservable<EventMessage> OnPublishAsObservable();
+    }
 }

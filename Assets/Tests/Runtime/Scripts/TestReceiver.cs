@@ -1,5 +1,3 @@
-using System;
-
 namespace EventConnector.Tests.Runtime
 {
     public class TestReceiver : EventReceiver
@@ -7,15 +5,10 @@ namespace EventConnector.Tests.Runtime
         public EventMessages SentEventMessages { get; private set; }
         public int ReceiveCount { get; private set; }
 
-        public override void Receive(EventMessages eventMessages)
+        public override void OnReceive(EventMessages eventMessages)
         {
             SentEventMessages = eventMessages;
             ReceiveCount++;
-        }
-
-        public override IObservable<EventMessage> FooAsObservable()
-        {
-            return null;
         }
     }
 }

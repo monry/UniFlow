@@ -37,11 +37,16 @@ namespace EventConnector
 //            }
 //
 //            GenerateSourceObservable()
-//                .Subscribe(Receive)
+//                .Subscribe(OnReceive)
 //                .AddTo(this);
 //        }
 
-        public abstract void Receive(EventMessages eventMessages);
+        public abstract void OnReceive(EventMessages eventMessages);
+
+        public void On(IObservable<EventMessages> observable)
+        {
+            observable.Subscribe();
+        }
 
 //        private IObservable<EventMessages> GenerateSourceObservable() =>
 //            SourceConnectors.Any()

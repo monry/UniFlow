@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class PhysicsTriggerEvent : EventConnector
+    public class PhysicsTriggerEvent : EventConnector, IEventPublisher
     {
         [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = default;
         [SerializeField]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
         private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
         private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(EventType.PhysicsTriggerEvent, Component, PhysicsTriggerEventData.Create(PhysicsTriggerEventType, x)));
 

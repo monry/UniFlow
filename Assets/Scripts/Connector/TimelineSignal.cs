@@ -10,12 +10,13 @@ namespace EventConnector.Connector
     // Timeline SignalReceiver cannot serialize [Serializable] class
     // So I provide overloads to construct TimelineEventData
     [AddComponentMenu("Event Connector/TimelineSignal")]
-    public class TimelineSignal : EventConnector
+    public class TimelineSignal : EventConnector, IEventPublisher
     {
         private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             Subject
+                .Take(1)
                 .Select(x => EventMessage.Create(EventType.TimelineSignal, this, x));
 
         [UsedImplicitly]

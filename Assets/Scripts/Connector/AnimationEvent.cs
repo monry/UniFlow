@@ -11,10 +11,10 @@ namespace EventConnector.Connector
     public class AnimationEvent : EventConnector, IEventPublisher
     {
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
-        private EventMessages EventMessages { get; set; } = EventMessages.Create();
 
         IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             Subject
+                .Take(1)
                 .Select(x => EventMessage.Create(EventType.AnimationEvent, this, x));
 
         /// <summary>

@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace EventConnector.Connector
 {
-    public class Timer : EventConnector
+    public class Timer : EventConnector, IEventPublisher
     {
         [SerializeField] private float seconds = default;
         private float Seconds => seconds;
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
                 .Select(_ => EventMessage.Create(EventType.Timer, this, Seconds));

@@ -7,7 +7,7 @@ using UnityEngine.Playables;
 namespace EventConnector.Connector
 {
     [AddComponentMenu("Event Connector/PlayableController")]
-    public class PlayableController : EventConnector
+    public class PlayableController : EventConnector, IEventPublisher
     {
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<PlayableDirector>()")]
@@ -16,7 +16,7 @@ namespace EventConnector.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> FooAsObservable() =>
+        IObservable<EventMessage> IEventPublisher.OnPublishAsObservable() =>
             Observable
                 .Create<EventMessage>(
                     observer =>
