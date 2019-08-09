@@ -10,10 +10,10 @@ namespace UniFlow
     public abstract class ConnectorBase : ConnectableBase, IConnector
     {
         [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
-        private List<ConnectableBase> targetConnectorInstances = default;
+        private List<ConnectableBase> targetComponents = default;
 
         [SerializeField] [Tooltip("Specify identifiers of IEventConnectable that resolve from Zenject.DiContainer")]
-        private List<string> targetConnectorIds = default;
+        private List<string> targetIds = default;
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         private bool actAsTrigger = false;
@@ -23,8 +23,8 @@ namespace UniFlow
 
         private IEnumerable<IConnectable> TargetConnectors =>
             new List<IConnectable>()
-                .Concat(targetConnectorInstances ?? new List<ConnectableBase>())
-                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IConnectable>))
+                .Concat(targetComponents ?? new List<ConnectableBase>())
+                .Concat((targetIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IConnectable>))
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 

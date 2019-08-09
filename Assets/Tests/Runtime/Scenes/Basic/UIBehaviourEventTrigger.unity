@@ -431,7 +431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 986c65454dfa4cf6a69ff9328f793990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 751339852}
   targetConnectorIds: []
   actAsTrigger: 1
@@ -487,7 +487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
+  targetComponents: []
   targetConnectorIds: []
   actAsTrigger: 0
 --- !u!1 &1538909814

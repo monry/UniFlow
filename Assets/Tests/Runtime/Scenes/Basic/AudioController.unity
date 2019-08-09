@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
+  targetComponents: []
   targetConnectorIds: []
   actAsTrigger: 0
 --- !u!114 &237918682
@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306f3948478b4806bd3270ce91a0c068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 237918681}
   targetConnectorIds: []
   actAsTrigger: 0
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c68da8d20a7460881ef721586f08251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 237918682}
   targetConnectorIds: []
   actAsTrigger: 1
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
+  targetComponents: []
   targetConnectorIds: []
   actAsTrigger: 0
 --- !u!114 &709479484
@@ -508,7 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306f3948478b4806bd3270ce91a0c068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 709479483}
   targetConnectorIds: []
   actAsTrigger: 0
@@ -636,7 +636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c68da8d20a7460881ef721586f08251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 709479484}
   targetConnectorIds: []
   actAsTrigger: 1
@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
+  targetComponents: []
   targetConnectorIds: []
   actAsTrigger: 0
 --- !u!114 &1379110444
@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306f3948478b4806bd3270ce91a0c068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1379110443}
   targetConnectorIds: []
   actAsTrigger: 0
@@ -816,7 +816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c68da8d20a7460881ef721586f08251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1379110444}
   targetConnectorIds: []
   actAsTrigger: 1
@@ -853,7 +853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
+  targetComponents: []
   targetConnectorIds: []
   actAsTrigger: 0
 --- !u!114 &1766242782
@@ -868,7 +868,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306f3948478b4806bd3270ce91a0c068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1766242781}
   targetConnectorIds: []
   actAsTrigger: 0
@@ -996,7 +996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c68da8d20a7460881ef721586f08251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1766242782}
   targetConnectorIds: []
   actAsTrigger: 1
