@@ -7,10 +7,10 @@ using Zenject;
 
 namespace UniFlow
 {
-    public abstract class ConnectorBase : EventConnectable, IConnector
+    public abstract class ConnectorBase : ConnectableBase, IConnector
     {
         [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
-        private List<EventConnectable> targetConnectorInstances = default;
+        private List<ConnectableBase> targetConnectorInstances = default;
 
         [SerializeField] [Tooltip("Specify identifiers of IEventConnectable that resolve from Zenject.DiContainer")]
         private List<string> targetConnectorIds = default;
@@ -21,10 +21,10 @@ namespace UniFlow
         [SerializeField] [Tooltip("Set true to allow to act as the receiver")]
         private bool actAsReceiver = false;
 
-        private IEnumerable<IEventConnectable> TargetConnectors =>
-            new List<IEventConnectable>()
-                .Concat(targetConnectorInstances ?? new List<EventConnectable>())
-                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IEventConnectable>))
+        private IEnumerable<IConnectable> TargetConnectors =>
+            new List<IConnectable>()
+                .Concat(targetConnectorInstances ?? new List<ConnectableBase>())
+                .Concat((targetConnectorIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IConnectable>))
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
