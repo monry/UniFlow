@@ -1,6 +1,6 @@
 namespace UniFlow
 {
-    public abstract class EventReceiver : EventConnectable, IEventReceiver
+    public abstract class Receiver : EventConnectable, IReceiver
     {
         public abstract void OnReceive(EventMessages eventMessages);
     }

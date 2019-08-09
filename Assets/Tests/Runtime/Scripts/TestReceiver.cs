@@ -1,6 +1,6 @@
 namespace UniFlow.Tests.Runtime
 {
-    public class TestReceiver : EventReceiver
+    public class TestReceiver : Receiver
     {
         public EventMessages SentEventMessages { get; private set; }
         public int ReceiveCount { get; private set; }

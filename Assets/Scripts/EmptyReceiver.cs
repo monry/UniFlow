@@ -1,6 +1,6 @@
 namespace UniFlow
 {
-    public class EmptyEventReceiver : EventReceiver
+    public class EmptyReceiver : Receiver
     {
         public override void OnReceive(EventMessages eventMessages)
         {

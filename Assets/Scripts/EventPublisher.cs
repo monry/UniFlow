@@ -53,7 +53,7 @@ namespace UniFlow
                 .ToList()
                 .ForEach(x => x.Connect(observable));
             TargetConnectors
-                .OfType<IEventReceiver>()
+                .OfType<IReceiver>()
                 .ToList()
                 .ForEach(x => observable.Subscribe(x.OnReceive));
 
