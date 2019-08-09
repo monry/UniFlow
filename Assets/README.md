@@ -1,8 +1,8 @@
 # UniFlow
 
-UniFlow is a library that can connect various Unity events including user interaction without writing any C# script.
+UniFlow is a library that can connect various Unity components without writing any C# script.
 
-Processes such as "Tutorial that accepts user interaction" and "Waiting for the end of playback of Animation, Audio, Timeline, etc." can be implemented easily.
+You can implement easily processes such as "Tutorial that accepts user interaction" and "Waiting for the end of playback of Animation, Audio, Timeline, etc.".
 
 ## Installation
 
