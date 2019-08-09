@@ -2,7 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
     [AddComponentMenu("Event Connector/Empty", 10000)]
     public class Empty : EventPublisher

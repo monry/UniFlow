@@ -1,7 +1,7 @@
-using EventConnector.Connector;
 using JetBrains.Annotations;
+using UniFlow.Connector;
 
-namespace EventConnector.Message
+namespace UniFlow.Message
 {
     [PublicAPI]
     public class RectTransformEventData

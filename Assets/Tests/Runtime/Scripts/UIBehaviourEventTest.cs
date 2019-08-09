@@ -6,9 +6,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class UIBehaviourEventTest : EventConnectorTestBase
+    public class UIBehaviourEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator UIBehaviourEventTrigger()

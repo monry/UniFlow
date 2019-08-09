@@ -1,13 +1,13 @@
 using System.Collections;
-using EventConnector.Message;
+using UniFlow.Message;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using AnimationEvent = EventConnector.Connector.AnimationEvent;
+using AnimationEvent = UniFlow.Connector.AnimationEvent;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AnimatorTriggerTest : EventConnectorTestBase
+    public class AnimatorTriggerTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator AnimatorTrigger()

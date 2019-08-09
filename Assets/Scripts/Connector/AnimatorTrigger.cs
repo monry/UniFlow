@@ -1,11 +1,11 @@
 using System;
-using EventConnector.Message;
+using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/AnimatorTrigger", 300)]
+    [AddComponentMenu("Event Connector/AnimatorTrigger", 301)]
     public class AnimatorTrigger : EventPublisher
     {
         [SerializeField]

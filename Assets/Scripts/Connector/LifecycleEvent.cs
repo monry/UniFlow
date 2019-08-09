@@ -1,10 +1,10 @@
 using System;
-using EventConnector.Message;
+using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
     [AddComponentMenu("Event Connector/LifecycleEvent", 100)]
     public class LifecycleEvent : EventPublisher

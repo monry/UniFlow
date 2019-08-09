@@ -1,19 +1,18 @@
 using System.Collections;
-using EventConnector;
-using EventConnector.Connector;
-using EventConnector.Message;
 using NUnit.Framework;
+using UniFlow.Connector;
+using UniFlow.Message;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-using AnimationEvent = EventConnector.Connector.AnimationEvent;
+using AnimationEvent = UniFlow.Connector.AnimationEvent;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AllTest : EventConnectorTestBase
+    public class AllTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator All()

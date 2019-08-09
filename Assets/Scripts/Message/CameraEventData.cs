@@ -1,6 +1,6 @@
-using EventConnector.Connector;
+using UniFlow.Connector;
 
-namespace EventConnector.Message
+namespace UniFlow.Message
 {
     public class CameraEventData
     {

@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace EventConnector
+namespace UniFlow
 {
     public abstract class EventPublisher : EventConnectable, IEventPublisher
     {

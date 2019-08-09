@@ -1,11 +1,11 @@
 using System.Collections;
-using EventConnector.Connector;
+using UniFlow.Connector;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class IntervalTest : EventConnectorTestBase
+    public class IntervalTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator Interval()

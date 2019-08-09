@@ -1,13 +1,13 @@
-# Event Connector
+# UniFlow
 
-EventConnector is a library that can connect various Unity events including user interaction without writing any C# script.
+UniFlow is a library that can connect various Unity events including user interaction without writing any C# script.
 
 Processes such as "Tutorial that accepts user interaction" and "Waiting for the end of playback of Animation, Audio, Timeline, etc." can be implemented easily.
 
 ## Installation
 
 ```bash
-upm add package dev.monry.upm.eventconnector
+upm add package dev.monry.eventconnector
 ```
 
 Please refer to [this repository](https://github.com/upm-packages/upm-cli) about the `upm` command.

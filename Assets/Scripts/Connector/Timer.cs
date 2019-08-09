@@ -2,7 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
     [AddComponentMenu("Event Connector/Timer", 9000)]
     public class Timer : EventPublisher

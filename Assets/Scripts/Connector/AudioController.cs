@@ -1,20 +1,37 @@
 using System;
-using EventConnector.Message;
+using JetBrains.Annotations;
+using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/AudioController", 302)]
+    [AddComponentMenu("Event Connector/AudioController", 303)]
     public class AudioController : EventPublisher
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
         private AudioSource audioSource = default;
+        [SerializeField]
+        [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
+        private AudioClip audioClip = default;
 
         private AudioControlMethod AudioControlMethod => audioControlMethod;
-        private AudioSource AudioSource => audioSource ? audioSource : audioSource = GetComponent<AudioSource>();
+        private AudioSource AudioSource
+        {
+            get =>
+                audioSource != default
+                    ? audioSource
+                    : audioSource =
+                        GetComponent<AudioSource>() != default
+                            ? GetComponent<AudioSource>()
+                            : gameObject.AddComponent<AudioSource>();
+            [UsedImplicitly]
+            set => throw new NotImplementedException();
+        }
+
+        private AudioClip AudioClip => audioClip;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
@@ -31,6 +48,11 @@ namespace EventConnector.Connector
 
         private void InvokeAudioSourceMethod()
         {
+            if (AudioClip != default)
+            {
+                AudioSource.clip = AudioClip;
+            }
+
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:

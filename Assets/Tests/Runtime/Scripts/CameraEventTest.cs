@@ -1,17 +1,17 @@
 using System;
 using System.Collections;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
+using UniFlow.Connector;
+using UniFlow.Message;
 using NUnit.Framework;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class CameraEventTest : EventConnectorTestBase
+    public class CameraEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator CameraBecomeVisibleEvent()

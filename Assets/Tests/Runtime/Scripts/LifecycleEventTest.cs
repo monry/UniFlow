@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
+using UniFlow.Connector;
+using UniFlow.Message;
 using NUnit.Framework;
 using UniRx;
 using UnityEngine;
@@ -10,9 +10,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class LifecycleEventTest : EventConnectorTestBase
+    public class LifecycleEventTest : UniFlowTestBase
     {
         private LifecycleEventType CurrentLifecycleEventType { get; set; }
 

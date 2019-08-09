@@ -4,7 +4,7 @@ using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
     [AddComponentMenu("Event Connector/UIBehaviourEventTrigger", 101)]
     public class UIBehaviourEventTrigger : EventPublisher

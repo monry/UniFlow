@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using Object = UnityEngine.Object;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public abstract class EventConnectorTestBase : ZenjectIntegrationTestFixture
+    public abstract class UniFlowTestBase : ZenjectIntegrationTestFixture
     {
         private const string ScenePath = "Tests/Runtime/Scenes/Basic/";
         protected bool HasAssert { private get; set; }

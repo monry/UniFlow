@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace EventConnector.Message
+namespace UniFlow.Message
 {
     [Serializable][PublicAPI]
     public class TimelineEventData

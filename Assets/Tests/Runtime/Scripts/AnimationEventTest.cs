@@ -2,11 +2,11 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using AnimationEvent = EventConnector.Connector.AnimationEvent;
+using AnimationEvent = UniFlow.Connector.AnimationEvent;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AnimationEventTest : EventConnectorTestBase
+    public class AnimationEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator AnimationEvent()

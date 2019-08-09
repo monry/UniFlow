@@ -1,4 +1,4 @@
-namespace EventConnector
+namespace UniFlow
 {
     public enum EventType
     {
@@ -16,11 +16,15 @@ namespace EventConnector
         PhysicsTrigger2DEvent,
 
         AnimatorTrigger,
+        SimpleAnimationController,
         AnimationEvent,
         AudioController,
         AudioEvent,
         PlayableController,
         TimelineSignal,
+
+        LoadScene,
+        UnloadScene,
 
         Timer,
         Interval,

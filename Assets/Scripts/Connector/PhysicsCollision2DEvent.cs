@@ -1,10 +1,10 @@
 using System;
-using EventConnector.Message;
+using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
     [AddComponentMenu("Event Connector/PhyticsCollision2DEvent", 201)]
     public class PhysicsCollision2DEvent : EventPublisher

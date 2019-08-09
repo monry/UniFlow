@@ -1,4 +1,4 @@
-namespace EventConnector
+namespace UniFlow
 {
     public interface IEventConnectable
     {

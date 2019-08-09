@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace EventConnector.Message
+namespace UniFlow.Message
 {
     [PublicAPI]
     public class AnimatorTriggerEventData

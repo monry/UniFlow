@@ -1,9 +1,9 @@
 {
-  "name": "dev.monry.upm.eventconnector",
-  "displayName": "Event Connector",
-  "version": "0.0.4-preview.5",
+  "name": "dev.monry.uniflow",
+  "displayName": "UniFlow",
+  "version": "0.0.1-preview.1",
   "unity": "2019.2",
-  "description": "EventConnector is a library that can connect various Unity events including user interaction without writing any C# script. Processes such as \"Tutorial that accepts user interaction\" and \"Waiting for the end of playback of Animation, Audio, Timeline, etc.\" can be implemented easily.",
+  "description": "UniFlow is a library that can connect various Unity events including user interaction without writing any C# script. Processes such as \"Tutorial that accepts user interaction\" and \"Waiting for the end of playback of Animation, Audio, Timeline, etc.\" can be implemented easily.",
   "author": {
     "name": "Tetsuya Mori",
     "url": "https://me.monry.dev/",
@@ -13,11 +13,13 @@
   "keywords": [],
   "category": "",
   "dependencies": {
+    "com.unity.simpleanimation": "1.0.0",
     "com.stevevermeulen.extenject": "9.1.0",
-    "jp.cysharp.unirx": "7.1.0"
+    "jp.cysharp.unirx": "7.1.0",
+    "jp.cysharp.unitask": "1.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/monry/EventConnector"
+    "url": "https://github.com/monry/UniFlow"
   }
 }

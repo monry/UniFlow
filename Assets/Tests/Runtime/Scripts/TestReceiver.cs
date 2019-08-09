@@ -1,4 +1,4 @@
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
     public class TestReceiver : EventReceiver
     {

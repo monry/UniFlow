@@ -1,12 +1,12 @@
 using System.Collections;
-using EventConnector.Connector;
-using EventConnector.Message;
+using UniFlow.Connector;
+using UniFlow.Message;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class TimelineSignalTest : EventConnectorTestBase
+    public class TimelineSignalTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator TimelineSignal()

@@ -1,6 +1,6 @@
 using System;
 
-namespace EventConnector
+namespace UniFlow
 {
     public interface IEventPublisher : IEventConnectable
     {

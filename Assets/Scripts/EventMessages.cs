@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace EventConnector
+namespace UniFlow
 {
     [PublicAPI]
     public class EventMessages : List<EventMessage>

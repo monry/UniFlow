@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace EventConnector
+namespace UniFlow
 {
     public abstract class EventConnectable : MonoBehaviour, IEventConnectable
     {

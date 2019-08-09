@@ -1,8 +1,8 @@
 using System;
-using EventConnector.Connector;
 using JetBrains.Annotations;
+using UniFlow.Connector;
 
-namespace EventConnector.Message
+namespace UniFlow.Message
 {
     [Serializable][PublicAPI]
     public class LifecycleEventData

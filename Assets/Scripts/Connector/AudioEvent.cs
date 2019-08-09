@@ -1,12 +1,12 @@
 using System;
-using EventConnector.Message;
+using JetBrains.Annotations;
+using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
-namespace EventConnector.Connector
+namespace UniFlow.Connector
 {
-    [RequireComponent(typeof(AudioSource))]
-    [AddComponentMenu("Event Connector/AudioEvent", 303)]
+    [AddComponentMenu("Event Connector/AudioEvent", 304)]
     public class AudioEvent : EventPublisher
     {
         [SerializeField] private AudioEventType audioEventType = default;
@@ -15,7 +15,18 @@ namespace EventConnector.Connector
         private AudioSource audioSource = default;
 
         private AudioEventType AudioEventType => audioEventType;
-        private AudioSource AudioSource => audioSource ? audioSource : audioSource = GetComponent<AudioSource>();
+        private AudioSource AudioSource
+        {
+            get =>
+                audioSource != default
+                    ? audioSource
+                    : audioSource =
+                        GetComponent<AudioSource>() != default
+                            ? GetComponent<AudioSource>()
+                            : gameObject.AddComponent<AudioSource>();
+            [UsedImplicitly]
+            set => audioSource = value;
+        }
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
