@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/Interval", 9001)]
+    [AddComponentMenu("UniFlow/Interval", 9001)]
     public class Interval : EventPublisher
     {
         [SerializeField] private float seconds = default;

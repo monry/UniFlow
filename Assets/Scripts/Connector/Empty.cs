@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/Empty", 10000)]
+    [AddComponentMenu("UniFlow/Empty", 10000)]
     public class Empty : EventPublisher
     {
         public override IObservable<EventMessage> OnPublishAsObservable() =>

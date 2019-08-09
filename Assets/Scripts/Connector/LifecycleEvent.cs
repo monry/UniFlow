@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/LifecycleEvent", 100)]
+    [AddComponentMenu("UniFlow/LifecycleEvent", 100)]
     public class LifecycleEvent : EventPublisher
     {
         [SerializeField] private LifecycleEventType lifecycleEventType = default;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/CameraEvent", 104)]
+    [AddComponentMenu("UniFlow/CameraEvent", 104)]
     public class CameraEvent : EventPublisher
     {
         [SerializeField] private CameraEventType cameraEventType = default;

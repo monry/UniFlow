@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/ParticleEvent", 105)]
+    [AddComponentMenu("UniFlow/ParticleEvent", 105)]
     public class ParticleEvent : EventPublisher
     {
         [SerializeField] private ParticleEventType particleEventType = default;

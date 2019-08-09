@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/UnloadScene", 401)]
+    [AddComponentMenu("UniFlow/UnloadScene", 401)]
     public class UnloadSceneEvent : EventPublisher
     {
         [SerializeField] private List<string> sceneNames = default;

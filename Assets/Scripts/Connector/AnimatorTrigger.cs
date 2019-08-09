@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/AnimatorTrigger", 301)]
+    [AddComponentMenu("UniFlow/AnimatorTrigger", 301)]
     public class AnimatorTrigger : EventPublisher
     {
         [SerializeField]

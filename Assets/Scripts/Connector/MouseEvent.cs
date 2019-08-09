@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/MouseEvent", 106)]
+    [AddComponentMenu("UniFlow/MouseEvent", 106)]
     public class MouseEvent : EventPublisher
     {
         [SerializeField] private MouseEventType mouseEventType = default;

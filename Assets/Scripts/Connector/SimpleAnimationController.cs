@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/SimpleAnimationController", 300)]
+    [AddComponentMenu("UniFlow/SimpleAnimationController", 300)]
     public class SimpleAnimationController : EventPublisher
     {
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;

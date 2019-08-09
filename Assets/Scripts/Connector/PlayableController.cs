@@ -8,7 +8,7 @@ using UnityEngine.Timeline;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/PlayableController", 305)]
+    [AddComponentMenu("UniFlow/PlayableController", 305)]
     public class PlayableController : EventPublisher
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = default;

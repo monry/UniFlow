@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("Event Connector/PhyticsCollision2DEvent", 201)]
+    [AddComponentMenu("UniFlow/PhyticsCollision2DEvent", 201)]
     public class PhysicsCollision2DEvent : EventPublisher
     {
         [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = default;
