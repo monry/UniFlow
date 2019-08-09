@@ -7,7 +7,7 @@ You can implement easily processes such as "Tutorial that accepts user interacti
 ## Installation
 
 ```bash
-upm add package dev.monry.eventconnector
+upm add package dev.monry.uniflow
 ```
 
 Please refer to [this repository](https://github.com/upm-packages/upm-cli) about the `upm` command.
