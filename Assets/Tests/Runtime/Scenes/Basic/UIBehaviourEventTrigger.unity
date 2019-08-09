@@ -433,7 +433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 751339852}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   eventTriggerType: 4
   uiBehaviour: {fileID: 0}
@@ -488,7 +488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!1 &1538909814
 GameObject:

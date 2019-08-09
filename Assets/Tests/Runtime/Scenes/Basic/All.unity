@@ -312,7 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 2024507135}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   playableDirector: {fileID: 2024507138}
 --- !u!4 &578503983
@@ -461,7 +461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1565437862}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   eventTriggerType: 2
   uiBehaviour: {fileID: 0}
@@ -633,7 +633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1729537389}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   animator: {fileID: 1729537390}
   triggerName: TestTrigger
@@ -683,7 +683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 578503981}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!95 &1729537390
 Animator:
@@ -752,7 +752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 2070612652}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &2024507136
 MonoBehaviour:
@@ -853,7 +853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!4 &2070612653
 Transform:

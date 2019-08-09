@@ -388,7 +388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &923815578
 MonoBehaviour:
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 923815577}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   cameraEventType: 0
   component: {fileID: 0}
@@ -442,7 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &1761951866
 MonoBehaviour:
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1761951865}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   cameraEventType: 1
   component: {fileID: 0}

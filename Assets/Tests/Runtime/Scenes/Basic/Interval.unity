@@ -325,7 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1929524893}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!4 &1929524895

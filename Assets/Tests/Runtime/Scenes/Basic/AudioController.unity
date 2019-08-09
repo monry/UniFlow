@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &237918682
 MonoBehaviour:
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 237918681}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   audioControlMethod: 0
   audioSource: {fileID: 0}
@@ -367,7 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 237918682}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!1 &451877066
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &709479484
 MonoBehaviour:
@@ -510,7 +510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 709479483}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   audioControlMethod: 3
   audioSource: {fileID: 0}
@@ -638,7 +638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 709479484}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!1 &1379110442
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &1379110444
 MonoBehaviour:
@@ -690,7 +690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1379110443}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   audioControlMethod: 1
   audioSource: {fileID: 0}
@@ -818,7 +818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1379110444}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!1 &1766242780
@@ -854,7 +854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &1766242782
 MonoBehaviour:
@@ -870,7 +870,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1766242781}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   audioControlMethod: 2
   audioSource: {fileID: 0}
@@ -998,7 +998,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1766242782}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!1 &2126485662

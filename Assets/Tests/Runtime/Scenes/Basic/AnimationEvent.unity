@@ -314,7 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1565437861}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
 --- !u!95 &1565437859
 Animator:
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!1 &2126485662
 GameObject:

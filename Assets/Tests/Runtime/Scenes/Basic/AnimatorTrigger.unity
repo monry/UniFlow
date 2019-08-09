@@ -315,7 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1565437861}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!95 &1565437859
 Animator:
@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetComponents: []
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &1565437862
 MonoBehaviour:
@@ -379,7 +379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetComponents:
   - {fileID: 1565437858}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   animator: {fileID: 0}
   triggerName: TestTrigger
