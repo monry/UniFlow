@@ -138,11 +138,11 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(2, eventMessages.Count);
 
             Assert.IsInstanceOf<AudioSource>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<AudioControllerEventData>(eventMessages[1].EventData);
+            Assert.IsInstanceOf<AudioControllerEventData>(eventMessages[1].Data);
 
-            Assert.NotNull(eventMessages[1].EventData);
+            Assert.NotNull(eventMessages[1].Data);
 
-            Assert.AreEqual(audioControlMethod, ((AudioControllerEventData) eventMessages[1].EventData).AudioControlMethod);
+            Assert.AreEqual(audioControlMethod, ((AudioControllerEventData) eventMessages[1].Data).AudioControlMethod);
 
             callback(eventMessages[1].Sender as AudioSource);
 

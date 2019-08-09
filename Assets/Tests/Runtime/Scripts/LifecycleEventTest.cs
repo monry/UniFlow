@@ -102,9 +102,9 @@ namespace UniFlow.Tests.Runtime
             Assert.GreaterOrEqual(eventMessages.Count, 1);
 
             Assert.IsInstanceOf<LifecycleEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].EventData);
+            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].Data);
 
-            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].EventData).EventType);
+            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].Data).EventType);
 
             HasAssert = true;
         }

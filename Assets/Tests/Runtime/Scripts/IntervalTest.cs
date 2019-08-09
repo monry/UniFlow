@@ -24,10 +24,10 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(2, UnityEngine.Object.FindObjectOfType<TestReceiver>().ReceiveCount);
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.AreEqual(EventType.Interval, eventMessages[0].EventType);
+            Assert.AreEqual(ConnectorType.Interval, eventMessages[0].ConnectorType);
             Assert.IsInstanceOf<Interval>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<float>(eventMessages[0].EventData);
-            Assert.AreEqual(1.0f, eventMessages[0].EventData);
+            Assert.IsInstanceOf<float>(eventMessages[0].Data);
+            Assert.AreEqual(1.0f, eventMessages[0].Data);
 
             HasAssert = true;
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/Interval", 9001)]
-    public class Interval : EventPublisher
+    public class Interval : ConnectorBase
     {
         [SerializeField] private float seconds = default;
         private float Seconds => seconds;
@@ -13,6 +13,6 @@ namespace UniFlow.Connector
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             Observable
                 .Interval(TimeSpan.FromSeconds(Seconds))
-                .Select(_ => EventMessage.Create(EventType.Interval, this, Seconds));
+                .Select(_ => EventMessage.Create(ConnectorType.Interval, this, Seconds));
     }
 }

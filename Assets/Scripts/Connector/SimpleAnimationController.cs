@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/SimpleAnimationController", 300)]
-    public class SimpleAnimationController : EventPublisher
+    public class SimpleAnimationController : ConnectorBase
     {
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;
         [SerializeField]
@@ -42,7 +42,7 @@ namespace UniFlow.Connector
                     observer =>
                     {
                         InvokeSimpleAnimationMethod();
-                        observer.OnNext(EventMessage.Create(EventType.SimpleAnimationController, SimpleAnimation, SimpleAnimationControllerEventData.Create(SimpleAnimationControlMethod)));
+                        observer.OnNext(EventMessage.Create(ConnectorType.SimpleAnimationController, SimpleAnimation, SimpleAnimationControllerEventData.Create(SimpleAnimationControlMethod)));
                         return Disposable;
                     }
                 );

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/TransformEvent", 102)]
-    public class TransformEvent : EventPublisher
+    public class TransformEvent : ConnectorBase
     {
         [SerializeField] private TransformEventType transformEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(_ => EventMessage.Create(EventType.TransformEvent, Component, TransformEventData.Create(TransformEventType)));
+                .Select(_ => EventMessage.Create(ConnectorType.TransformEvent, Component, TransformEventData.Create(TransformEventType)));
 
         private IObservable<Unit> OnEventAsObservable()
         {

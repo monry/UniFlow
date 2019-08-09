@@ -27,11 +27,11 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(2, eventMessages.Count);
 
             Assert.IsInstanceOf<PlayableDirector>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[0].EventData);
+            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[0].Data);
 
             Assert.IsInstanceOf<TimelineSignal>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[1].EventData);
-            var timelineEvent = eventMessages[1].EventData as TimelineEventData;
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[1].Data);
+            var timelineEvent = eventMessages[1].Data as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("PlayableControllerTest", timelineEvent.StringParameter);
             HasAssert = true;

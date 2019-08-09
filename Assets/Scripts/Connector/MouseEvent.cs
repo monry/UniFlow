@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/MouseEvent", 106)]
-    public class MouseEvent : EventPublisher
+    public class MouseEvent : ConnectorBase
     {
         [SerializeField] private MouseEventType mouseEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(_ => EventMessage.Create(EventType.MouseEvent, Component, MouseEventData.Create(MouseEventType)));
+                .Select(_ => EventMessage.Create(ConnectorType.MouseEvent, Component, MouseEventData.Create(MouseEventType)));
 
         private IObservable<Unit> OnEventAsObservable()
         {

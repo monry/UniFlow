@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/ParticleEvent", 105)]
-    public class ParticleEvent : EventPublisher
+    public class ParticleEvent : ConnectorBase
     {
         [SerializeField] private ParticleEventType particleEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(x => EventMessage.Create(EventType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)));
+                .Select(x => EventMessage.Create(ConnectorType.ParticleEvent, Component, ParticleEventData.Create(ParticleEventType, x)));
 
         private IObservable<GameObject> OnEventAsObservable()
         {

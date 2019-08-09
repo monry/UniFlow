@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/CameraEvent", 104)]
-    public class CameraEvent : EventPublisher
+    public class CameraEvent : ConnectorBase
     {
         [SerializeField] private CameraEventType cameraEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(_ => EventMessage.Create(EventType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
+                .Select(_ => EventMessage.Create(ConnectorType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
 
         private IObservable<Unit> OnEventAsObservable()
         {

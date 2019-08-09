@@ -29,7 +29,7 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<Image>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].EventData);
+            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].Data);
             HasAssert = true;
         }
     }

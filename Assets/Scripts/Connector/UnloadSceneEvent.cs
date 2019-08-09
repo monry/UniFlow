@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/UnloadScene", 401)]
-    public class UnloadSceneEvent : EventPublisher
+    public class UnloadSceneEvent : ConnectorBase
     {
         [SerializeField] private List<string> sceneNames = default;
         private IEnumerable<string> SceneNames => sceneNames;
@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         {
             return UnloadScenes()
                 .ToObservable()
-                .Select(_ => EventMessage.Create(EventType.UnloadScene, this, SceneNames));
+                .Select(_ => EventMessage.Create(ConnectorType.UnloadScene, this, SceneNames));
         }
 
         private async UniTask UnloadScenes()

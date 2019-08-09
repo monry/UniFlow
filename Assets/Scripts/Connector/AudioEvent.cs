@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/AudioEvent", 304)]
-    public class AudioEvent : EventPublisher
+    public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;
         [SerializeField]
@@ -32,7 +32,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnAudioEventAsObservable()
-                .Select(x => EventMessage.Create(EventType.AudioEvent, AudioSource, AudioEventData.Create(x)));
+                .Select(x => EventMessage.Create(ConnectorType.AudioEvent, AudioSource, AudioEventData.Create(x)));
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
         {

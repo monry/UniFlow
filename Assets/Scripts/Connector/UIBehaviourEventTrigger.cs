@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/UIBehaviourEventTrigger", 101)]
-    public class UIBehaviourEventTrigger : EventPublisher
+    public class UIBehaviourEventTrigger : ConnectorBase
     {
         [SerializeField] private EventTriggerType eventTriggerType = default;
         private EventTriggerType EventTriggerType => eventTriggerType;
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventTriggerAsObservable()
-                .Select(x => EventMessage.Create(EventType.UIBehaviourEventTrigger, UIBehaviour, x));
+                .Select(x => EventMessage.Create(ConnectorType.UIBehaviourEventTrigger, UIBehaviour, x));
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
         {

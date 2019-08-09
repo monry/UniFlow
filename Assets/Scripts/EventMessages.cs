@@ -31,20 +31,20 @@ namespace UniFlow
     [PublicAPI]
     public struct EventMessage
     {
-        private EventMessage(EventType eventType, object sender, object eventData)
+        private EventMessage(ConnectorType connectorType, object sender, object data)
         {
-            EventType = eventType;
+            ConnectorType = connectorType;
             Sender = sender;
-            EventData = eventData;
+            Data = data;
         }
 
-        public EventType EventType { get; }
+        public ConnectorType ConnectorType { get; }
         public object Sender { get; }
-        public object EventData { get; }
+        public object Data { get; }
 
-        public static EventMessage Create(EventType eventType, object sender, object eventData = default)
+        public static EventMessage Create(ConnectorType connectorType, object sender, object data = default)
         {
-            return new EventMessage(eventType, sender, eventData);
+            return new EventMessage(connectorType, sender, data);
         }
     }
 }

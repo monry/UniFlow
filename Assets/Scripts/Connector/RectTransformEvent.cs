@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/RectTransformEvent", 103)]
-    public class RectTransformEvent : EventPublisher
+    public class RectTransformEvent : ConnectorBase
     {
         [SerializeField] private RectTransformEventType rectTransformEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(_ => EventMessage.Create(EventType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
+                .Select(_ => EventMessage.Create(ConnectorType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
 
         private IObservable<Unit> OnEventAsObservable()
         {

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/AnimatorTrigger", 301)]
-    public class AnimatorTrigger : EventPublisher
+    public class AnimatorTrigger : ConnectorBase
     {
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
@@ -25,7 +25,7 @@ namespace UniFlow.Connector
                     observer =>
                     {
                         Animator.SetTrigger(TriggerId);
-                        observer.OnNext(EventMessage.Create(EventType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName)));
+                        observer.OnNext(EventMessage.Create(ConnectorType.AnimatorTrigger, Animator, AnimatorTriggerEventData.Create(TriggerName)));
                         return Disposable;
                     }
                 );

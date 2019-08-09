@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/LoadScene", 400)]
-    public class LoadSceneEvent : EventPublisher
+    public class LoadSceneEvent : ConnectorBase
     {
         [SerializeField] private List<string> sceneNames = default;
         private IEnumerable<string> SceneNames => sceneNames;
@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         {
             return LoadScenes()
                 .ToObservable()
-                .Select(_ => EventMessage.Create(EventType.LoadScene, this, SceneNames));
+                .Select(_ => EventMessage.Create(ConnectorType.LoadScene, this, SceneNames));
         }
 
         private async UniTask LoadScenes()

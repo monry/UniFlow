@@ -7,7 +7,7 @@ using Zenject;
 
 namespace UniFlow
 {
-    public abstract class EventPublisher : EventConnectable, IEventPublisher
+    public abstract class ConnectorBase : EventConnectable, IConnector
     {
         [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
         private List<EventConnectable> targetConnectorInstances = default;
@@ -36,20 +36,20 @@ namespace UniFlow
         {
             if (ActAsTrigger)
             {
-                ((IEventPublisher) this).Connect(Observable.Return<EventMessages>(default));
+                ((IConnector) this).Connect(Observable.Return<EventMessages>(default));
             }
         }
 
-        void IEventPublisher.Connect(IObservable<EventMessages> source)
+        void IConnector.Connect(IObservable<EventMessages> source)
         {
             var observable = source
                 .SelectMany(
-                    eventMessages => (this as IEventPublisher)
+                    eventMessages => (this as IConnector)
                         .OnPublishAsObservable()
                         .Select(x => (eventMessages ?? EventMessages.Create()).Append(x))
                 );
             TargetConnectors
-                .OfType<IEventPublisher>()
+                .OfType<IConnector>()
                 .ToList()
                 .ForEach(x => x.Connect(observable));
             TargetConnectors

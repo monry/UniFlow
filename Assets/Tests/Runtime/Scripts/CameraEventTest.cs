@@ -61,11 +61,11 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
+            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].Data);
 
-            Assert.NotNull(eventMessages[0].EventData);
+            Assert.NotNull(eventMessages[0].Data);
 
-            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].EventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].Data).EventType);
 
             HasAssert = true;
         }
@@ -76,11 +76,11 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
+            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].Data);
 
-            Assert.NotNull(eventMessages[0].EventData);
+            Assert.NotNull(eventMessages[0].Data);
 
-            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].EventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].Data).EventType);
 
             HasAssert = true;
         }

@@ -23,10 +23,10 @@ namespace UniFlow.Tests.Runtime
         {
             Assert.AreEqual(1, eventMessages.Count);
 
-            Assert.AreEqual(EventType.Timer, eventMessages[0].EventType);
+            Assert.AreEqual(ConnectorType.Timer, eventMessages[0].ConnectorType);
             Assert.IsInstanceOf<Timer>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<float>(eventMessages[0].EventData);
-            Assert.AreEqual(1.0f, eventMessages[0].EventData);
+            Assert.IsInstanceOf<float>(eventMessages[0].Data);
+            Assert.AreEqual(1.0f, eventMessages[0].Data);
 
             HasAssert = true;
         }

@@ -10,14 +10,14 @@ namespace UniFlow.Connector
     // Timeline SignalReceiver cannot serialize [Serializable] class
     // So I provide overloads to construct TimelineEventData
     [AddComponentMenu("UniFlow/TimelineSignal", 306)]
-    public class TimelineSignal : EventPublisher
+    public class TimelineSignal : ConnectorBase
     {
         private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             Subject
                 .Take(1)
-                .Select(x => EventMessage.Create(EventType.TimelineSignal, this, x));
+                .Select(x => EventMessage.Create(ConnectorType.TimelineSignal, this, x));
 
         [UsedImplicitly]
         public void Dispatch()

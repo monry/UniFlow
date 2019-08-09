@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/AudioController", 303)]
-    public class AudioController : EventPublisher
+    public class AudioController : ConnectorBase
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
         [SerializeField]
@@ -41,7 +41,7 @@ namespace UniFlow.Connector
                     observer =>
                     {
                         InvokeAudioSourceMethod();
-                        observer.OnNext(EventMessage.Create(EventType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod)));
+                        observer.OnNext(EventMessage.Create(ConnectorType.AudioController, AudioSource, AudioControllerEventData.Create(AudioControlMethod)));
                         return Disposable;
                     }
                 );

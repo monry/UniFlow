@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/LifecycleEvent", 100)]
-    public class LifecycleEvent : EventPublisher
+    public class LifecycleEvent : ConnectorBase
     {
         [SerializeField] private LifecycleEventType lifecycleEventType = default;
         [SerializeField]
@@ -22,7 +22,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(_ => EventMessage.Create(EventType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
+                .Select(_ => EventMessage.Create(ConnectorType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
 
         private void Awake()
         {

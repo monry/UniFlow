@@ -2,7 +2,7 @@ using System;
 
 namespace UniFlow
 {
-    public interface IEventPublisher : IEventConnectable
+    public interface IConnector : IEventConnectable
     {
         IObservable<EventMessage> OnPublishAsObservable();
         void Connect(IObservable<EventMessages> source);

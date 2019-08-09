@@ -1,6 +1,6 @@
 namespace UniFlow
 {
-    public enum EventType
+    public enum ConnectorType
     {
         LifecycleEvent = 1,
         UIBehaviourEventTrigger,

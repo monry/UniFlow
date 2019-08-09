@@ -9,7 +9,7 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/PlayableController", 305)]
-    public class PlayableController : EventPublisher
+    public class PlayableController : ConnectorBase
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = default;
         [SerializeField]
@@ -45,7 +45,7 @@ namespace UniFlow.Connector
                     observer =>
                     {
                         InvokePlayableDirectorMethod();
-                        observer.OnNext(EventMessage.Create(EventType.PlayableController, PlayableDirector, PlayableControllerEventData.Create(PlayableControlMethod)));
+                        observer.OnNext(EventMessage.Create(ConnectorType.PlayableController, PlayableDirector, PlayableControllerEventData.Create(PlayableControlMethod)));
                         return Disposable;
                     }
                 );

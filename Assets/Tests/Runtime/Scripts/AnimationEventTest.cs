@@ -25,8 +25,8 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<AnimationEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[0].EventData);
-            var animationEvent = eventMessages[0].EventData as UnityEngine.AnimationEvent;
+            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[0].Data);
+            var animationEvent = eventMessages[0].Data as UnityEngine.AnimationEvent;
             Assert.NotNull(animationEvent);
             Assert.AreEqual(11.1f, animationEvent.floatParameter);
             Assert.AreEqual(22, animationEvent.intParameter);

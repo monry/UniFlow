@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector
 {
     [AddComponentMenu("UniFlow/PhysicsTrigger2DEvent", 203)]
-    public class PhysicsTrigger2DEvent : EventPublisher
+    public class PhysicsTrigger2DEvent : ConnectorBase
     {
         [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = default;
         [SerializeField]
@@ -19,7 +19,7 @@ namespace UniFlow.Connector
 
         public override IObservable<EventMessage> OnPublishAsObservable() =>
             OnEventAsObservable()
-                .Select(x => EventMessage.Create(EventType.PhysicsTrigger2DEvent, Component, PhysicsTrigger2DEventData.Create(PhysicsTrigger2DEventType, x)));
+                .Select(x => EventMessage.Create(ConnectorType.PhysicsTrigger2DEvent, Component, PhysicsTrigger2DEventData.Create(PhysicsTrigger2DEventType, x)));
 
         private IObservable<Collider2D> OnEventAsObservable()
         {

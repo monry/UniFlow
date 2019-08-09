@@ -25,8 +25,8 @@ namespace UniFlow.Tests.Runtime
             Assert.AreEqual(1, eventMessages.Count);
 
             Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].EventData);
-            var timelineEvent = eventMessages[0].EventData as TimelineEventData;
+            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].Data);
+            var timelineEvent = eventMessages[0].Data as TimelineEventData;
             Assert.NotNull(timelineEvent);
             Assert.AreEqual("TimelineSignalTest", timelineEvent.StringParameter);
             HasAssert = true;
