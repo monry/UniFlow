@@ -1,6 +1,6 @@
 namespace UniFlow
 {
-    public interface IEventReceiver : IEventConnectable
+    public interface IReceiver : IEventConnectable
     {
         void OnReceive(EventMessages eventMessages);
     }
