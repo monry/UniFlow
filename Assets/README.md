@@ -16,37 +16,38 @@ Please refer to [this repository](https://github.com/upm-packages/upm-cli) about
 
 ### Basics
 
-#### 1. Attach EventPublishers
+#### 1. Attach Connectors
 
-Attach one or more Components what implements `IEventConnectable` listed below into GameObject.
+Attach one or more Components what implements `ConnectorBase` listed below into GameObject.
 
-#### 2. Implement EventReceiver
+#### 2. Connect Connectors
 
-Implement Component what inherits `EventReceiver`.
+Set *Next `ConnectorBase`* into **Target Instances** field for each Connectors.
 
-Implement the process you want to execute when the event is received in the `OnReceive()` method that needs to override by `EventReceiver`.
+It is also possible to solve with `Zenject.ResolveIdAll<T>()` by setting ID in **Target Ids** field
+
+#### 3. Implement Receiver
+
+Implement Component what inherits `ReceiverBase`.
+
+Implement the process you want to execute when the event is received in the `OnReceive()` method that needs to override by `ReceiverBase`.
 
 This method will be passed `EventMessages` what contains all propagated event informations.
-
-#### 3. Connect EventConnectors and EventReceiver
-
-Set **Next IEventConnectable** into *Target Connector Instances* field for each EventPublisher.
-
-It is also possible to solve with `Zenject.ResolveIdAll<T>()` by setting ID in *Target Connector Ids* field
 
 ### Inspector
 
 <img width="317" alt="inspector" src="https://user-images.githubusercontent.com/838945/62629227-bf136480-b967-11e9-850e-e336c1e912db.png">
 
-#### Target Connector Instances
+#### Target Instances
 
-Specify instances what inherits `EventPublisher` or `EventReceiver` into this field.
+Specify instances what inherits `ConnectableBase` into this field.<br />
+\* `ConnectorBase` and `ReceiverBase` are inherits `ConnectableBase`
 
 Fire messages at the correct time for each component.
 
-#### Target Connector Instances
+#### Target Ids
 
-Specify IDs what provides instances of `EventPublisher` or `EventReceiver` resolved by `Zenject.ResolveIdAll()` into this field.
+Specify IDs what provides instances of `IConnectable` resolved by `Zenject.ResolveIdAll()` into this field.
 
 Fire messages at the correct time for each component.
 
@@ -58,11 +59,11 @@ Set true to allow to act as the entry point of events.
 
 Set true to allow to act as the receiver of events.
 
-#### Other parameters for each Publisher
+#### Other parameters for each Connector
 
 Individual parameters can be specified for each component.
 
-## Components what inherits `EventPublisher`
+## Components what inherits `ConnectorBase`
 
 ### Messaging from traditional callback
 
