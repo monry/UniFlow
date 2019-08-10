@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         private MouseEventType MouseEventType => mouseEventType;
         private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.MouseEvent, Component, MouseEventData.Create(MouseEventType)));
 

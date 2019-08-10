@@ -45,7 +45,7 @@ namespace UniFlow
             var observable = source
                 .SelectMany(
                     eventMessages => (this as IConnector)
-                        .OnPublishAsObservable()
+                        .OnConnectAsObservable()
                         .Select(x => (eventMessages ?? EventMessages.Create()).Append(x))
                 );
             TargetConnectors
@@ -63,6 +63,6 @@ namespace UniFlow
             }
         }
 
-        public abstract IObservable<EventMessage> OnPublishAsObservable();
+        public abstract IObservable<EventMessage> OnConnectAsObservable();
     }
 }

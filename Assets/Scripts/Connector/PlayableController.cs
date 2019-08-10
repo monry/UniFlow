@@ -39,7 +39,7 @@ namespace UniFlow.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             Observable
                 .Create<EventMessage>(
                     observer =>

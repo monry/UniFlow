@@ -14,7 +14,7 @@ namespace UniFlow.Connector
     {
         private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             Subject
                 .Take(1)
                 .Select(x => EventMessage.Create(ConnectorType.TimelineSignal, this, x));

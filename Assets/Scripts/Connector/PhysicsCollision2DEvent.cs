@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         private PhysicsCollision2DEventType PhysicsCollision2DEventType => physicsCollision2DEventType;
         private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()
                 .Select(x => EventMessage.Create(ConnectorType.PhysicsCollision2DEvent, Component, PhysicsCollision2DEventData.Create(PhysicsCollision2DEventType, x)));
 

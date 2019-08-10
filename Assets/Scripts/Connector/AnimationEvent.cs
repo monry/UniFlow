@@ -12,7 +12,7 @@ namespace UniFlow.Connector
     {
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             Subject
                 .Take(1)
                 .Select(x => EventMessage.Create(ConnectorType.AnimationEvent, this, x));

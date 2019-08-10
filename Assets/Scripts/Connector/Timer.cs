@@ -10,7 +10,7 @@ namespace UniFlow.Connector
         [SerializeField] private float seconds = default;
         private float Seconds => seconds;
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             Observable
                 .Timer(TimeSpan.FromSeconds(Seconds))
                 .Select(_ => EventMessage.Create(ConnectorType.Timer, this, Seconds));

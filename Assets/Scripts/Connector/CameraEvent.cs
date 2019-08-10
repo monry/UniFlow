@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         private CameraEventType CameraEventType => cameraEventType;
         private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
 

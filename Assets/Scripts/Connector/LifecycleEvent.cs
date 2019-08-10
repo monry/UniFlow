@@ -20,7 +20,7 @@ namespace UniFlow.Connector
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
 

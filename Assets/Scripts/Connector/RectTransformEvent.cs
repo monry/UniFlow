@@ -17,7 +17,7 @@ namespace UniFlow.Connector
         private RectTransformEventType RectTransformEventType => rectTransformEventType;
         private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> OnPublishAsObservable() =>
+        public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
 

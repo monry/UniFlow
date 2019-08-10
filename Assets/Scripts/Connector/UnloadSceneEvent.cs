@@ -13,7 +13,7 @@ namespace UniFlow.Connector
         [SerializeField] private List<string> sceneNames = default;
         private IEnumerable<string> SceneNames => sceneNames;
 
-        public override IObservable<EventMessage> OnPublishAsObservable()
+        public override IObservable<EventMessage> OnConnectAsObservable()
         {
             return UnloadScenes()
                 .ToObservable()
