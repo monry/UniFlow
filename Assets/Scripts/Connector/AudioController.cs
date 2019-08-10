@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
         [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
-        private AudioSource audioSource = default;
-        [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
 
         private AudioControlMethod AudioControlMethod => audioControlMethod;
+        private AudioClip AudioClip => audioClip;
+
+        private AudioSource audioSource = default;
         private AudioSource AudioSource
         {
             get =>
@@ -28,10 +28,8 @@ namespace UniFlow.Connector
                             ? GetComponent<AudioSource>()
                             : gameObject.AddComponent<AudioSource>();
             [UsedImplicitly]
-            set => throw new NotImplementedException();
+            set => audioSource = value;
         }
-
-        private AudioClip AudioClip => audioClip;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
@@ -46,13 +44,16 @@ namespace UniFlow.Connector
                     }
                 );
 
-        private void InvokeAudioSourceMethod()
+        private void Awake()
         {
             if (AudioClip != default)
             {
                 AudioSource.clip = AudioClip;
             }
+        }
 
+        private void InvokeAudioSourceMethod()
+        {
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:
