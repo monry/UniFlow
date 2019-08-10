@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -10,19 +11,24 @@ namespace UniFlow.Connector
     public class LifecycleEvent : ConnectorBase
     {
         [SerializeField] private LifecycleEventType lifecycleEventType = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be used self instance")]
-        private Component component = default;
-
         private LifecycleEventType LifecycleEventType => lifecycleEventType;
-        private Component Component => component ? component : component = this;
+
+        private Component component = default;
+        private Component Component
+        {
+            get => component ? component : component = this;
+            [UsedImplicitly]
+            set => component = value;
+        }
 
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnEventAsObservable()
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
+        }
 
         private void Awake()
         {

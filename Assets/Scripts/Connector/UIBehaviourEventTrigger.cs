@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -12,14 +13,19 @@ namespace UniFlow.Connector
         [SerializeField] private EventTriggerType eventTriggerType = default;
         private EventTriggerType EventTriggerType => eventTriggerType;
 
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<UIBehaviour>()")]
         private UIBehaviour uiBehaviour = default;
-        private UIBehaviour UIBehaviour => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
+        private UIBehaviour UIBehaviour
+        {
+            get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
+            [UsedImplicitly]
+            set => uiBehaviour = value;
+        }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnEventTriggerAsObservable()
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return OnEventTriggerAsObservable()
                 .Select(x => EventMessage.Create(ConnectorType.UIBehaviourEventTrigger, UIBehaviour, x));
+        }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
         {

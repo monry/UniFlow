@@ -14,10 +14,13 @@ namespace UniFlow.Connector
     {
         private ISubject<TimelineEventData> Subject { get; } = new Subject<TimelineEventData>();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Subject
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Subject
+                // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
                 .Select(x => EventMessage.Create(ConnectorType.TimelineSignal, this, x));
+        }
 
         [UsedImplicitly]
         public void Dispatch()

@@ -10,11 +10,11 @@ namespace UniFlow.Connector
     public class AudioController : ConnectorBase
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
+        private AudioControlMethod AudioControlMethod => audioControlMethod;
+
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-
-        private AudioControlMethod AudioControlMethod => audioControlMethod;
         private AudioClip AudioClip => audioClip;
 
         private AudioSource audioSource = default;
@@ -33,8 +33,9 @@ namespace UniFlow.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Create<EventMessage>(
                     observer =>
                     {
@@ -43,6 +44,7 @@ namespace UniFlow.Connector
                         return Disposable;
                     }
                 );
+        }
 
         private void Awake()
         {

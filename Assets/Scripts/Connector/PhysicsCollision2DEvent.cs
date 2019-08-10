@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -10,12 +11,15 @@ namespace UniFlow.Connector
     public class PhysicsCollision2DEvent : ConnectorBase
     {
         [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be used self instance")]
-        private Component component = default;
-
         private PhysicsCollision2DEventType PhysicsCollision2DEventType => physicsCollision2DEventType;
-        private Component Component => component ? component : component = this;
+
+        private Component component = default;
+        private Component Component
+        {
+            get => component ? component : component = this;
+            [UsedImplicitly]
+            set => component = value;
+        }
 
         public override IObservable<EventMessage> OnConnectAsObservable() =>
             OnEventAsObservable()

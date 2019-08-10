@@ -10,11 +10,11 @@ namespace UniFlow.Connector
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;
+        private AudioEventType AudioEventType => audioEventType;
+
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-
-        private AudioEventType AudioEventType => audioEventType;
         private AudioClip AudioClip => audioClip;
 
         private AudioSource audioSource = default;
@@ -33,9 +33,11 @@ namespace UniFlow.Connector
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnAudioEventAsObservable()
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return OnAudioEventAsObservable()
                 .Select(x => EventMessage.Create(ConnectorType.AudioEvent, AudioSource, AudioEventData.Create(x)));
+        }
 
         private void Awake()
         {

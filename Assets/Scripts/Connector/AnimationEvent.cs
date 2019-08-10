@@ -12,11 +12,12 @@ namespace UniFlow.Connector
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
-        [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
-
         private AnimationClip AnimationClip => animationClip;
+
+        [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         private AnimatorCullingMode CullingMode => cullingMode;
+
+        [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
         private AnimatorUpdateMode UpdateMode => updateMode;
 
         private Animator animator = default;

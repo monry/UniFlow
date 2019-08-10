@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
@@ -10,16 +11,21 @@ namespace UniFlow.Connector
     public class CameraEvent : ConnectorBase
     {
         [SerializeField] private CameraEventType cameraEventType = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be used self instance")]
-        private Component component = default;
-
         private CameraEventType CameraEventType => cameraEventType;
-        private Component Component => component ? component : component = this;
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnEventAsObservable()
+        private Component component = default;
+        private Component Component
+        {
+            get => component ? component : component = this;
+            [UsedImplicitly]
+            set => component = value;
+        }
+
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return OnEventAsObservable()
                 .Select(_ => EventMessage.Create(ConnectorType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
+        }
 
         private IObservable<Unit> OnEventAsObservable()
         {

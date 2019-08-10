@@ -12,12 +12,17 @@ namespace UniFlow.Connector
     public class PlayableController : ConnectorBase
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<PlayableDirector>()")]
-        private PlayableDirector playableDirector = default;
-        [SerializeField] private TimelineAsset timelineAsset = default;
-
         private PlayableControlMethod PlayableControlMethod => playableControlMethod;
+
+        [SerializeField] private TimelineAsset timelineAsset = default;
+        private TimelineAsset TimelineAsset
+        {
+            get => timelineAsset;
+            [UsedImplicitly]
+            set => timelineAsset = value;
+        }
+
+        private PlayableDirector playableDirector = default;
         private PlayableDirector PlayableDirector
         {
             get =>
@@ -30,17 +35,12 @@ namespace UniFlow.Connector
             [UsedImplicitly]
             set => playableDirector = value;
         }
-        private TimelineAsset TimelineAsset
-        {
-            get => timelineAsset;
-            [UsedImplicitly]
-            set => timelineAsset = value;
-        }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Create<EventMessage>(
                     observer =>
                     {
@@ -49,6 +49,7 @@ namespace UniFlow.Connector
                         return Disposable;
                     }
                 );
+        }
 
         private void InvokePlayableDirectorMethod()
         {
