@@ -29,5 +29,7 @@ namespace UniFlow
         Timer,
         Interval,
         Empty,
+
+        Custom,
     }
 }
