@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Message;
 using UniRx;
 using UnityEngine;
@@ -11,16 +12,23 @@ namespace UniFlow.Connector
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
         private Animator animator = default;
-        [SerializeField] private string triggerName = default;
-
         private Animator Animator => animator ? animator : animator = GetComponent<Animator>();
-        private string TriggerName => triggerName;
+
+        [SerializeField] private string triggerName = default;
+        private string TriggerName
+        {
+            get => triggerName;
+            [UsedImplicitly]
+            set => triggerName = value;
+        }
+
         private int TriggerId => Animator.StringToHash(TriggerName);
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Create<EventMessage>(
                     observer =>
                     {
@@ -29,6 +37,7 @@ namespace UniFlow.Connector
                         return Disposable;
                     }
                 );
+        }
 
         private void OnDestroy()
         {

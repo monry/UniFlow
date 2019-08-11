@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
@@ -8,11 +9,18 @@ namespace UniFlow.Connector
     public class Interval : ConnectorBase
     {
         [SerializeField] private float seconds = default;
-        private float Seconds => seconds;
+        private float Seconds
+        {
+            get => seconds;
+            [UsedImplicitly]
+            set => seconds = value;
+        }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Interval(TimeSpan.FromSeconds(Seconds))
                 .Select(_ => EventMessage.Create(ConnectorType.Interval, this, Seconds));
+        }
     }
 }

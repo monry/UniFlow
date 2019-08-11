@@ -10,11 +10,24 @@ namespace UniFlow.Connector
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
-        private AudioSource audioSource = default;
+        private AudioEventType AudioEventType
+        {
+            get => audioEventType;
+            [UsedImplicitly]
+            set => audioEventType = value;
+        }
 
-        private AudioEventType AudioEventType => audioEventType;
+        [SerializeField]
+        [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
+        private AudioClip audioClip = default;
+        private AudioClip AudioClip
+        {
+            get => audioClip;
+            [UsedImplicitly]
+            set => audioClip = value;
+        }
+
+        private AudioSource audioSource = default;
         private AudioSource AudioSource
         {
             get =>
@@ -30,9 +43,19 @@ namespace UniFlow.Connector
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnAudioEventAsObservable()
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return OnAudioEventAsObservable()
                 .Select(x => EventMessage.Create(ConnectorType.AudioEvent, AudioSource, AudioEventData.Create(x)));
+        }
+
+        private void Awake()
+        {
+            if (AudioClip != default)
+            {
+                AudioSource.clip = AudioClip;
+            }
+        }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
         {
@@ -59,9 +82,9 @@ namespace UniFlow.Connector
             }
         }
 
-        private AudioEventType DetectAudioEventType(bool isPlaying, AudioClip audioClip)
+        private AudioEventType DetectAudioEventType(bool isPlaying, AudioClip clip)
         {
-            if (audioClip == default)
+            if (clip == default)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -71,7 +94,7 @@ namespace UniFlow.Connector
                 return AudioEventType.Play;
             }
 
-            if (!isPlaying && (Mathf.Approximately(audioClip.length, TimePair.Value.Current) || Mathf.Approximately(0.0f, TimePair.Value.Current) && TimePair.Value.Previous > 0.0f))
+            if (!isPlaying && (Mathf.Approximately(clip.length, TimePair.Value.Current) || Mathf.Approximately(0.0f, TimePair.Value.Current) && TimePair.Value.Previous > 0.0f))
             {
                 return AudioEventType.Stop;
             }

@@ -10,14 +10,24 @@ namespace UniFlow.Connector
     public class AudioController : ConnectorBase
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<AudioSource>()")]
-        private AudioSource audioSource = default;
+        private AudioControlMethod AudioControlMethod
+        {
+            get => audioControlMethod;
+            [UsedImplicitly]
+            set => audioControlMethod = value;
+        }
+
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
+        private AudioClip AudioClip
+        {
+            get => audioClip;
+            [UsedImplicitly]
+            set => audioClip = value;
+        }
 
-        private AudioControlMethod AudioControlMethod => audioControlMethod;
+        private AudioSource audioSource = default;
         private AudioSource AudioSource
         {
             get =>
@@ -28,15 +38,14 @@ namespace UniFlow.Connector
                             ? GetComponent<AudioSource>()
                             : gameObject.AddComponent<AudioSource>();
             [UsedImplicitly]
-            set => throw new NotImplementedException();
+            set => audioSource = value;
         }
-
-        private AudioClip AudioClip => audioClip;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Create<EventMessage>(
                     observer =>
                     {
@@ -45,14 +54,18 @@ namespace UniFlow.Connector
                         return Disposable;
                     }
                 );
+        }
 
-        private void InvokeAudioSourceMethod()
+        private void Awake()
         {
             if (AudioClip != default)
             {
                 AudioSource.clip = AudioClip;
             }
+        }
 
+        private void InvokeAudioSourceMethod()
+        {
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:

@@ -11,15 +11,54 @@ namespace UniFlow.Connector
     public class SimpleAnimationController : ConnectorBase
     {
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<SimpleAnimation>()")]
-        private SimpleAnimation simpleAnimation = default;
+        private SimpleAnimationControlMethod SimpleAnimationControlMethod
+        {
+            get => simpleAnimationControlMethod;
+            [UsedImplicitly]
+            set => simpleAnimationControlMethod = value;
+        }
+
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
+        private AnimationClip AnimationClip
+        {
+            get => animationClip;
+            [UsedImplicitly]
+            set => animationClip = value;
+        }
 
-        private SimpleAnimationControlMethod SimpleAnimationControlMethod => simpleAnimationControlMethod;
-        private AnimationClip AnimationClip => animationClip;
+        [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        private AnimatorCullingMode CullingMode
+        {
+            get => cullingMode;
+            [UsedImplicitly]
+            set => cullingMode = value;
+        }
+
+        [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
+        private AnimatorUpdateMode UpdateMode
+        {
+            get => updateMode;
+            [UsedImplicitly]
+            set => updateMode = value;
+        }
+
+        private Animator animator = default;
+        private Animator Animator
+        {
+            get =>
+                animator != default
+                    ? animator
+                    : animator =
+                        GetComponent<Animator>() != default
+                            ? GetComponent<Animator>()
+                            : gameObject.AddComponent<Animator>();
+            [UsedImplicitly]
+            set => animator = value;
+        }
+
+        private SimpleAnimation simpleAnimation = default;
         private SimpleAnimation SimpleAnimation
         {
             get =>
@@ -36,8 +75,9 @@ namespace UniFlow.Connector
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            Observable
+        public override IObservable<EventMessage> OnConnectAsObservable()
+        {
+            return Observable
                 .Create<EventMessage>(
                     observer =>
                     {
@@ -46,14 +86,17 @@ namespace UniFlow.Connector
                         return Disposable;
                     }
                 );
+        }
 
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
-
-            if (AnimationClip != default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
+            // ReSharper disable once InvertIf
+            // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
+            if (AnimationClip != default && Animator == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
             {
                 SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
+                SimpleAnimation.cullingMode = CullingMode;
+                Animator.updateMode = UpdateMode;
             }
         }
 
@@ -64,10 +107,12 @@ namespace UniFlow.Connector
                 case SimpleAnimationControlMethod.Play:
                     if (AnimationClip == default)
                     {
+                        SimpleAnimation.Rewind();
                         SimpleAnimation.Play();
                     }
                     else
                     {
+                        SimpleAnimation.Rewind(AnimationClip.GetInstanceID().ToString());
                         SimpleAnimation.Play(AnimationClip.GetInstanceID().ToString());
                     }
                     break;
