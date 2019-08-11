@@ -24,7 +24,7 @@ namespace UniFlow
         private IEnumerable<IConnectable> TargetConnectors =>
             new List<IConnectable>()
                 .Concat(targetComponents ?? new List<ConnectableBase>())
-                .Concat((targetIds ?? new List<string>()).SelectMany(Container.ResolveIdAll<IConnectable>))
+                .Concat((targetIds ?? new List<string>()).SelectMany(x => Container?.ResolveIdAll<IConnectable>(x)))
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
