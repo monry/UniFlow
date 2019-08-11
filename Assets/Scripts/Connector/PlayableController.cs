@@ -12,23 +12,21 @@ namespace UniFlow.Connector
     public class PlayableController : ConnectorBase
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = default;
-        private PlayableControlMethod PlayableControlMethod
+        [UsedImplicitly] public PlayableControlMethod PlayableControlMethod
         {
             get => playableControlMethod;
-            [UsedImplicitly]
             set => playableControlMethod = value;
         }
 
         [SerializeField] private TimelineAsset timelineAsset = default;
-        private TimelineAsset TimelineAsset
+        [UsedImplicitly] public TimelineAsset TimelineAsset
         {
             get => timelineAsset;
-            [UsedImplicitly]
             set => timelineAsset = value;
         }
 
         private PlayableDirector playableDirector = default;
-        private PlayableDirector PlayableDirector
+        [UsedImplicitly] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default

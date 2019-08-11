@@ -11,41 +11,37 @@ namespace UniFlow.Connector
     public class SimpleAnimationController : ConnectorBase
     {
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;
-        private SimpleAnimationControlMethod SimpleAnimationControlMethod
+        [UsedImplicitly] public SimpleAnimationControlMethod SimpleAnimationControlMethod
         {
             get => simpleAnimationControlMethod;
-            [UsedImplicitly]
             set => simpleAnimationControlMethod = value;
         }
 
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
-        private AnimationClip AnimationClip
+        [UsedImplicitly] public AnimationClip AnimationClip
         {
             get => animationClip;
-            [UsedImplicitly]
             set => animationClip = value;
         }
 
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        private AnimatorCullingMode CullingMode
+        [UsedImplicitly] public AnimatorCullingMode CullingMode
         {
             get => cullingMode;
-            [UsedImplicitly]
             set => cullingMode = value;
         }
 
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
-        private AnimatorUpdateMode UpdateMode
+        [UsedImplicitly] public AnimatorUpdateMode UpdateMode
         {
             get => updateMode;
-            [UsedImplicitly]
             set => updateMode = value;
         }
 
         private Animator animator = default;
-        private Animator Animator
+        [UsedImplicitly] public Animator Animator
         {
             get =>
                 animator != default
@@ -54,12 +50,11 @@ namespace UniFlow.Connector
                         GetComponent<Animator>() != default
                             ? GetComponent<Animator>()
                             : gameObject.AddComponent<Animator>();
-            [UsedImplicitly]
             set => animator = value;
         }
 
         private SimpleAnimation simpleAnimation = default;
-        private SimpleAnimation SimpleAnimation
+        [UsedImplicitly] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -69,7 +64,6 @@ namespace UniFlow.Connector
                             ? GetComponent<SimpleAnimation>()
                             : gameObject.AddComponent<SimpleAnimation>()
             ;
-            [UsedImplicitly]
             set => simpleAnimation = value;
         }
 

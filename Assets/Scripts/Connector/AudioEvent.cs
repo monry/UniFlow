@@ -10,25 +10,23 @@ namespace UniFlow.Connector
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;
-        private AudioEventType AudioEventType
+        [UsedImplicitly] public AudioEventType AudioEventType
         {
             get => audioEventType;
-            [UsedImplicitly]
             set => audioEventType = value;
         }
 
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-        private AudioClip AudioClip
+        [UsedImplicitly] public AudioClip AudioClip
         {
             get => audioClip;
-            [UsedImplicitly]
             set => audioClip = value;
         }
 
         private AudioSource audioSource = default;
-        private AudioSource AudioSource
+        [UsedImplicitly] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
@@ -37,7 +35,6 @@ namespace UniFlow.Connector
                         GetComponent<AudioSource>() != default
                             ? GetComponent<AudioSource>()
                             : gameObject.AddComponent<AudioSource>();
-            [UsedImplicitly]
             set => audioSource = value;
         }
 
