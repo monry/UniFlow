@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Message;
 using UniRx;
 using UnityEngine;
@@ -14,7 +15,12 @@ namespace UniFlow.Connector
         private Animator Animator => animator ? animator : animator = GetComponent<Animator>();
 
         [SerializeField] private string triggerName = default;
-        private string TriggerName => triggerName;
+        private string TriggerName
+        {
+            get => triggerName;
+            [UsedImplicitly]
+            set => triggerName = value;
+        }
 
         private int TriggerId => Animator.StringToHash(TriggerName);
 

@@ -10,12 +10,22 @@ namespace UniFlow.Connector
     public class AudioController : ConnectorBase
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;
-        private AudioControlMethod AudioControlMethod => audioControlMethod;
+        private AudioControlMethod AudioControlMethod
+        {
+            get => audioControlMethod;
+            [UsedImplicitly]
+            set => audioControlMethod = value;
+        }
 
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-        private AudioClip AudioClip => audioClip;
+        private AudioClip AudioClip
+        {
+            get => audioClip;
+            [UsedImplicitly]
+            set => audioClip = value;
+        }
 
         private AudioSource audioSource = default;
         private AudioSource AudioSource

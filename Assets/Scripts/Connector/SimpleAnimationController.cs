@@ -11,18 +11,38 @@ namespace UniFlow.Connector
     public class SimpleAnimationController : ConnectorBase
     {
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;
-        private SimpleAnimationControlMethod SimpleAnimationControlMethod => simpleAnimationControlMethod;
+        private SimpleAnimationControlMethod SimpleAnimationControlMethod
+        {
+            get => simpleAnimationControlMethod;
+            [UsedImplicitly]
+            set => simpleAnimationControlMethod = value;
+        }
 
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
-        private AnimationClip AnimationClip => animationClip;
+        private AnimationClip AnimationClip
+        {
+            get => animationClip;
+            [UsedImplicitly]
+            set => animationClip = value;
+        }
 
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        private AnimatorCullingMode CullingMode => cullingMode;
+        private AnimatorCullingMode CullingMode
+        {
+            get => cullingMode;
+            [UsedImplicitly]
+            set => cullingMode = value;
+        }
 
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
-        private AnimatorUpdateMode UpdateMode => updateMode;
+        private AnimatorUpdateMode UpdateMode
+        {
+            get => updateMode;
+            [UsedImplicitly]
+            set => updateMode = value;
+        }
 
         private Animator animator = default;
         private Animator Animator

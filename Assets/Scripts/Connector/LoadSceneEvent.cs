@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 using UniRx;
 using UniRx.Async;
 using UnityEngine;
@@ -11,7 +13,12 @@ namespace UniFlow.Connector
     public class LoadSceneEvent : ConnectorBase
     {
         [SerializeField] private List<string> sceneNames = default;
-        private IEnumerable<string> SceneNames => sceneNames;
+        private IEnumerable<string> SceneNames
+        {
+            get => sceneNames;
+            [UsedImplicitly]
+            set => sceneNames = value.ToList();
+        }
 
         public override IObservable<EventMessage> OnConnectAsObservable()
         {
