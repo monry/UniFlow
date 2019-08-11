@@ -13,10 +13,9 @@ namespace UniFlow.Connector
     public class UnloadSceneEvent : ConnectorBase
     {
         [SerializeField] private List<string> sceneNames = default;
-        private IEnumerable<string> SceneNames
+        [UsedImplicitly] public IEnumerable<string> SceneNames
         {
             get => sceneNames;
-            [UsedImplicitly]
             set => sceneNames = value.ToList();
         }
 

@@ -9,10 +9,9 @@ namespace UniFlow.Connector
     public class Interval : ConnectorBase
     {
         [SerializeField] private float seconds = default;
-        private float Seconds
+        [UsedImplicitly] public float Seconds
         {
             get => seconds;
-            [UsedImplicitly]
             set => seconds = value;
         }
 

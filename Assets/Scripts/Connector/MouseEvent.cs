@@ -11,18 +11,16 @@ namespace UniFlow.Connector
     public class MouseEvent : ConnectorBase
     {
         [SerializeField] private MouseEventType mouseEventType = default;
-        private MouseEventType MouseEventType
+        [UsedImplicitly] public MouseEventType MouseEventType
         {
             get => mouseEventType;
-            [UsedImplicitly]
             set => mouseEventType = value;
         }
 
         private Component component = default;
-        private Component Component
+        [UsedImplicitly] public Component Component
         {
             get => component ? component : component = this;
-            [UsedImplicitly]
             set => component = value;
         }
 

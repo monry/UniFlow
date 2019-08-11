@@ -12,13 +12,16 @@ namespace UniFlow.Connector
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
         private Animator animator = default;
-        private Animator Animator => animator ? animator : animator = GetComponent<Animator>();
+        [UsedImplicitly] public Animator Animator
+        {
+            get => animator ? animator : animator = GetComponent<Animator>();
+            set => animator = value;
+        }
 
         [SerializeField] private string triggerName = default;
-        private string TriggerName
+        [UsedImplicitly] public string TriggerName
         {
             get => triggerName;
-            [UsedImplicitly]
             set => triggerName = value;
         }
 
