@@ -9,6 +9,7 @@ namespace UniFlow
         CameraEvent,
         ParticleEvent,
         MouseEvent,
+        KeyEvent,
 
         PhysicsCollisionEvent,
         PhysicsCollision2DEvent,
