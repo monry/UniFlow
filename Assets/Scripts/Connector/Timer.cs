@@ -15,10 +15,13 @@ namespace UniFlow.Connector
             set => seconds = value;
         }
 
+        [SerializeField] private bool ignoreTimeScale = default;
+        private bool IgnoreTimeScale => ignoreTimeScale;
+
         public override IObservable<EventMessage> OnConnectAsObservable()
         {
             return Observable
-                .Timer(TimeSpan.FromSeconds(Seconds))
+                .Timer(TimeSpan.FromSeconds(Seconds), IgnoreTimeScale ? Scheduler.MainThreadIgnoreTimeScale : Scheduler.MainThread)
                 .Select(_ => EventMessage.Create(ConnectorType.Timer, this, Seconds));
         }
     }
