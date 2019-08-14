@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
+    [AddComponentMenu("UniFlow/KeyEvent", 107)]
     public class KeyEvent : ConnectorBase
     {
         [SerializeField] private KeyCode keyCode = default;
