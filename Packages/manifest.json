@@ -30,7 +30,9 @@
     "com.unity.timeline": "1.1.0",
     "com.unity.ugui": "1.0.0",
     "com.unity.xr.legacyinputhelpers": "2.0.2",
+    "dev.monry.unirx-observabletween": "0.0.1-preview.4",
     "jp.cysharp.unirx": "7.1.0",
+    "jp.cysharp.unitask": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -61,7 +63,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "jp.cysharp.unitask": "1.0.0"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
