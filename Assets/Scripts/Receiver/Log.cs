@@ -16,8 +16,8 @@ namespace UniFlow.Receiver
             {
                 sb.AppendLine($"  {index}");
                 sb.AppendLine($"    <b>Type</b>:\n      {eventMessage.ConnectorType}");
-                sb.AppendLine($"    <b>Sender</b>:\n      {eventMessage.Sender.ToString().Replace("\n", "\n      ")}");
-                sb.AppendLine($"    <b>Data</b>:\n      {eventMessage.Data.ToString().Replace("\n", "\n      ")}");
+                sb.AppendLine($"    <b>Sender</b>:\n      {eventMessage.Sender?.ToString().Replace("\n", "\n      ")}");
+                sb.AppendLine($"    <b>Data</b>:\n      {eventMessage.Data?.ToString().Replace("\n", "\n      ")}");
                 index++;
             }
             Debug.Log(sb.ToString());
