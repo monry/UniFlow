@@ -29,8 +29,10 @@ namespace UniFlow
 
         Timer,
         Interval,
+        TimeScaleController,
         Empty,
 
+        // ReSharper disable once UnusedMember.Global
         Custom,
     }
 }
