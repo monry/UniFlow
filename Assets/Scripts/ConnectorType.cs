@@ -2,7 +2,7 @@ namespace UniFlow
 {
     public enum ConnectorType
     {
-        LifecycleEvent = 1,
+        LifecycleEvent            = 100,
         UIBehaviourEventTrigger,
         TransformEvent,
         RectTransformEvent,
@@ -11,28 +11,29 @@ namespace UniFlow
         MouseEvent,
         KeyEvent,
 
-        PhysicsCollisionEvent,
+        PhysicsCollisionEvent     = 200,
         PhysicsCollision2DEvent,
         PhysicsTriggerEvent,
         PhysicsTrigger2DEvent,
 
+        SimpleAnimationController = 300,
         AnimatorTrigger,
-        SimpleAnimationController,
         AnimationEvent,
         AudioController,
         AudioEvent,
         PlayableController,
         TimelineSignal,
+        RaycasterController,
 
-        LoadScene,
+        LoadScene                 = 400,
         UnloadScene,
 
-        Timer,
+        Timer                     = 9000,
         Interval,
         TimeScaleController,
         Empty,
 
         // ReSharper disable once UnusedMember.Global
-        Custom,
+        Custom                    = -1,
     }
 }

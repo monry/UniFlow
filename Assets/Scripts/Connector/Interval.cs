@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/Interval", 9001)]
+    [AddComponentMenu("UniFlow/Interval", (int) ConnectorType.Interval)]
     public class Interval : ConnectorBase
     {
         [SerializeField] private float seconds = default;

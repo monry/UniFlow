@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/PhysicsCollisionEvent", 200)]
+    [AddComponentMenu("UniFlow/PhysicsCollisionEvent", (int) ConnectorType.PhysicsCollisionEvent)]
     public class PhysicsCollisionEvent : ConnectorBase
     {
         [SerializeField] private PhysicsCollisionEventType physicsCollisionEventType = default;

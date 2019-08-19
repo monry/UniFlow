@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/AnimationEvent", 302)]
+    [AddComponentMenu("UniFlow/AnimationEvent", (int) ConnectorType.AnimationEvent)]
     public class AnimationEvent : ConnectorBase
     {
         [SerializeField]

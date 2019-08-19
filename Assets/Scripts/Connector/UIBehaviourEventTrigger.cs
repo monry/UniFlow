@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/UIBehaviourEventTrigger", 101)]
+    [AddComponentMenu("UniFlow/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
     public class UIBehaviourEventTrigger : ConnectorBase
     {
         [SerializeField] private EventTriggerType eventTriggerType = default;

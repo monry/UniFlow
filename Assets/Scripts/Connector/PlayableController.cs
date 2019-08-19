@@ -8,7 +8,7 @@ using UnityEngine.Timeline;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/PlayableController", 305)]
+    [AddComponentMenu("UniFlow/PlayableController", (int) ConnectorType.PlayableController)]
     public class PlayableController : ConnectorBase
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = default;

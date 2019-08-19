@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/LoadScene", 400)]
+    [AddComponentMenu("UniFlow/LoadScene", (int) ConnectorType.LoadScene)]
     public class LoadSceneEvent : ConnectorBase
     {
         [SerializeField] private List<string> sceneNames = default;

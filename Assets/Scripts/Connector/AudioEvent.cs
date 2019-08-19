@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/AudioEvent", 304)]
+    [AddComponentMenu("UniFlow/AudioEvent", (int) ConnectorType.AudioEvent)]
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;

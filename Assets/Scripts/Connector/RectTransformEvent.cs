@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/RectTransformEvent", 103)]
+    [AddComponentMenu("UniFlow/RectTransformEvent", (int) ConnectorType.RectTransformEvent)]
     public class RectTransformEvent : ConnectorBase
     {
         [SerializeField] private RectTransformEventType rectTransformEventType = default;

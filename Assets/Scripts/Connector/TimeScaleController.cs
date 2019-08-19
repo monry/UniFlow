@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/TimeScaleController", 9002)]
+    [AddComponentMenu("UniFlow/TimeScaleController", (int) ConnectorType.TimeScaleController)]
     public class TimeScaleController : ConnectorBase
     {
         [SerializeField] private float timeScale = default;

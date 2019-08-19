@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/Timer", 9000)]
+    [AddComponentMenu("UniFlow/Timer", (int) ConnectorType.Timer)]
     public class Timer : ConnectorBase
     {
         [SerializeField] private float seconds = default;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/AudioController", 303)]
+    [AddComponentMenu("UniFlow/AudioController", (int) ConnectorType.AudioController)]
     public class AudioController : ConnectorBase
     {
         [SerializeField] private AudioControlMethod audioControlMethod = default;

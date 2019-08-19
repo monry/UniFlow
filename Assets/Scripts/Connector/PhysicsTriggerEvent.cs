@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/PhyticsTriggerEvent", 202)]
+    [AddComponentMenu("UniFlow/PhyticsTriggerEvent", (int) ConnectorType.PhysicsTriggerEvent)]
     public class PhysicsTriggerEvent : ConnectorBase
     {
         [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = default;

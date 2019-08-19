@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/Empty", 10000)]
+    [AddComponentMenu("UniFlow/Empty", (int) ConnectorType.Empty)]
     public class Empty : ConnectorBase
     {
         public override IObservable<EventMessage> OnConnectAsObservable() =>
