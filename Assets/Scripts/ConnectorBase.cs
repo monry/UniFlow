@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -28,8 +29,18 @@ namespace UniFlow
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
-        private bool ActAsTrigger => actAsTrigger;
-        private bool ActAsReceiver => actAsReceiver;
+        [UsedImplicitly] public bool ActAsTrigger
+        {
+            get => actAsTrigger;
+            set => actAsTrigger = value;
+        }
+
+        [UsedImplicitly] public bool ActAsReceiver
+        {
+            get => actAsReceiver;
+            set => actAsReceiver = value;
+        }
+
         [Inject] private DiContainer Container { get; }
 
         protected virtual void Start()
@@ -64,5 +75,14 @@ namespace UniFlow
         }
 
         public abstract IObservable<EventMessage> OnConnectAsObservable();
+
+        public void AddConnectable(ConnectableBase connectable)
+        {
+            if (targetComponents == default)
+            {
+                targetComponents = new List<ConnectableBase>();
+            }
+            targetComponents.Add(connectable);
+        }
     }
 }
