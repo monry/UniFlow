@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.1.0-preview.7] - 2019-08-19
+
+Implement `TimeScaleController`, `KeyEvent`
+
+### Features
+
+* Add `Connector.TimeScaleController`
+* Add `Connector.KeyEvent`
+* Add `Receiver.Log`
+* Add `ObservableReceiverBase`
+
+### Improvements
+
+* Make accessor to public
+
+## [0.1.0-preview.6] - 2019-08-11
+
+Add Components automatically
+
+### Features
+
+* Add components required by some connectors automatically
+
+### Improvements
+
+* Refactor codes
+
 ## [0.0.4-preview.5] - 2019-08-06
 
 Refactor code
