@@ -16,7 +16,8 @@
     "com.unity.simpleanimation": "1.0.0",
     "com.stevevermeulen.extenject": "9.1.0",
     "jp.cysharp.unirx": "7.1.0",
-    "jp.cysharp.unitask": "1.0.0"
+    "jp.cysharp.unitask": "1.0.0",
+    "dev.monry.unirx-observabletween": "0.0.1-preview.6"
   },
   "repository": {
     "type": "git",
