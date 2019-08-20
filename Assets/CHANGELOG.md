@@ -8,6 +8,10 @@ Improve inspector
 
 * Remove `ActAsReceiver` parameter from Connector components
 
+### Fixes
+
+* Fixed regression where some SerializeFields disappeared
+
 ## [0.1.0-preview.7] - 2019-08-19
 
 Implement `TimeScaleController`, `KeyEvent`
