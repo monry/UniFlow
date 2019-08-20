@@ -36,7 +36,7 @@ This method will be passed `EventMessages` what contains all propagated event in
 
 ### Inspector
 
-<img width="317" alt="inspector" src="https://user-images.githubusercontent.com/838945/62629227-bf136480-b967-11e9-850e-e336c1e912db.png">
+<img width="317" alt="inspector" src="https://user-images.githubusercontent.com/838945/63312381-5dc29c80-c33c-11e9-9dd7-e29c4e2b068d.png">
 
 #### Target Instances
 
@@ -54,10 +54,6 @@ Fire messages at the correct time for each component.
 #### Act As Trigger
 
 Set true to allow to act as the entry point of events.
-
-#### Act As Receiver
-
-Set true to allow to act as the receiver of events.
 
 #### Other parameters for each Connector
 
