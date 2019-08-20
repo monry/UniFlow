@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     public class CameraEvent : ConnectorBase
     {
         [SerializeField] private CameraEventType cameraEventType = default;
+        [SerializeField] private Component component = default;
+
         [UsedImplicitly] public CameraEventType CameraEventType
         {
             get => cameraEventType;
             set => cameraEventType = value;
         }
-
-        private Component component = default;
         [UsedImplicitly] public Component Component
         {
             get => component ? component : component = this;

@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     public class PhysicsTrigger2DEvent : ConnectorBase
     {
         [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = default;
+        [SerializeField] private Component component = default;
+
         [UsedImplicitly] public PhysicsTrigger2DEventType PhysicsTrigger2DEventType
         {
             get => physicsTrigger2DEventType;
             set => physicsTrigger2DEventType = value;
         }
-
-        private Component component = default;
         [UsedImplicitly] public Component Component
         {
             get => component ? component : component = this;

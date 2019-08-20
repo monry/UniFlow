@@ -9,14 +9,18 @@ namespace UniFlow.Connector
     public class Interval : ConnectorBase
     {
         [SerializeField] private float seconds = default;
+        [SerializeField] private bool ignoreTimeScale = default;
+
         [UsedImplicitly] public float Seconds
         {
             get => seconds;
             set => seconds = value;
         }
-
-        [SerializeField] private bool ignoreTimeScale = default;
-        private bool IgnoreTimeScale => ignoreTimeScale;
+        [UsedImplicitly] private bool IgnoreTimeScale
+        {
+            get => ignoreTimeScale;
+            set => ignoreTimeScale = value;
+        }
 
         public override IObservable<EventMessage> OnConnectAsObservable()
         {

@@ -10,22 +10,21 @@ namespace UniFlow.Connector
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private AudioEventType audioEventType = default;
+        [SerializeField]
+        [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
+        private AudioClip audioClip = default;
+        [SerializeField] private AudioSource audioSource = default;
+
         [UsedImplicitly] public AudioEventType AudioEventType
         {
             get => audioEventType;
             set => audioEventType = value;
         }
-
-        [SerializeField]
-        [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
-        private AudioClip audioClip = default;
         [UsedImplicitly] public AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
-
-        private AudioSource audioSource = default;
         [UsedImplicitly] public AudioSource AudioSource
         {
             get =>

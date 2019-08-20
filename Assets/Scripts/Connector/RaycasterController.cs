@@ -20,7 +20,6 @@ namespace UniFlow.Connector
             get => raycasters;
             set => raycasters = value.ToList();
         }
-
         [UsedImplicitly] private RaycasterControlMethod RaycasterControlMethod
         {
             get => raycasterControlMethod;

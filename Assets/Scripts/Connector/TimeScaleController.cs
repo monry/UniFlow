@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
@@ -8,13 +9,24 @@ namespace UniFlow.Connector
     public class TimeScaleController : ConnectorBase
     {
         [SerializeField] private float timeScale = default;
-        private float TimeScale => timeScale;
-
         [SerializeField] private float duration = default;
-        private float Duration => duration;
-
         [SerializeField] private ObservableTween.EaseType easeType = default;
-        private ObservableTween.EaseType EaseType => easeType;
+
+        [UsedImplicitly] private float TimeScale
+        {
+            get => timeScale;
+            set => timeScale = value;
+        }
+        [UsedImplicitly] private float Duration
+        {
+            get => duration;
+            set => duration = value;
+        }
+        [UsedImplicitly] private ObservableTween.EaseType EaseType
+        {
+            get => easeType;
+            set => easeType = value;
+        }
 
         private ISubject<Unit> OnCompleteTweenSubject { get; } = new Subject<Unit>();
 

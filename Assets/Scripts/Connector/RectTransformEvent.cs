@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     public class RectTransformEvent : ConnectorBase
     {
         [SerializeField] private RectTransformEventType rectTransformEventType = default;
+        [SerializeField] private Component component = default;
+
         [UsedImplicitly] public RectTransformEventType RectTransformEventType
         {
             get => rectTransformEventType;
             set => rectTransformEventType = value;
         }
-
-        private Component component = default;
         [UsedImplicitly] public Component Component
         {
             get => component ? component : component = this;

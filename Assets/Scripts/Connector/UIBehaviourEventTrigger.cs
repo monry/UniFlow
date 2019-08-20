@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     public class UIBehaviourEventTrigger : ConnectorBase
     {
         [SerializeField] private EventTriggerType eventTriggerType = default;
+        [SerializeField] private UIBehaviour uiBehaviour = default;
+
         [UsedImplicitly] public EventTriggerType EventTriggerType
         {
             get => eventTriggerType;
             set => eventTriggerType = value;
         }
-
-        private UIBehaviour uiBehaviour = default;
         [UsedImplicitly] public UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();

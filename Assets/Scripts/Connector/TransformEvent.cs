@@ -11,13 +11,13 @@ namespace UniFlow.Connector
     public class TransformEvent : ConnectorBase
     {
         [SerializeField] private TransformEventType transformEventType = default;
+        [SerializeField] private Component component = default;
+
         [UsedImplicitly] public TransformEventType TransformEventType
         {
             get => transformEventType;
             set => transformEventType = value;
         }
-
-        private Component component = default;
         [UsedImplicitly] public Component Component
         {
             get => component ? component : component = this;

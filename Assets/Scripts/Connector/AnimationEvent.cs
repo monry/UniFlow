@@ -12,27 +12,26 @@ namespace UniFlow.Connector
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
+        [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
+        [SerializeField] private Animator animator = default;
+        [SerializeField] private SimpleAnimation simpleAnimation = default;
+
         [UsedImplicitly] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-
-        [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [UsedImplicitly] public AnimatorCullingMode CullingMode
         {
             get => cullingMode;
             set => cullingMode = value;
         }
-
-        [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
         [UsedImplicitly] public AnimatorUpdateMode UpdateMode
         {
             get => updateMode;
             set => updateMode = value;
         }
-
-        private Animator animator = default;
         [UsedImplicitly] public Animator Animator
         {
             get =>
@@ -44,8 +43,6 @@ namespace UniFlow.Connector
                             : gameObject.AddComponent<Animator>();
             set => animator = value;
         }
-
-        private SimpleAnimation simpleAnimation = default;
         [UsedImplicitly] public SimpleAnimation SimpleAnimation
         {
             get =>
