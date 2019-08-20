@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0-preview.8] - 2019-08-20
+
+Improve inspector
+
+### Improvements
+
+* Remove `ActAsReceiver` parameter from Connector components
+
 ## [0.1.0-preview.7] - 2019-08-19
 
 Implement `TimeScaleController`, `KeyEvent`
