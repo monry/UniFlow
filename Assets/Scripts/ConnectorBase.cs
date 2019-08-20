@@ -19,9 +19,6 @@ namespace UniFlow
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         private bool actAsTrigger = false;
 
-        [SerializeField] [Tooltip("Set true to allow to act as the receiver")]
-        private bool actAsReceiver = false;
-
         private IEnumerable<IConnectable> TargetConnectors =>
             new List<IConnectable>()
                 .Concat(targetComponents ?? new List<ConnectableBase>())
@@ -33,12 +30,6 @@ namespace UniFlow
         {
             get => actAsTrigger;
             set => actAsTrigger = value;
-        }
-
-        [UsedImplicitly] public bool ActAsReceiver
-        {
-            get => actAsReceiver;
-            set => actAsReceiver = value;
         }
 
         [Inject] private DiContainer Container { get; }
@@ -68,7 +59,7 @@ namespace UniFlow
                 .ToList()
                 .ForEach(x => observable.Subscribe(x.OnReceive));
 
-            if (ActAsReceiver)
+            if (!TargetConnectors.Any())
             {
                 observable.Subscribe();
             }
@@ -76,6 +67,7 @@ namespace UniFlow
 
         public abstract IObservable<EventMessage> OnConnectAsObservable();
 
+        [PublicAPI]
         public void AddConnectable(ConnectableBase connectable)
         {
             if (targetComponents == default)
