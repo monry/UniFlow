@@ -86,6 +86,7 @@ namespace UniFlow.Connector
             {
                 SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
                 SimpleAnimation.cullingMode = CullingMode;
+                SimpleAnimation.playAutomatically = false;
                 Animator.updateMode = UpdateMode;
             }
         }
