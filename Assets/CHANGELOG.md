@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0-preview.10] - 2019-08-22
+
+Tweak
+
+### Changes
+
+* Change some enum default values to unselected
+
 ## [0.1.0-preview.9] - 2019-08-22
 
 Add connectors
