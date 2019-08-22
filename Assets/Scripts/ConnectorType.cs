@@ -31,7 +31,9 @@ namespace UniFlow
         MoveParentTransform,
 
         LoadScene                 = 400,
+        LoadScene_Enum,
         UnloadScene,
+        UnloadScene_Enum,
 
         Timer                     = 9000,
         Interval,
