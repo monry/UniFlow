@@ -49,9 +49,9 @@ namespace UniFlow.Connector
                 simpleAnimation != default
                     ? simpleAnimation
                     : simpleAnimation =
-                        GetComponent<SimpleAnimation>() != default
-                            ? GetComponent<SimpleAnimation>()
-                            : gameObject.AddComponent<SimpleAnimation>()
+                        Animator.GetComponent<SimpleAnimation>() != default
+                            ? Animator.GetComponent<SimpleAnimation>()
+                            : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
         }

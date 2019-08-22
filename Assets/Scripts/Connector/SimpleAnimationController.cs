@@ -56,9 +56,9 @@ namespace UniFlow.Connector
                 simpleAnimation != default
                     ? simpleAnimation
                     : simpleAnimation =
-                        GetComponent<SimpleAnimation>() != default
-                            ? GetComponent<SimpleAnimation>()
-                            : gameObject.AddComponent<SimpleAnimation>()
+                        Animator.GetComponent<SimpleAnimation>() != default
+                            ? Animator.GetComponent<SimpleAnimation>()
+                            : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
         }
@@ -86,6 +86,7 @@ namespace UniFlow.Connector
             {
                 SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
                 SimpleAnimation.cullingMode = CullingMode;
+                SimpleAnimation.playAutomatically = false;
                 Animator.updateMode = UpdateMode;
             }
         }

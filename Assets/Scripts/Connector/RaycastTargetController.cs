@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace UniFlow.Connector
 {
-    [AddComponentMenu("UniFlow/RaycasterController", (int) ConnectorType.RaycastTargetController)]
+    [AddComponentMenu("UniFlow/RaycastTargetController", (int) ConnectorType.RaycastTargetController)]
     public class RaycastTargetController : ConnectorBase
     {
         [SerializeField] private List<Graphic> graphics = default;
