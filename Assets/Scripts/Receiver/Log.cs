@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Receiver
 {
-    [AddComponentMenu("UniFlow/Receiver/Log", 20001)]
+    [AddComponentMenu("UniFlow/Receiver/Log", (int) ConnectorType.Receiver)]
     public class Log : ReceiverBase
     {
         public override void OnReceive(EventMessages eventMessages)

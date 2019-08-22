@@ -1,5 +1,7 @@
 namespace UniFlow
 {
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable UnusedMember.Global
     public enum ConnectorType
     {
         LifecycleEvent            = 100,
@@ -17,6 +19,7 @@ namespace UniFlow
         PhysicsTrigger2DEvent,
 
         SimpleAnimationController = 300,
+        SimpleAnimationEvent,
         AnimatorTrigger,
         AnimationEvent,
         AudioController,
@@ -24,6 +27,8 @@ namespace UniFlow
         PlayableController,
         TimelineSignal,
         RaycasterController,
+        RaycastTargetController,
+        MoveParentTransform,
 
         LoadScene                 = 400,
         UnloadScene,
@@ -33,7 +38,10 @@ namespace UniFlow
         TimeScaleController,
         Empty,
 
-        // ReSharper disable once UnusedMember.Global
+        Bundle                    = 10000,
+
+        Receiver                  = 20000,
+
         Custom                    = -1,
     }
 }

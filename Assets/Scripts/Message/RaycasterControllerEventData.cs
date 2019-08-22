@@ -1,7 +1,9 @@
+using JetBrains.Annotations;
 using UniFlow.Connector;
 
 namespace UniFlow.Message
 {
+    [PublicAPI]
     public class RaycasterControllerEventData
     {
         private RaycasterControllerEventData(RaycasterControlMethod raycasterControlMethod)
