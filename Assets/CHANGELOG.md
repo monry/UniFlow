@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.0-preview.9] - 2019-08-22
+
+Add connectors
+
+### Features
+
+* Add connectors
+    * MoveParentTransform
+    * RaycastTargetController
+    * SimpleAnimationEvent
+
+### Improvements
+
+* Added Connector to load/unload scenes using `enum` values
+
+### Fixes
+
+* Fixed an issue where GameObject to which SimpleAnimation was attached was incorrect
+
 ## [0.1.0-preview.8] - 2019-08-20
 
 Improve inspector
