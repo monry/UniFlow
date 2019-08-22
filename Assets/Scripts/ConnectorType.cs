@@ -26,6 +26,7 @@ namespace UniFlow
         PlayableController,
         TimelineSignal,
         RaycasterController,
+        MoveParentTransform,
 
         LoadScene                 = 400,
         UnloadScene,
