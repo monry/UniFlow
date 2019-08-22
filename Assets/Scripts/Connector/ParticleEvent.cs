@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/ParticleEvent", (int) ConnectorType.ParticleEvent)]
     public class ParticleEvent : ConnectorBase
     {
-        [SerializeField] private ParticleEventType particleEventType = default;
+        [SerializeField] private ParticleEventType particleEventType = (ParticleEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public ParticleEventType ParticleEventType

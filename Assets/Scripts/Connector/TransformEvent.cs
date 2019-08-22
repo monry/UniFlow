@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/TransformEvent", (int) ConnectorType.TransformEvent)]
     public class TransformEvent : ConnectorBase
     {
-        [SerializeField] private TransformEventType transformEventType = default;
+        [SerializeField] private TransformEventType transformEventType = (TransformEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public TransformEventType TransformEventType

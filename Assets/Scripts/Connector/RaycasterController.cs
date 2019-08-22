@@ -12,18 +12,18 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/RaycasterController", (int) ConnectorType.RaycasterController)]
     public class RaycasterController : ConnectorBase
     {
+        [SerializeField] private RaycasterControlMethod raycasterControlMethod = (RaycasterControlMethod) (-1);
         [SerializeField] private List<BaseRaycaster> raycasters = default;
-        [SerializeField] private RaycasterControlMethod raycasterControlMethod = default;
 
-        [UsedImplicitly] private IEnumerable<BaseRaycaster> Raycasters
-        {
-            get => raycasters;
-            set => raycasters = value.ToList();
-        }
         [UsedImplicitly] private RaycasterControlMethod RaycasterControlMethod
         {
             get => raycasterControlMethod;
             set => raycasterControlMethod = value;
+        }
+        [UsedImplicitly] private IEnumerable<BaseRaycaster> Raycasters
+        {
+            get => raycasters;
+            set => raycasters = value.ToList();
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();

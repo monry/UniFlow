@@ -12,11 +12,16 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/RaycastTargetController", (int) ConnectorType.RaycastTargetController)]
     public class RaycastTargetController : ConnectorBase
     {
+        [SerializeField] private RaycastTargetControlMethod raycastTargetControlMethod = (RaycastTargetControlMethod) (-1);
         [SerializeField] private List<Graphic> graphics = default;
         [SerializeField] private List<Collider> colliders = default;
         [SerializeField] private List<Collider2D> collider2Ds = default;
-        [SerializeField] private RaycastTargetControlMethod raycastTargetControlMethod = default;
 
+        [UsedImplicitly] private RaycastTargetControlMethod RaycastTargetControlMethod
+        {
+            get => raycastTargetControlMethod;
+            set => raycastTargetControlMethod = value;
+        }
         [UsedImplicitly] public IEnumerable<Graphic> Graphics
         {
             get => graphics;
@@ -27,16 +32,10 @@ namespace UniFlow.Connector
             get => colliders;
             set => colliders = value.ToList();
         }
-
         [UsedImplicitly] public IEnumerable<Collider2D> Collider2Ds
         {
             get => collider2Ds;
             set => collider2Ds = value.ToList();
-        }
-        [UsedImplicitly] private RaycastTargetControlMethod RaycastTargetControlMethod
-        {
-            get => raycastTargetControlMethod;
-            set => raycastTargetControlMethod = value;
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();

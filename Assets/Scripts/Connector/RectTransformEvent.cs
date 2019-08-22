@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/RectTransformEvent", (int) ConnectorType.RectTransformEvent)]
     public class RectTransformEvent : ConnectorBase
     {
-        [SerializeField] private RectTransformEventType rectTransformEventType = default;
+        [SerializeField] private RectTransformEventType rectTransformEventType = (RectTransformEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public RectTransformEventType RectTransformEventType

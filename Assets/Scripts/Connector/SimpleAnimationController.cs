@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/SimpleAnimationController", (int) ConnectorType.SimpleAnimationController)]
     public class SimpleAnimationController : ConnectorBase
     {
-        [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = default;
+        [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = (SimpleAnimationControlMethod) (-1);
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;

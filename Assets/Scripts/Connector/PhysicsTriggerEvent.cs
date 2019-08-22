@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/PhyticsTriggerEvent", (int) ConnectorType.PhysicsTriggerEvent)]
     public class PhysicsTriggerEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = default;
+        [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = (PhysicsTriggerEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public PhysicsTriggerEventType PhysicsTriggerEventType

@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/PhyticsCollision2DEvent", (int) ConnectorType.PhysicsCollision2DEvent)]
     public class PhysicsCollision2DEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = default;
+        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = (PhysicsCollision2DEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public PhysicsCollision2DEventType PhysicsCollision2DEventType

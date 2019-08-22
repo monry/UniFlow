@@ -10,7 +10,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/MouseEvent", (int) ConnectorType.MouseEvent)]
     public class MouseEvent : ConnectorBase
     {
-        [SerializeField] private MouseEventType mouseEventType = default;
+        [SerializeField] private MouseEventType mouseEventType = (MouseEventType) (-1);
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public MouseEventType MouseEventType

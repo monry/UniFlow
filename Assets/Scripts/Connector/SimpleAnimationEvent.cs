@@ -9,7 +9,7 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
     public class SimpleAnimationEvent : ConnectorBase
     {
-        [SerializeField] private SimpleAnimationEventType simpleAnimationEventType = default;
+        [SerializeField] private SimpleAnimationEventType simpleAnimationEventType = (SimpleAnimationEventType) (-1);
         [SerializeField]
         [Tooltip("If you do not specify it will not be filtered")]
         private AnimationClip animationClip = default;
@@ -95,7 +95,7 @@ namespace UniFlow.Connector
 
     public enum SimpleAnimationEventType
     {
-        Play = 1,
+        Play,
         Stop,
     }
 }

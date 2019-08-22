@@ -9,11 +9,11 @@ namespace UniFlow.Connector
     [AddComponentMenu("UniFlow/KeyEvent", (int) ConnectorType.KeyEvent)]
     public class KeyEvent : ConnectorBase
     {
+        [SerializeField] private KeyEventType keyEventType = (KeyEventType) (-1);
         [SerializeField] private KeyCode keyCode = default;
-        [SerializeField] private KeyEventType keyEventType = default;
 
-        private KeyCode KeyCode => keyCode;
         private KeyEventType KeyEventType => keyEventType;
+        private KeyCode KeyCode => keyCode;
 
         public override IObservable<EventMessage> OnConnectAsObservable()
         {
