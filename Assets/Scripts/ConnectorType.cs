@@ -19,6 +19,7 @@ namespace UniFlow
         PhysicsTrigger2DEvent,
 
         SimpleAnimationController = 300,
+        SimpleAnimationEvent,
         AnimatorTrigger,
         AnimationEvent,
         AudioController,
