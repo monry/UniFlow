@@ -1,0 +1,11 @@
+FlowNode {
+    min-width: 200px;
+}
+
+FlowNode #MainContainer {
+    margin: 5px 10px;
+}
+
+.unity-label {
+    min-width: 100px;
+}
