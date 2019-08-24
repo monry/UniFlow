@@ -43,12 +43,17 @@ namespace UniFlow.Editor
         {
             AssetReferences.Reload();
             rootVisualElement.Clear();
-            var flowVisualElement = new FlowVisualElement
-            {
-                name = typeof(FlowVisualElement).Name,
-            };
-            rootVisualElement.Add(flowVisualElement);
             titleContent = new GUIContent("UniFlow Graph");
+
+            if (Selection.activeGameObject != default)
+            {
+                var flowVisualElement = new FlowVisualElement
+                {
+                    name = typeof(FlowVisualElement).Name,
+                };
+                rootVisualElement.Add(flowVisualElement);
+            }
+
             Repaint();
         }
     }

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,109 +25,114 @@ namespace UniFlow.Editor
             Insert(0, flowGridBackground);
         }
 
+        private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
+        private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
+        private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
+        private IDictionary<IConnectable, Port> OutputPorts { get; } = new Dictionary<IConnectable, Port>();
+        private IDictionary<IConnectable, Port> InputPorts { get; } = new Dictionary<IConnectable, Port>();
+
         public void Initialize()
         {
-            var edge1 = new FlowEdge();
-            var edge2 = new FlowEdge();
-
+            var activeGameObject = Selection.activeGameObject;
+            if (activeGameObject == default)
             {
-                var flowNode = new FlowNode
-                {
-                    title = "hoge",
-                };
-
-                {
-                    // Port の向きは Node から見た向き
-                    var port = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(FlowPort));
-                    port.portName = "Out";
-                    port.portColor = Color.red;
-
-                    // Edge も Node から見た向き
-                    edge1.output = port;
-
-                    // Add 対象の Container も Node から見た向き
-                    flowNode.outputContainer.Add(port);
-                }
-
-                var properties = new VisualElement
-                {
-                    name = "MainContainer",
-                };
-                properties.Add(new Slider("Foo", 0.0f, 1.0f));
-                flowNode.mainContainer.Add(properties);
-
-                AddElement(flowNode);
+                return;
             }
+
+            var connectables = activeGameObject.scene.IsValid()
+                ? activeGameObject.scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
+                : activeGameObject.GetComponentsInChildren<IConnectable>().ToArray();
+
+            foreach (var connector in connectables.OfType<ConnectorBase>())
             {
-                var flowNode = new FlowNode
+                if (!DestinationConnectors.ContainsKey(connector))
                 {
-                    title = "fuga",
-                };
-
-                {
-                    var port = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(FlowPort));
-                    port.portName = "In";
-                    port.portColor = Color.blue;
-
-                    edge1.input = port;
-
-                    flowNode.inputContainer.Add(port);
+                    DestinationConnectors[connector] = new List<IConnectable>();
                 }
 
+                foreach (var targetConnector in connector.TargetComponents)
                 {
-                    var port = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(FlowPort));
-                    port.portName = "Out";
-                    port.portColor = Color.red;
+                    if (!SourceConnectors.ContainsKey(targetConnector))
+                    {
+                        SourceConnectors[targetConnector] = new List<IConnectable>();
+                    }
 
-                    edge2.output = port;
-
-                    flowNode.outputContainer.Add(port);
+                    DestinationConnectors[connector].Add(targetConnector);
+                    SourceConnectors[targetConnector].Add(connector);
                 }
+            }
 
-                var properties = new VisualElement
+            var rootConnectables = connectables.Where(x => !SourceConnectors.ContainsKey(x)).ToArray();
+            if (!rootConnectables.Any() && connectables.Any())
+            {
+                rootConnectables = new[] {connectables.First()};
+            }
+
+            foreach (var (rootConnectable, index) in rootConnectables.Select((v, i) => (v, i)))
+            {
+                CreateNode(rootConnectable, 0, index * 400);
+            }
+
+            CreateEdges();
+        }
+
+        private void CreateNode(IConnectable connectable, int x, int y)
+        {
+            var node = new FlowNode
+            {
+                title = connectable.GetType().Name,
+            };
+            node.SetPosition(new Rect(x, y, 200, 200));
+
+            if (DestinationConnectors.ContainsKey(connectable))
+            {
+                foreach (var (targetConnectable, index) in DestinationConnectors[connectable].Select((v, i) => (v, i)))
                 {
-                    name = "MainContainer",
-                };
-                properties.Add(new Toggle("Bar"));
-                properties
-                    .Add(
-                        new ObjectField("Quz")
+                    if (!RenderedNodes.ContainsKey(targetConnectable))
+                    {
+                        CreateNode(targetConnectable, x + 300, y + index * 400);
+                    }
+                }
+            }
+
+            RenderedNodes[connectable] = node;
+            AddElement(node);
+        }
+
+        private void CreateEdges()
+        {
+            foreach (var (connectable, targetConnectables) in DestinationConnectors.Select(x => (x.Key, x.Value)))
+            {
+                foreach (var targetConnectable in targetConnectables)
+                {
+                    if (!RenderedNodes.ContainsKey(connectable) || !RenderedNodes.ContainsKey(targetConnectable))
+                    {
+                        continue;
+                    }
+
+                    if (!OutputPorts.ContainsKey(connectable))
+                    {
+                        OutputPorts[connectable] = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(FlowPort));
+                        OutputPorts[connectable].portName = "Out";
+                        RenderedNodes[connectable].outputContainer.Add(OutputPorts[connectable]);
+                    }
+
+                    if (!InputPorts.ContainsKey(targetConnectable))
+                    {
+                        InputPorts[targetConnectable] = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(FlowPort));
+                        InputPorts[targetConnectable].portName = "In";
+                        RenderedNodes[targetConnectable].inputContainer.Add(InputPorts[targetConnectable]);
+                    }
+
+                    AddElement(
+                        new FlowEdge
                         {
-                            objectType = typeof(StyleSheet),
+                            output = OutputPorts[connectable],
+                            input = InputPorts[targetConnectable],
                         }
                     );
-                flowNode.mainContainer.Add(properties);
-
-                AddElement(flowNode);
-            }
-            {
-                var flowNode = new FlowNode
-                {
-                    title = "piyo",
-                };
-
-                {
-                    var port = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(FlowPort));
-                    port.portName = "In";
-                    port.portColor = Color.blue;
-
-                    edge2.input = port;
-
-                    flowNode.inputContainer.Add(port);
                 }
-
-                var properties = new VisualElement
-                {
-                    name = "MainContainer",
-                };
-                properties.Add(new TextField("Buz"));
-                flowNode.mainContainer.Add(properties);
-
-                AddElement(flowNode);
             }
-
-            AddElement(edge1);
-            AddElement(edge2);
         }
     }
 }
