@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -28,8 +29,8 @@ namespace UniFlow.Editor
         private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
         private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
         private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
-        private IDictionary<IConnectable, Port> OutputPorts { get; } = new Dictionary<IConnectable, Port>();
-        private IDictionary<IConnectable, Port> InputPorts { get; } = new Dictionary<IConnectable, Port>();
+        private SearchWindowProvider SearchWindowProvider { get; set; }
+        private EdgeConnectorListener EdgeConnectorListener { get; set; }
 
         public void Initialize()
         {
@@ -38,6 +39,20 @@ namespace UniFlow.Editor
             {
                 return;
             }
+
+            SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
+            SearchWindowProvider.Initialize(this);
+            EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
+
+            nodeCreationRequest = context =>
+            {
+                SearchWindowProvider.FlowPort = null;
+                SearchWindow
+                    .Open(
+                        new SearchWindowContext(context.screenMousePosition),
+                        SearchWindowProvider
+                    );
+            };
 
             var connectables = activeGameObject.scene.IsValid()
                 ? activeGameObject.scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
@@ -70,19 +85,29 @@ namespace UniFlow.Editor
 
             foreach (var (rootConnectable, index) in rootConnectables.Select((v, i) => (v, i)))
             {
-                CreateNode(rootConnectable, 0, index * 400);
+                CreateNodeRecursive(rootConnectable, new Vector2(0, index * 400));
             }
 
             CreateEdges();
         }
 
-        private void CreateNode(IConnectable connectable, int x, int y)
+        internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
         {
-            var node = new FlowNode
-            {
-                title = connectable.GetType().Name,
-            };
-            node.SetPosition(new Rect(x, y, 200, 200));
+            return contentViewContainer
+                .WorldToLocal(
+                    FlowEditorWindow
+                        .Window
+                        .rootVisualElement
+                        .ChangeCoordinatesTo(
+                            FlowEditorWindow.Window.rootVisualElement.parent,
+                            mousePosition - FlowEditorWindow.Window.position.position
+                        )
+                );
+        }
+
+        private void CreateNodeRecursive(IConnectable connectable, Vector2 position)
+        {
+            var node = AddNode(connectable.GetType(), connectable, position);
 
             if (DestinationConnectors.ContainsKey(connectable))
             {
@@ -90,13 +115,12 @@ namespace UniFlow.Editor
                 {
                     if (!RenderedNodes.ContainsKey(targetConnectable))
                     {
-                        CreateNode(targetConnectable, x + 300, y + index * 400);
+                        CreateNodeRecursive(targetConnectable, new Vector2(position.x + 350, position.y + index * 400));
                     }
                 }
             }
 
             RenderedNodes[connectable] = node;
-            AddElement(node);
         }
 
         private void CreateEdges()
@@ -110,29 +134,39 @@ namespace UniFlow.Editor
                         continue;
                     }
 
-                    if (!OutputPorts.ContainsKey(connectable))
-                    {
-                        OutputPorts[connectable] = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(FlowPort));
-                        OutputPorts[connectable].portName = "Out";
-                        RenderedNodes[connectable].outputContainer.Add(OutputPorts[connectable]);
-                    }
-
-                    if (!InputPorts.ContainsKey(targetConnectable))
-                    {
-                        InputPorts[targetConnectable] = Port.Create<FlowEdge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(FlowPort));
-                        InputPorts[targetConnectable].portName = "In";
-                        RenderedNodes[targetConnectable].inputContainer.Add(InputPorts[targetConnectable]);
-                    }
-
-                    AddElement(
-                        new FlowEdge
-                        {
-                            output = OutputPorts[connectable],
-                            input = InputPorts[targetConnectable],
-                        }
-                    );
+                    AddElement(AddEdge((FlowPort) RenderedNodes[connectable].OutputPort, (FlowPort) RenderedNodes[targetConnectable].InputPort));
                 }
             }
+        }
+
+        public FlowNode AddNode(Type connectableType, IConnectable connectableInstance, Vector2 position)
+        {
+            var node = new FlowNode(ConnectableInfo.Create(connectableType, connectableInstance), EdgeConnectorListener);
+            node.Initialize();
+            node.SetPosition(new Rect(position.x, position.y, 0, 0));
+            AddElement(node);
+            return node;
+        }
+
+        public FlowEdge AddEdge(FlowPort outputPort, FlowPort inputPort)
+        {
+            var edge = new FlowEdge
+            {
+                output = outputPort,
+                input = inputPort,
+            };
+            edge.output.Connect(edge);
+            edge.input.Connect(edge);
+            AddElement(edge);
+            return edge;
+        }
+
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            return ports
+                .ToList()
+                .Where(x => x.direction != startPort.direction && x.node != startPort.node)
+                .ToList();
         }
     }
 }

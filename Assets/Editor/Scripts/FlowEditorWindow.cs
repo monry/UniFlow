@@ -7,7 +7,7 @@ namespace UniFlow.Editor
     {
         private static FlowEditorWindow window = default;
 
-        private static FlowEditorWindow Window
+        internal static FlowEditorWindow Window
         {
             get
             {
@@ -47,7 +47,7 @@ namespace UniFlow.Editor
 
             if (Selection.activeGameObject != default)
             {
-                var flowVisualElement = new FlowVisualElement
+                var flowVisualElement = new FlowVisualElement()
                 {
                     name = typeof(FlowVisualElement).Name,
                 };
