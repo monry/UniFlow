@@ -3,6 +3,23 @@ using UnityEngine;
 
 namespace UniFlow.Editor
 {
+    internal class FlowGraphParameters : ScriptableSingleton<FlowGraphParameters>
+    {
+        [SerializeField] private Vector3 latestPosition = Vector3.zero;
+        [SerializeField] private Vector3 latestScale = Vector3.one;
+
+        internal Vector3 LatestPosition
+        {
+            get => latestPosition;
+            set => latestPosition = value;
+        }
+        internal Vector3 LatestScale
+        {
+            get => latestScale;
+            set => latestScale = value;
+        }
+    }
+
     public class FlowEditorWindow : EditorWindow
     {
         private static FlowEditorWindow window = default;
@@ -20,39 +37,22 @@ namespace UniFlow.Editor
             }
         }
 
-        [MenuItem("Window/UniFlow/Open UniFlow Window %#u")]
+        [MenuItem("Window/UniFlow/Open UniFlow Graph %#u")]
         public static void Open()
         {
-            Window.Load();
-
-            var originalCallback = Selection.selectionChanged;
-            Selection.selectionChanged = () =>
-            {
-                originalCallback?.Invoke();
-                Window.Load();
-            };
+            var flowEditorWindow = GetWindow<FlowEditorWindow>();
+            flowEditorWindow.titleContent = new GUIContent("UniFlow Graph");
         }
 
-        [MenuItem("Window/UniFlow/Reload UniFlow Window %#&u")]
-        public static void Reload()
-        {
-            Window.Load();
-        }
-
-        private void Load()
+        private void OnEnable()
         {
             AssetReferences.Reload();
-            rootVisualElement.Clear();
-            titleContent = new GUIContent("UniFlow Graph");
 
-            if (Selection.activeGameObject != default)
+            var flowVisualElement = new FlowVisualElement
             {
-                var flowVisualElement = new FlowVisualElement()
-                {
-                    name = typeof(FlowVisualElement).Name,
-                };
-                rootVisualElement.Add(flowVisualElement);
-            }
+                name = typeof(FlowVisualElement).Name,
+            };
+            rootVisualElement.Add(flowVisualElement);
 
             Repaint();
         }

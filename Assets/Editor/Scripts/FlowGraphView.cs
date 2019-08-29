@@ -4,14 +4,22 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace UniFlow.Editor
 {
     public class FlowGraphView : GraphView
     {
-        public FlowGraphView()
+        private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
+        private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
+        private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
+        private SearchWindowProvider SearchWindowProvider { get; set; }
+        private EdgeConnectorListener EdgeConnectorListener { get; set; }
+
+        public void Initialize()
         {
+            UpdateViewTransform(FlowGraphParameters.instance.LatestPosition, FlowGraphParameters.instance.LatestScale);
             styleSheets.Add(AssetReferences.Instance.FlowGraphView);
             SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
             this.AddManipulator(new ContentDragger());
@@ -24,21 +32,12 @@ namespace UniFlow.Editor
                 name = typeof(FlowGridBackground).Name,
             };
             Insert(0, flowGridBackground);
-        }
 
-        private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
-        private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
-        private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
-        private SearchWindowProvider SearchWindowProvider { get; set; }
-        private EdgeConnectorListener EdgeConnectorListener { get; set; }
-
-        public void Initialize()
-        {
-            var activeGameObject = Selection.activeGameObject;
-            if (activeGameObject == default)
+            viewTransformChanged = graphView =>
             {
-                return;
-            }
+                FlowGraphParameters.instance.LatestPosition = graphView.viewTransform.position;
+                FlowGraphParameters.instance.LatestScale = graphView.viewTransform.scale;
+            };
 
             SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             SearchWindowProvider.Initialize(this);
@@ -54,9 +53,9 @@ namespace UniFlow.Editor
                     );
             };
 
-            var connectables = activeGameObject.scene.IsValid()
-                ? activeGameObject.scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
-                : activeGameObject.GetComponentsInChildren<IConnectable>().ToArray();
+            var connectables = Selection.activeGameObject == default || Selection.activeGameObject.scene.IsValid()
+                ? SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
+                : Selection.activeGameObject.GetComponentsInChildren<IConnectable>().ToArray();
 
             foreach (var connector in connectables.OfType<ConnectorBase>())
             {
