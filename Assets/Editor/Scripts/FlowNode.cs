@@ -1,21 +1,167 @@
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace UniFlow.Editor
 {
     public class FlowNode : Node
     {
-        public FlowNode()
+        public FlowNode(ConnectableInfo connectableInfo, IEdgeConnectorListener edgeConnectorListener)
         {
+            ConnectableInfo = connectableInfo;
+            EdgeConnectorListener = edgeConnectorListener;
+        }
+
+        public void Initialize()
+        {
+            title = ConnectableInfo.Name;
             styleSheets.Add(AssetReferences.Instance.FlowNode);
             capabilities =
                 Capabilities.Selectable |
 //                Capabilities.Collapsible |
-                Capabilities.Resizable |
+//                Capabilities.Resizable |
                 Capabilities.Movable |
                 Capabilities.Deletable |
                 Capabilities.Droppable |
                 Capabilities.Ascendable |
                 Capabilities.Renamable;
+
+            AddParameters();
+            AddPorts();
+        }
+
+        public Port InputPort { get; private set; }
+        public Port OutputPort { get; private set; }
+
+        private ConnectableInfo ConnectableInfo { get; }
+        private IEdgeConnectorListener EdgeConnectorListener { get; }
+
+        private static IDictionary<Type, Func<ConnectableInfo.Parameter, BindableElement>> CreateFieldFunctions { get; } = new Dictionary<Type, Func<ConnectableInfo.Parameter, BindableElement>>
+        {
+            {typeof(string), CreateBindableElement<string, TextField>},
+            {typeof(int), CreateBindableElement<int, IntegerField>},
+            {typeof(float), CreateBindableElement<float, FloatField>},
+            {typeof(double), CreateBindableElement<double, DoubleField>},
+            {typeof(bool), CreateBindableElement<bool, Toggle>},
+            {typeof(Object), CreateBindableElement<Object, ObjectField>},
+        };
+
+        private void AddParameters()
+        {
+            var contentsElement = this.Q("contents");
+
+            var parametersElement = new VisualElement {name = "parameters"};
+            {
+                var dividerElement = new VisualElement {name = "divider"};
+                dividerElement.AddToClassList("horizontal");
+                parametersElement.Add(dividerElement);
+
+                var itemsElement = new VisualElement {name = "items"};
+                parametersElement.Add(itemsElement);
+
+                {
+                    var element = new VisualElement();
+                    var field = new ObjectField("GameObject") {value = ConnectableInfo.GameObject, objectType = typeof(GameObject), allowSceneObjects = true};
+                    field.RegisterValueChangedCallback(x => ConnectableInfo.GameObject = x.newValue as GameObject);
+                    element.Add(field);
+                    itemsElement.Add(element);
+
+                    var innerDividerElement = new VisualElement {name = "divider"};
+                    innerDividerElement.AddToClassList("horizontal");
+                    itemsElement.Add(innerDividerElement);
+                }
+
+                foreach (var parameter in ConnectableInfo.Parameters)
+                {
+                    var element = new VisualElement();
+                    var field = CreateField(parameter);
+                    element.Add(field);
+                    itemsElement.Add(element);
+                }
+            }
+
+            contentsElement.Add(parametersElement);
+        }
+
+        private static BindableElement CreateField(ConnectableInfo.Parameter parameter)
+        {
+            // EnumField does not work unless the initial value is given to the second argument
+            if (parameter.Type.IsEnum)
+            {
+                var field = new EnumField(ToDisplayName(parameter.Name), parameter.Value == default ? (Enum) Activator.CreateInstance(parameter.Type) : (Enum) parameter.Value);
+                field.RegisterValueChangedCallback(x => parameter.Value = x.newValue);
+                return field;
+            }
+
+            var fieldType = parameter.Type;
+
+            if (typeof(Object).IsAssignableFrom(parameter.Type))
+            {
+                fieldType = typeof(Object);
+            }
+
+            return CreateFieldFunctions[fieldType](parameter);
+        }
+
+        private static BindableElement CreateBindableElement<TValue, TResult>(ConnectableInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
+        {
+            var field = new TResult
+            {
+                label = ToDisplayName(parameter.Name),
+                value = (TValue) parameter.Value,
+            };
+
+            if (field is INotifyValueChanged<TValue> notifyValueChanged)
+            {
+                notifyValueChanged.RegisterValueChangedCallback(x => parameter.Value = x.newValue);
+            }
+
+            // ReSharper disable once InvertIf
+            if (typeof(TValue) == typeof(Object) && field is ObjectField objectField)
+            {
+                objectField.objectType = parameter.Type;
+                objectField.allowSceneObjects = true;
+            }
+
+            return field;
+        }
+
+        private void AddPorts()
+        {
+            if (typeof(IConnector).IsAssignableFrom(ConnectableInfo.Type))
+            {
+                OutputPort = FlowPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, EdgeConnectorListener);
+                OutputPort.portName = "Out";
+                outputContainer.Add(OutputPort);
+            }
+            else
+            {
+                outputContainer.RemoveFromHierarchy();
+            }
+
+            InputPort = FlowPort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
+            InputPort.portName = "In";
+            inputContainer.Add(InputPort);
+        }
+
+        private static string ToDisplayName(string original)
+        {
+            if (Regex.IsMatch(original, "ControlMethod$"))
+            {
+                return "Control Method";
+            }
+
+            if (Regex.IsMatch(original, "EventType$"))
+            {
+                return "Event Type";
+            }
+
+            return original.Substring(0, 1).ToUpper() + Regex.Replace(original.Substring(1), "([A-Z]+[a-z])", " $1");
         }
     }
 }
