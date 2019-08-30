@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,17 +39,30 @@ namespace UniFlow.Editor
             }
         }
 
+        [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
+
+        public IList<ConnectableInfo> ConnectableInfoList => connectableInfoList;
+
         [MenuItem("Window/UniFlow/Open UniFlow Graph %#u")]
         public static void Open()
         {
-            var flowEditorWindow = GetWindow<FlowEditorWindow>();
-            flowEditorWindow.titleContent = new GUIContent("UniFlow Graph");
+            window = GetWindow<FlowEditorWindow>();
+            window.titleContent = new GUIContent("UniFlow Graph");
         }
 
-        private void OnEnable()
+        [SerializeField] private int counter;
+
+        public void ForceRegisterUndo()
+        {
+            counter++;
+        }
+
+        private void Reload()
         {
             AssetReferences.Reload();
 
+            rootVisualElement.Clear();
+            connectableInfoList = new List<ConnectableInfo>();
             var flowVisualElement = new FlowVisualElement
             {
                 name = typeof(FlowVisualElement).Name,
@@ -55,6 +70,31 @@ namespace UniFlow.Editor
             rootVisualElement.Add(flowVisualElement);
 
             Repaint();
+
+            foreach (var i in ConnectableInfoList)
+            {
+                foreach (var j in i.ParameterList)
+                {
+                    Debug.Log($"{i.Name}.{j.Name}: {j.Value}");
+                }
+            }
+        }
+
+        private void OnEnable()
+        {
+            Undo.undoRedoPerformed += Reload;
+            Reload();
+        }
+
+        private void OnDisable()
+        {
+            // ReSharper disable once DelegateSubtraction
+            Undo.undoRedoPerformed -= Reload;
+        }
+
+        private void OnDestroy()
+        {
+            window = null;
         }
     }
 }

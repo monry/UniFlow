@@ -53,6 +53,39 @@ namespace UniFlow.Editor
                     );
             };
 
+            CreateNodesFromInstance();
+
+            CreateEdges();
+
+            graphViewChanged += change =>
+            {
+                change
+                    .elementsToRemove?
+                    .OfType<FlowNode>()
+                    .ToList()
+                    .ForEach(
+                        x => x.RemoveFromGraphView()
+                    );
+                return change;
+            };
+        }
+
+        internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
+        {
+            return contentViewContainer
+                .WorldToLocal(
+                    FlowEditorWindow
+                        .Window
+                        .rootVisualElement
+                        .ChangeCoordinatesTo(
+                            FlowEditorWindow.Window.rootVisualElement.parent,
+                            mousePosition - FlowEditorWindow.Window.position.position
+                        )
+                );
+        }
+
+        private void CreateNodesFromInstance()
+        {
             var connectables = Selection.activeGameObject == default || Selection.activeGameObject.scene.IsValid()
                 ? SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
                 : Selection.activeGameObject.GetComponentsInChildren<IConnectable>().ToArray();
@@ -86,22 +119,6 @@ namespace UniFlow.Editor
             {
                 CreateNodeRecursive(rootConnectable, new Vector2(0, index * 400));
             }
-
-            CreateEdges();
-        }
-
-        internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
-        {
-            return contentViewContainer
-                .WorldToLocal(
-                    FlowEditorWindow
-                        .Window
-                        .rootVisualElement
-                        .ChangeCoordinatesTo(
-                            FlowEditorWindow.Window.rootVisualElement.parent,
-                            mousePosition - FlowEditorWindow.Window.position.position
-                        )
-                );
         }
 
         private void CreateNodeRecursive(IConnectable connectable, Vector2 position)
@@ -140,7 +157,9 @@ namespace UniFlow.Editor
 
         public FlowNode AddNode(Type connectableType, IConnectable connectableInstance, Vector2 position)
         {
-            var node = new FlowNode(ConnectableInfo.Create(connectableType, connectableInstance), EdgeConnectorListener);
+            var connectableInfo = ConnectableInfo.Create(connectableType, connectableInstance);
+            FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
+            var node = new FlowNode(connectableInfo, EdgeConnectorListener);
             node.Initialize();
             node.SetPosition(new Rect(position.x, position.y, 0, 0));
             AddElement(node);

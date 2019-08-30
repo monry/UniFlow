@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -51,6 +52,14 @@ namespace UniFlow.Editor
             {typeof(Object), CreateBindableElement<Object, ObjectField>},
         };
 
+        public void RemoveFromGraphView()
+        {
+            if (ConnectableInfo.Connectable != default)
+            {
+                Undo.DestroyObjectImmediate(ConnectableInfo.Connectable as Component);
+            }
+        }
+
         private void AddParameters()
         {
             var contentsElement = this.Q("contents");
@@ -67,7 +76,29 @@ namespace UniFlow.Editor
                 {
                     var element = new VisualElement();
                     var field = new ObjectField("GameObject") {value = ConnectableInfo.GameObject, objectType = typeof(GameObject), allowSceneObjects = true};
-                    field.RegisterValueChangedCallback(x => ConnectableInfo.GameObject = x.newValue as GameObject);
+                    field.RegisterValueChangedCallback(
+                        x =>
+                        {
+                            var groupId = Undo.GetCurrentGroup();
+
+                            if (x.previousValue != default && ConnectableInfo.Connectable != default)
+                            {
+                                Undo.DestroyObjectImmediate(ConnectableInfo.Connectable as Component);
+                                EditorUtility.SetDirty(x.previousValue);
+                            }
+
+                            if (x.newValue != default && x.newValue is GameObject newGameObject)
+                            {
+                                ConnectableInfo.GameObject = newGameObject;
+                                ConnectableInfo.Connectable = Undo.AddComponent(ConnectableInfo.GameObject, ConnectableInfo.Type) as IConnectable;
+                                ConnectableInfo.ApplyParameters();
+                                EditorUtility.SetDirty(x.newValue);
+                            }
+
+                            Undo.CollapseUndoOperations(groupId);
+                        }
+                    );
+
                     element.Add(field);
                     itemsElement.Add(element);
 
@@ -76,10 +107,10 @@ namespace UniFlow.Editor
                     itemsElement.Add(innerDividerElement);
                 }
 
-                foreach (var parameter in ConnectableInfo.Parameters)
+                foreach (var parameter in ConnectableInfo.ParameterList)
                 {
                     var element = new VisualElement();
-                    var field = CreateField(parameter);
+                    var field = CreateField(ConnectableInfo, parameter);
                     element.Add(field);
                     itemsElement.Add(element);
                 }
@@ -88,13 +119,21 @@ namespace UniFlow.Editor
             contentsElement.Add(parametersElement);
         }
 
-        private static BindableElement CreateField(ConnectableInfo.Parameter parameter)
+        private static BindableElement CreateField(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter)
         {
             // EnumField does not work unless the initial value is given to the second argument
             if (parameter.Type.IsEnum)
             {
                 var field = new EnumField(ToDisplayName(parameter.Name), parameter.Value == default ? (Enum) Activator.CreateInstance(parameter.Type) : (Enum) parameter.Value);
-                field.RegisterValueChangedCallback(x => parameter.Value = x.newValue);
+                field.RegisterValueChangedCallback(
+                    x =>
+                    {
+                        parameter.Value = x.newValue;
+                        Undo.RecordObject(connectableInfo.Connectable as Component, $"Change {connectableInfo.Name}.{parameter.Name}");
+                        connectableInfo.ApplyParameter(parameter);
+                        EditorUtility.SetDirty(connectableInfo.Connectable as Component);
+                    }
+                );
                 return field;
             }
 
@@ -118,7 +157,16 @@ namespace UniFlow.Editor
 
             if (field is INotifyValueChanged<TValue> notifyValueChanged)
             {
-                notifyValueChanged.RegisterValueChangedCallback(x => parameter.Value = x.newValue);
+                notifyValueChanged.RegisterValueChangedCallback(
+                    x =>
+                    {
+                        Debug.Log($"Change {x.target} {x.previousValue} to {x.newValue}");
+                        // 直接 Component 監視させちゃう？
+                        Undo.RecordObject(FlowEditorWindow.Window, "Change Value");
+                        parameter.Value = x.newValue;
+                        FlowEditorWindow.Window.ForceRegisterUndo();
+                    }
+                );
             }
 
             // ReSharper disable once InvertIf
