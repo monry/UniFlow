@@ -1,9 +1,0 @@
-#FlowGridBackground {
-    flex-direction: row;
-    flex: 1;
-    --grid-background-color: #2a2a2a;
-    --line-color: #262626;
-    --thick-line-color: #212121;
-    --spacing: 10;
-    --thick-lines: 10;
-}

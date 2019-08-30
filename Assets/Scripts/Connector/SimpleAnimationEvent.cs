@@ -72,8 +72,7 @@ namespace UniFlow.Connector
                 state
                     .ObserveEveryValueChanged(x => (SimpleAnimation.IsPlaying(x.name), x.normalizedTime))
                     .Pairwise()
-                    .SubscribeWithState(state, OnChangeAnimatorStateInfo)
-                    .AddTo(this);
+                    .SubscribeWithState(state, OnChangeAnimatorStateInfo);
             }
         }
 

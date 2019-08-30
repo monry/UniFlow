@@ -26,22 +26,6 @@ namespace UniFlow
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
-#if UNITY_EDITOR
-        [UsedImplicitly]
-        public IEnumerable<ConnectableBase> TargetComponents
-        {
-            get => targetComponents;
-            set => targetComponents = value.ToList();
-        }
-
-        [UsedImplicitly]
-        public IEnumerable<string> TargetIds
-        {
-            get => targetIds;
-            set => targetIds = value.ToList();
-        }
-#endif
-
         [UsedImplicitly] public bool ActAsTrigger
         {
             get => actAsTrigger;
