@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +15,7 @@ namespace UniFlow.Editor
             get => latestPosition;
             set => latestPosition = value;
         }
+
         internal Vector3 LatestScale
         {
             get => latestScale;
@@ -50,7 +51,7 @@ namespace UniFlow.Editor
             window.titleContent = new GUIContent("UniFlow Graph");
         }
 
-        [SerializeField] private int counter;
+        [SerializeField] [UsedImplicitly] private int counter;
 
         public void ForceRegisterUndo()
         {
@@ -70,14 +71,6 @@ namespace UniFlow.Editor
             rootVisualElement.Add(flowVisualElement);
 
             Repaint();
-
-            foreach (var i in ConnectableInfoList)
-            {
-                foreach (var j in i.ParameterList)
-                {
-                    Debug.Log($"{i.Name}.{j.Name}: {j.Value}");
-                }
-            }
         }
 
         private void OnEnable()
