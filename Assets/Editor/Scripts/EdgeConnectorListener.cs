@@ -27,6 +27,7 @@ namespace UniFlow.Editor
         void IEdgeConnectorListener.OnDrop(GraphView graphView, Edge edge)
         {
             FlowGraphView.AddEdge((FlowPort) edge.output, (FlowPort) edge.input);
+            (edge.output.node as FlowNode)?.ApplyTargetConnectors();
         }
     }
 }

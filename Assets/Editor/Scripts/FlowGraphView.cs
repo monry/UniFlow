@@ -59,9 +59,10 @@ namespace UniFlow.Editor
 
             graphViewChanged += change =>
             {
+                change.elementsToRemove?.ToList().ForEach(Debug.Log);
                 change
                     .elementsToRemove?
-                    .OfType<FlowNode>()
+                    .OfType<IRemovableElement>()
                     .ToList()
                     .ForEach(
                         x => x.RemoveFromGraphView()
