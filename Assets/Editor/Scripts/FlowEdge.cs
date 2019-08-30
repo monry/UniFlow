@@ -1,20 +1,13 @@
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 
 namespace UniFlow.Editor
 {
-    public class FlowEdge : Edge
+    public class FlowEdge : Edge, IRemovableElement
     {
-        public FlowEdge()
+        void IRemovableElement.RemoveFromGraphView()
         {
-
-        }
-
-        public override void OnSelected()
-        {
-            base.OnSelected();
-            Debug.Log($"Input: {input.portName}");
-            Debug.Log($"Output: {output.portName}");
+            output.Disconnect(this);
+            (output?.node as FlowNode)?.ApplyTargetConnectors();
         }
     }
 }

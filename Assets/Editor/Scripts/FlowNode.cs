@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -10,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace UniFlow.Editor
 {
-    public class FlowNode : Node
+    public class FlowNode : Node, IRemovableElement
     {
         public FlowNode(ConnectableInfo connectableInfo, IEdgeConnectorListener edgeConnectorListener)
         {
@@ -52,12 +53,30 @@ namespace UniFlow.Editor
             {typeof(Object), CreateBindableElement<Object, ObjectField>},
         };
 
-        public void RemoveFromGraphView()
+        void IRemovableElement.RemoveFromGraphView()
         {
-            if (ConnectableInfo.Connectable != default)
+            if (ConnectableInfo.Connectable == default || !(ConnectableInfo.Connectable is Component component))
             {
-                Undo.DestroyObjectImmediate(ConnectableInfo.Connectable as Component);
+                return;
             }
+
+            Undo.DestroyObjectImmediate(component);
+        }
+
+        public void ApplyTargetConnectors()
+        {
+            if (ConnectableInfo.Connectable == default || !(ConnectableInfo.Connectable is ConnectorBase connector))
+            {
+                return;
+            }
+
+            Undo.RecordObject(connector, "Apply Target Connectors");
+            connector.TargetComponents = OutputPort?
+                .connections
+                .Select(x => x.input.node as FlowNode)
+                .Where(x => x != default)
+                .Select(x => x.ConnectableInfo.Connectable)
+                .OfType<ConnectableBase>();
         }
 
         private void AddParameters()
@@ -92,6 +111,8 @@ namespace UniFlow.Editor
                                 ConnectableInfo.GameObject = newGameObject;
                                 ConnectableInfo.Connectable = Undo.AddComponent(ConnectableInfo.GameObject, ConnectableInfo.Type) as IConnectable;
                                 ConnectableInfo.ApplyParameters();
+                                ApplyTargetConnectors();
+                                InputPort?.connections.Select(y => y.output.node).OfType<FlowNode>().ToList().ForEach(y => y.ApplyTargetConnectors());
                                 EditorUtility.SetDirty(x.newValue);
                             }
 
