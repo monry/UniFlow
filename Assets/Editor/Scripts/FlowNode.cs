@@ -35,6 +35,7 @@ namespace UniFlow.Editor
 
             AddParameters();
             AddPorts();
+            RegisterCallback((GeometryChangedEvent e) => ApplyPosition());
         }
 
         public Port InputPort { get; private set; }
@@ -61,6 +62,22 @@ namespace UniFlow.Editor
             }
 
             Undo.DestroyObjectImmediate(component);
+        }
+
+        public Vector2 GetRecordedPosition()
+        {
+            return ((ConnectableBase) ConnectableInfo.Connectable).FlowGraphNodePosition;
+        }
+
+        public void ApplyPosition()
+        {
+            if (!(ConnectableInfo.Connectable is ConnectableBase connectable) || Mathf.Approximately(layout.position.magnitude, 0.0f))
+            {
+                return;
+            }
+
+            Undo.RecordObject(connectable, "Move Node");
+            connectable.FlowGraphNodePosition = layout.position;
         }
 
         public void ApplyTargetConnectors()
@@ -181,7 +198,6 @@ namespace UniFlow.Editor
                 notifyValueChanged.RegisterValueChangedCallback(
                     x =>
                     {
-                        Debug.Log($"Change {x.target} {x.previousValue} to {x.newValue}");
                         // 直接 Component 監視させちゃう？
                         Undo.RecordObject(FlowEditorWindow.Window, "Change Value");
                         parameter.Value = x.newValue;
