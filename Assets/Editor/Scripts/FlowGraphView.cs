@@ -14,8 +14,12 @@ namespace UniFlow.Editor
         private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
         private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
         private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
+        private IDictionary<FlowNode, Vector2Int> NormalizedPositionDictionary { get; } = new Dictionary<FlowNode, Vector2Int>();
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
+
+        private const float NodeWidth = 300.0f;
+        private static Vector2 NodeMargin { get; } = new Vector2(50.0f, 50.0f);
 
         public void Initialize()
         {
@@ -69,6 +73,13 @@ namespace UniFlow.Editor
                     );
                 return change;
             };
+
+            RegisterCallback(
+                (GeometryChangedEvent e) =>
+                {
+                    Relocation();
+                }
+            );
         }
 
         internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
@@ -88,14 +99,20 @@ namespace UniFlow.Editor
         private void CreateNodesFromInstance()
         {
             var connectables = Selection.activeGameObject == default || Selection.activeGameObject.scene.IsValid()
-                ? SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<IConnectable>()).ToArray()
-                : Selection.activeGameObject.GetComponentsInChildren<IConnectable>().ToArray();
+                ? SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<ConnectableBase>()).ToArray()
+                : Selection.activeGameObject.GetComponentsInChildren<ConnectableBase>().ToArray();
 
-            foreach (var connector in connectables.OfType<ConnectorBase>())
+            foreach (var connectable in connectables)
             {
-                if (!DestinationConnectors.ContainsKey(connector))
+                if (!DestinationConnectors.ContainsKey(connectable))
                 {
-                    DestinationConnectors[connector] = new List<IConnectable>();
+                    DestinationConnectors[connectable] = new List<IConnectable>();
+                }
+
+                var connector = connectable as ConnectorBase;
+                if (connector == default)
+                {
+                    continue;
                 }
 
                 foreach (var targetConnector in connector.TargetComponents)
@@ -105,8 +122,8 @@ namespace UniFlow.Editor
                         SourceConnectors[targetConnector] = new List<IConnectable>();
                     }
 
-                    DestinationConnectors[connector].Add(targetConnector);
-                    SourceConnectors[targetConnector].Add(connector);
+                    DestinationConnectors[connectable].Add(targetConnector);
+                    SourceConnectors[targetConnector].Add(connectable);
                 }
             }
 
@@ -118,13 +135,15 @@ namespace UniFlow.Editor
 
             foreach (var (rootConnectable, index) in rootConnectables.Select((v, i) => (v, i)))
             {
-                CreateNodeRecursive(rootConnectable, new Vector2(0, index * 400));
+                CreateNodeRecursive(rootConnectable, new Vector2Int(0, index));
             }
         }
 
-        private void CreateNodeRecursive(IConnectable connectable, Vector2 position)
+        private void CreateNodeRecursive(IConnectable connectable, Vector2Int normalizedPosition)
         {
-            var node = AddNode(connectable.GetType(), connectable, position);
+            var node = AddNode(connectable.GetType(), connectable, Vector2.zero);
+            NormalizedPositionDictionary[node] = normalizedPosition;
+            RenderedNodes[connectable] = node;
 
             if (DestinationConnectors.ContainsKey(connectable))
             {
@@ -132,12 +151,52 @@ namespace UniFlow.Editor
                 {
                     if (!RenderedNodes.ContainsKey(targetConnectable))
                     {
-                        CreateNodeRecursive(targetConnectable, new Vector2(position.x + 350, position.y + index * 400));
+                        CreateNodeRecursive(targetConnectable, new Vector2Int(normalizedPosition.x + 1, normalizedPosition.y + index));
+                    }
+                    else if (NormalizedPositionDictionary[RenderedNodes[targetConnectable]].x < normalizedPosition.x + 1)
+                    {
+                        NormalizedPositionDictionary[RenderedNodes[targetConnectable]] = new Vector2Int(normalizedPosition.x + 1, normalizedPosition.y + index);
                     }
                 }
             }
+        }
 
-            RenderedNodes[connectable] = node;
+        private void Relocation()
+        {
+            var nextYList = new List<float>();
+
+            var groupId = Undo.GetCurrentGroup();
+
+            foreach (var pair in NormalizedPositionDictionary)
+            {
+                var node = pair.Key;
+                var normalizedPosition = pair.Value;
+                if (nextYList.Count <= normalizedPosition.x)
+                {
+                    nextYList.Add(0.0f);
+                }
+
+                var position = node.GetRecordedPosition();
+                Debug.Log(position);
+                if (position.magnitude > 0.0f)
+                {
+                    node.SetPosition(new Rect(position, node.layout.size));
+                }
+                else
+                {
+                    node.SetPosition(
+                        new Rect(
+                            new Vector2(normalizedPosition.x * (NodeWidth + NodeMargin.x), nextYList[normalizedPosition.x]),
+                            node.layout.size
+                        )
+                    );
+                    node.ApplyPosition();
+                }
+
+                nextYList[normalizedPosition.x] += node.layout.height + NodeMargin.y;
+            }
+
+            Undo.CollapseUndoOperations(groupId);
         }
 
         private void CreateEdges()
