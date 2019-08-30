@@ -78,6 +78,7 @@ namespace UniFlow.Editor
 
             Undo.RecordObject(connectable, "Move Node");
             connectable.FlowGraphNodePosition = layout.position;
+            EditorUtility.SetDirty(connectable);
         }
 
         public void ApplyTargetConnectors()
@@ -94,6 +95,7 @@ namespace UniFlow.Editor
                 .Where(x => x != default)
                 .Select(x => x.ConnectableInfo.Connectable)
                 .OfType<ConnectableBase>();
+            EditorUtility.SetDirty(connector);
         }
 
         private void AddParameters()

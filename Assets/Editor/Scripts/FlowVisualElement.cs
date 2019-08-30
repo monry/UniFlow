@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -31,7 +32,7 @@ namespace UniFlow.Editor
                         }
                         else
                         {
-                            AssetDatabase.SaveAssets();
+                            EditorSceneManager.SaveScene(Selection.activeGameObject.scene);
                         }
                     }
 
