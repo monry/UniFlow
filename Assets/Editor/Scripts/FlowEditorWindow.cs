@@ -15,12 +15,12 @@ namespace UniFlow.Editor
             get => latestPosition;
             set => latestPosition = value;
         }
-
         internal Vector3 LatestScale
         {
             get => latestScale;
             set => latestScale = value;
         }
+        internal static bool IsPrefabMode => Selection.activeGameObject != default && !Selection.activeGameObject.scene.IsValid();
     }
 
     public class FlowEditorWindow : EditorWindow
@@ -68,6 +68,7 @@ namespace UniFlow.Editor
             {
                 name = typeof(FlowVisualElement).Name,
             };
+            flowVisualElement.Initialize();
             rootVisualElement.Add(flowVisualElement);
 
             Repaint();
