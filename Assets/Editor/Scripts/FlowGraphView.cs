@@ -19,6 +19,7 @@ namespace UniFlow.Editor
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
 
         private const float NodeWidth = 300.0f;
+        private static Vector2 NodesOffset { get; } = new Vector2(50.0f, 50.0f);
         private static Vector2 NodeMargin { get; } = new Vector2(50.0f, 50.0f);
 
         public void Initialize()
@@ -80,6 +81,42 @@ namespace UniFlow.Editor
                     Relocation();
                 }
             );
+        }
+
+        public void Relocation(bool forceReset = false)
+        {
+            var nextYList = new List<float>();
+
+            var groupId = Undo.GetCurrentGroup();
+
+            foreach (var pair in NormalizedPositionDictionary)
+            {
+                var node = pair.Key;
+                var normalizedPosition = pair.Value;
+                if (nextYList.Count <= normalizedPosition.x)
+                {
+                    nextYList.Add(0.0f);
+                }
+
+                if (!forceReset && node.GetRecordedPosition().magnitude > 0.0f)
+                {
+                    node.SetPosition(new Rect(node.GetRecordedPosition(), node.layout.size));
+                }
+                else
+                {
+                    node.SetPosition(
+                        new Rect(
+                            new Vector2(normalizedPosition.x * (NodeWidth + NodeMargin.x) + NodesOffset.x, nextYList[normalizedPosition.x] + NodesOffset.y),
+                            node.layout.size
+                        )
+                    );
+                    node.ApplyPosition();
+                }
+
+                nextYList[normalizedPosition.x] += node.layout.height + NodeMargin.y;
+            }
+
+            Undo.CollapseUndoOperations(groupId);
         }
 
         internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
@@ -159,44 +196,6 @@ namespace UniFlow.Editor
                     }
                 }
             }
-        }
-
-        private void Relocation()
-        {
-            var nextYList = new List<float>();
-
-            var groupId = Undo.GetCurrentGroup();
-
-            foreach (var pair in NormalizedPositionDictionary)
-            {
-                var node = pair.Key;
-                var normalizedPosition = pair.Value;
-                if (nextYList.Count <= normalizedPosition.x)
-                {
-                    nextYList.Add(0.0f);
-                }
-
-                var position = node.GetRecordedPosition();
-                Debug.Log(position);
-                if (position.magnitude > 0.0f)
-                {
-                    node.SetPosition(new Rect(position, node.layout.size));
-                }
-                else
-                {
-                    node.SetPosition(
-                        new Rect(
-                            new Vector2(normalizedPosition.x * (NodeWidth + NodeMargin.x), nextYList[normalizedPosition.x]),
-                            node.layout.size
-                        )
-                    );
-                    node.ApplyPosition();
-                }
-
-                nextYList[normalizedPosition.x] += node.layout.height + NodeMargin.y;
-            }
-
-            Undo.CollapseUndoOperations(groupId);
         }
 
         private void CreateEdges()
