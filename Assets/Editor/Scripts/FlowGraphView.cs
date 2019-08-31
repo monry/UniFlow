@@ -38,17 +38,17 @@ namespace UniFlow.Editor
             };
             Insert(0, flowGridBackground);
 
-            viewTransformChanged = graphView =>
+            SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
+            SearchWindowProvider.Initialize(this);
+            EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
+
+            viewTransformChanged += graphView =>
             {
                 FlowGraphParameters.instance.LatestPosition = graphView.viewTransform.position;
                 FlowGraphParameters.instance.LatestScale = graphView.viewTransform.scale;
             };
 
-            SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
-            SearchWindowProvider.Initialize(this);
-            EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
-
-            nodeCreationRequest = context =>
+            nodeCreationRequest += context =>
             {
                 SearchWindowProvider.FlowPort = null;
                 SearchWindow
@@ -58,13 +58,8 @@ namespace UniFlow.Editor
                     );
             };
 
-            CreateNodesFromInstance();
-
-            CreateEdges();
-
             graphViewChanged += change =>
             {
-                change.elementsToRemove?.ToList().ForEach(Debug.Log);
                 change
                     .elementsToRemove?
                     .OfType<IRemovableElement>()
@@ -74,6 +69,10 @@ namespace UniFlow.Editor
                     );
                 return change;
             };
+
+            CreateNodesFromInstance();
+
+            CreateEdges();
 
             RegisterCallback(
                 (GeometryChangedEvent e) =>
@@ -182,6 +181,7 @@ namespace UniFlow.Editor
             NormalizedPositionDictionary[node] = normalizedPosition;
             RenderedNodes[connectable] = node;
 
+            // ReSharper disable once InvertIf
             if (DestinationConnectors.ContainsKey(connectable))
             {
                 foreach (var (targetConnectable, index) in DestinationConnectors[connectable].Select((v, i) => (v, i)))
