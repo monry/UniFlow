@@ -30,7 +30,7 @@ namespace UniFlow.Editor
                         {
                             PrefabUtility.SavePrefabAsset(Selection.activeGameObject);
                         }
-                        else
+                        else if (Selection.activeGameObject != default)
                         {
                             EditorSceneManager.SaveScene(Selection.activeGameObject.scene);
                         }
