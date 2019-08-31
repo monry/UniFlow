@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -19,6 +20,8 @@ namespace UniFlow.Editor
 
         public FlowPort FlowPort { get; set; }
 
+        private IDictionary<string, SearchTreeGroupEntry> SearchTreeGroupEntries { get; } = new Dictionary<string, SearchTreeGroupEntry>();
+
         public void Initialize(FlowGraphView flowGraphView)
         {
             FlowGraphView = flowGraphView;
@@ -31,16 +34,46 @@ namespace UniFlow.Editor
             {
                 new SearchTreeGroupEntry(new GUIContent("Add Node"))
             };
-            SearchTreeEntries
-                .AddRange(
-                    AppDomain
-                        .CurrentDomain
-                        .GetAssemblies()
-                        .SelectMany(x => x.GetTypes())
-                        .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectableBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
-                        .OrderBy(x => ((AddComponentMenu) x.GetCustomAttributes(false).FirstOrDefault())?.componentOrder)
-                        .Select(x => new SearchTreeEntry(new GUIContent(x.Name, DummyIcon)) {level = 1, userData = x})
-                        .ToList()
+
+            AppDomain
+                .CurrentDomain
+                .GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectableBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
+                .Where(x => x.GetCustomAttributes(typeof(AddComponentMenu), false).Any())
+                .Select(x => (menu: x.GetCustomAttributes(typeof(AddComponentMenu), false).OfType<AddComponentMenu>().First(), type: x))
+                .OrderBy(x => x.menu.componentMenu)
+                .ToList()
+                .ForEach(
+                    item =>
+                    {
+                        var (menu, type) = item;
+                        var componentMenuEntries = menu
+                            .componentMenu
+                            .Split('/')
+                            // Ignore first entry `UniFlow`
+                            .Skip(1)
+                            .ToArray();
+                        var fullPath = new StringBuilder();
+                        foreach (var (componentMenuEntry, index) in componentMenuEntries.Select((x, i) => (x, i)))
+                        {
+                            fullPath.Append($"/{componentMenuEntry}");
+                            if (index == componentMenuEntries.Length - 1)
+                            {
+                                break;
+                            }
+
+                            if (SearchTreeGroupEntries.ContainsKey(fullPath.ToString()))
+                            {
+                                continue;
+                            }
+
+                            SearchTreeGroupEntries[fullPath.ToString()] = new SearchTreeGroupEntry(new GUIContent(componentMenuEntry)) {level = index + 1};
+                            SearchTreeEntries.Add(SearchTreeGroupEntries[fullPath.ToString()]);
+                        }
+
+                        SearchTreeEntries.Add(new SearchTreeEntry(new GUIContent(componentMenuEntries.Last(), DummyIcon)) {level = componentMenuEntries.Length, userData = type});
+                    }
                 );
         }
 
