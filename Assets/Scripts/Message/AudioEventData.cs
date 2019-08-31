@@ -1,4 +1,5 @@
 using UniFlow.Connector;
+using UniFlow.Connector.Event;
 
 namespace UniFlow.Message
 {

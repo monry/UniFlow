@@ -4,6 +4,7 @@ using System.Linq;
 using UniFlow.Connector;
 using UniFlow.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
