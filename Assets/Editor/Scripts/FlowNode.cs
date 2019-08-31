@@ -71,7 +71,7 @@ namespace UniFlow.Editor
 
         public void ApplyPosition()
         {
-            if (!(ConnectableInfo.Connectable is ConnectableBase connectable) || Mathf.Approximately(layout.position.magnitude, 0.0f))
+            if (!(ConnectableInfo.Connectable is ConnectableBase connectable) || connectable == default || Mathf.Approximately(layout.position.magnitude, 0.0f))
             {
                 return;
             }
