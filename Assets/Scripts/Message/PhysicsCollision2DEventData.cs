@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UniFlow.Connector;
+using UniFlow.Connector.Event;
 using UnityEngine;
 
 namespace UniFlow.Message

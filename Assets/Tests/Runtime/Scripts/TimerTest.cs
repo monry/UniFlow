@@ -1,6 +1,7 @@
 using System.Collections;
 using UniFlow.Connector;
 using NUnit.Framework;
+using UniFlow.Connector.Logic;
 using UnityEngine.TestTools;
 
 namespace UniFlow.Tests.Runtime
