@@ -3,11 +3,11 @@ using UniRx;
 
 namespace UniFlow.Receiver
 {
-    public abstract class ObservableReceiverBase : ReceiverBase
+    public abstract class ObservableReceiverBase : ReceiverBase, IObservableReceiver
     {
         private ISubject<EventMessages> OnReceiveSubject { get; } = new Subject<EventMessages>();
 
-        protected IObservable<EventMessages> OnReceiveAsObservable()
+        IObservable<EventMessages> IObservableReceiver.OnReceiveAsObservable()
         {
             return OnReceiveSubject;
         }
