@@ -1,6 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
 using UniFlow.Connector;
+using UniFlow.Connector.Event;
 using UniFlow.Message;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-using AnimationEvent = UniFlow.Connector.AnimationEvent;
+using AnimationEvent = UniFlow.Connector.Event.AnimationEvent;
 
 namespace UniFlow.Tests.Runtime
 {

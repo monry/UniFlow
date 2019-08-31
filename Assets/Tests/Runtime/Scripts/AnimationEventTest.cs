@@ -2,7 +2,7 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using AnimationEvent = UniFlow.Connector.AnimationEvent;
+using AnimationEvent = UniFlow.Connector.Event.AnimationEvent;
 
 namespace UniFlow.Tests.Runtime
 {

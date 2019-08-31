@@ -2,6 +2,7 @@ using System.Collections;
 using UniFlow.Connector;
 using UniFlow.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 
