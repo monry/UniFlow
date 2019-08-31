@@ -80,6 +80,23 @@ namespace UniFlow.Editor
                     Relocation();
                 }
             );
+            RegisterCallback(
+                (KeyDownEvent e) =>
+                {
+                    // ReSharper disable once SwitchStatementMissingSomeCases
+                    switch (e.keyCode)
+                    {
+                        case KeyCode.C:
+                            SearchWindowProvider.FlowPort = null;
+                            SearchWindow
+                                .Open(
+                                    new SearchWindowContext(GUIUtility.GUIToScreenPoint(layout.position) + new Vector2(125.0f, 55.0f)),
+                                    SearchWindowProvider
+                                );
+                            break;
+                    }
+                }
+            );
         }
 
         public void Relocation(bool forceReset = false)
