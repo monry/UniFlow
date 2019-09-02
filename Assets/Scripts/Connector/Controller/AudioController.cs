@@ -14,6 +14,7 @@ namespace UniFlow.Connector.Controller
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
         [SerializeField] private AudioSource audioSource = default;
+        [SerializeField] private bool useSharedInstance = true;
 
         [UsedImplicitly] public AudioControlMethod AudioControlMethod
         {
@@ -31,10 +32,15 @@ namespace UniFlow.Connector.Controller
                 audioSource != default
                     ? audioSource
                     : audioSource =
-                        GetComponent<AudioSource>() != default
+                        UseSharedInstance && GetComponent<AudioSource>() != default
                             ? GetComponent<AudioSource>()
                             : gameObject.AddComponent<AudioSource>();
             set => audioSource = value;
+        }
+        [UsedImplicitly] public bool UseSharedInstance
+        {
+            get => useSharedInstance;
+            set => useSharedInstance = value;
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
