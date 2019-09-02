@@ -45,14 +45,6 @@ namespace UniFlow.Connector.Event
                 .Select(x => EventMessage.Create(ConnectorType.AudioEvent, AudioSource, AudioEventData.Create(x)));
         }
 
-        private void Awake()
-        {
-            if (AudioClip != default)
-            {
-                AudioSource.clip = AudioClip;
-            }
-        }
-
         private IObservable<AudioEventType> OnAudioEventAsObservable()
         {
             TimePair = AudioSource
