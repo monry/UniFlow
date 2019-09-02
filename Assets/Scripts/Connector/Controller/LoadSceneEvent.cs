@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace UniFlow.Connector.Event
+namespace UniFlow.Connector.Controller
 {
     public abstract class LoadSceneEventBase : ConnectorBase
     {
@@ -32,7 +32,7 @@ namespace UniFlow.Connector.Event
         }
     }
 
-    [AddComponentMenu("UniFlow/Event/LoadScene", (int) ConnectorType.LoadScene)]
+    [AddComponentMenu("UniFlow/Controller//LoadScene", (int) ConnectorType.LoadScene)]
     public class LoadSceneEvent : LoadSceneEventBase
     {
         [SerializeField] private List<string> sceneNames = default;

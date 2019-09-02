@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace UniFlow.Connector.Event
+namespace UniFlow.Connector.Controller
 {
     public abstract class UnloadSceneEventBase : ConnectorBase
     {
@@ -32,7 +32,7 @@ namespace UniFlow.Connector.Event
         }
     }
 
-    [AddComponentMenu("UniFlow/Event/UnloadScene", (int) ConnectorType.UnloadScene)]
+    [AddComponentMenu("UniFlow/Controller//UnloadScene", (int) ConnectorType.UnloadScene)]
     public class UnloadSceneEvent : UnloadSceneEventBase
     {
         [SerializeField] private List<string> sceneNames = default;
