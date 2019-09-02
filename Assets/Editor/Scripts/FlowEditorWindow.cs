@@ -41,17 +41,16 @@ namespace UniFlow.Editor
         }
 
         [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
+        [SerializeField] [UsedImplicitly] private int counter = default;
 
         public IList<ConnectableInfo> ConnectableInfoList => connectableInfoList;
 
-        [MenuItem("Window/UniFlow/Open UniFlow Graph %#u")]
+        [MenuItem("Window/UniFlow/Open UniFlow Graph")]
         public static void Open()
         {
             window = GetWindow<FlowEditorWindow>();
             window.titleContent = new GUIContent("UniFlow Graph");
         }
-
-        [SerializeField] [UsedImplicitly] private int counter;
 
         public void ForceRegisterUndo()
         {
