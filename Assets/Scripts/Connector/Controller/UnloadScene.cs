@@ -9,9 +9,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace UniFlow.Connector.Event
+namespace UniFlow.Connector.Controller
 {
-    public abstract class UnloadSceneEventBase : ConnectorBase
+    public abstract class UnloadSceneBase : ConnectorBase
     {
         [UsedImplicitly]
         public abstract IEnumerable<string> SceneNames { get; set; }
@@ -32,8 +32,8 @@ namespace UniFlow.Connector.Event
         }
     }
 
-    [AddComponentMenu("UniFlow/Event/UnloadScene", (int) ConnectorType.UnloadScene)]
-    public class UnloadSceneEvent : UnloadSceneEventBase
+    [AddComponentMenu("UniFlow/Controller//UnloadScene", (int) ConnectorType.UnloadScene)]
+    public class UnloadScene : UnloadSceneBase
     {
         [SerializeField] private List<string> sceneNames = default;
 
@@ -44,7 +44,7 @@ namespace UniFlow.Connector.Event
         }
     }
 
-    public abstract class UnloadSceneEvent<TSceneName> : UnloadSceneEventBase where TSceneName : Enum
+    public abstract class UnloadScene<TSceneName> : UnloadSceneBase where TSceneName : Enum
     {
         [SerializeField] private List<TSceneName> sceneNames = default;
 

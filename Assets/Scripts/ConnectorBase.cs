@@ -65,7 +65,8 @@ namespace UniFlow
                     eventMessages => (this as IConnector)
                         .OnConnectAsObservable()
                         .Select(x => (eventMessages ?? EventMessages.Create()).Append(x))
-                );
+                )
+                .Share();
             TargetConnectors
                 .OfType<IConnector>()
                 .ToList()
