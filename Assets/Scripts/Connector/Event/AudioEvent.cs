@@ -59,10 +59,12 @@ namespace UniFlow.Connector.Event
                 case AudioEventType.UnPause:
                     return AudioSource
                         .ObserveEveryValueChanged(x => x.isPlaying)
+                        .Where(_ => AudioClip == default || AudioClip == AudioSource.clip)
                         .Select(x => DetectAudioEventType(x, AudioSource.clip))
                         .Where(x => AudioEventType == x);
                 case AudioEventType.Loop:
                     return TimePair
+                        .Where(_ => AudioClip == default || AudioClip == AudioSource.clip)
                         .Where(xs => AudioSource.isPlaying && xs.Current < xs.Previous && xs.Previous > 0.0f)
                         .Select(_ => AudioEventType.Loop);
                 default:
