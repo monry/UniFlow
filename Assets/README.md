@@ -59,6 +59,12 @@ Set true to allow to act as the entry point of events.
 
 Individual parameters can be specified for each component.
 
+### UniFlow Graph
+
+![image](https://user-images.githubusercontent.com/838945/64085909-463dd780-cd70-11e9-9192-77972dbcebce.png)
+
+UniFlow provides GraphView to view/edit connectables in scenes/prefabs
+
 ## Components what inherits `ConnectorBase`
 
 ### Messaging from traditional callback

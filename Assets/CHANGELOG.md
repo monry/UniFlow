@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.1.0-preview.12] - 2019-09-02
+
+Tweak
+
+### Fixes
+
+* Remove debug code
+    * Remove shortcut key
+* Update README.md
+
+## [0.1.0-preview.11] - 2019-09-02
+
+Implement UniFlow Graph
+
+### Features
+
+* UniFlow Graph
+    * Display connectables in Graph View
+    * Edit connectables
+* Add `IObservableReceiver`
+
+### Fixes
+
+* SimpleAnimationEvent has been destroyed but still trying to access
+
 ## [0.1.0-preview.10] - 2019-08-22
 
 Tweak
