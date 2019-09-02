@@ -11,7 +11,7 @@ using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
-    public abstract class UnloadSceneEventBase : ConnectorBase
+    public abstract class UnloadSceneBase : ConnectorBase
     {
         [UsedImplicitly]
         public abstract IEnumerable<string> SceneNames { get; set; }
@@ -33,7 +33,7 @@ namespace UniFlow.Connector.Controller
     }
 
     [AddComponentMenu("UniFlow/Controller//UnloadScene", (int) ConnectorType.UnloadScene)]
-    public class UnloadSceneEvent : UnloadSceneEventBase
+    public class UnloadScene : UnloadSceneBase
     {
         [SerializeField] private List<string> sceneNames = default;
 
@@ -44,7 +44,7 @@ namespace UniFlow.Connector.Controller
         }
     }
 
-    public abstract class UnloadSceneEvent<TSceneName> : UnloadSceneEventBase where TSceneName : Enum
+    public abstract class UnloadScene<TSceneName> : UnloadSceneBase where TSceneName : Enum
     {
         [SerializeField] private List<TSceneName> sceneNames = default;
 
