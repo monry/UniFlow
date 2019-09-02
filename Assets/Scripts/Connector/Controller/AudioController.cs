@@ -52,16 +52,13 @@ namespace UniFlow.Connector.Controller
                 );
         }
 
-        private void Awake()
+        private void InvokeAudioSourceMethod()
         {
             if (AudioClip != default)
             {
                 AudioSource.clip = AudioClip;
             }
-        }
 
-        private void InvokeAudioSourceMethod()
-        {
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:
