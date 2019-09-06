@@ -30,6 +30,7 @@ namespace UniFlow.Connector.Event
 
         private IObservable<Unit> OnEventAsObservable()
         {
+#if !(UNITY_IOS || UNITY_ANDROID || UNITY_METRO)            
             switch (MouseEventType)
             {
                 case MouseEventType.MouseDown:
@@ -49,6 +50,9 @@ namespace UniFlow.Connector.Event
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+#else
+            throw new PlatformNotSupportedException("MouseEvent does not support mobile platform");
+#endif
         }
     }
 
