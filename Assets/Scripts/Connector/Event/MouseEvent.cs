@@ -30,7 +30,7 @@ namespace UniFlow.Connector.Event
 
         private IObservable<Unit> OnEventAsObservable()
         {
-#if !(UNITY_IOS || UNITY_ANDROID || UNITY_METRO)            
+#if !(UNITY_IOS || UNITY_ANDROID || UNITY_METRO)
             switch (MouseEventType)
             {
                 case MouseEventType.MouseDown:
