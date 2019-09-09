@@ -18,7 +18,10 @@ namespace UniFlow.Editor
             {
                 if (FlowEditorWindow.Window != default)
                 {
-                    Remove(Content);
+                    if (Contains(Content))
+                    {
+                        Remove(Content);
+                    }
                     Load();
                 }
             };
