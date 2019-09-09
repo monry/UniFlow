@@ -25,20 +25,7 @@ namespace UniFlow.Editor
 
     public class FlowEditorWindow : EditorWindow
     {
-        private static FlowEditorWindow window = default;
-
-        internal static FlowEditorWindow Window
-        {
-            get
-            {
-                if (window == default)
-                {
-                    window = GetWindow<FlowEditorWindow>();
-                }
-
-                return window;
-            }
-        }
+        internal static FlowEditorWindow Window { get; private set; } = default;
 
         [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
         [SerializeField] [UsedImplicitly] private int counter = default;
@@ -48,8 +35,8 @@ namespace UniFlow.Editor
         [MenuItem("Window/UniFlow/Open UniFlow Graph")]
         public static void Open()
         {
-            window = GetWindow<FlowEditorWindow>();
-            window.titleContent = new GUIContent("UniFlow Graph");
+            GetWindow<FlowEditorWindow>();
+            Window.titleContent = new GUIContent("UniFlow Graph");
         }
 
         public void ForceRegisterUndo()
@@ -75,6 +62,7 @@ namespace UniFlow.Editor
 
         private void OnEnable()
         {
+            Window = this;
             Undo.undoRedoPerformed += Reload;
             Reload();
         }
@@ -87,7 +75,7 @@ namespace UniFlow.Editor
 
         private void OnDestroy()
         {
-            window = null;
+            Window = null;
         }
     }
 }

@@ -16,8 +16,11 @@ namespace UniFlow.Editor
 
             Selection.selectionChanged += () =>
             {
-                Remove(Content);
-                Load();
+                if (FlowEditorWindow.Window != default)
+                {
+                    Remove(Content);
+                    Load();
+                }
             };
 
             var toolbar = new IMGUIContainer(

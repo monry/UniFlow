@@ -170,6 +170,11 @@ namespace UniFlow.Editor
 
                 foreach (var targetConnector in connector.TargetComponents)
                 {
+                    if (targetConnector == default)
+                    {
+                        continue;
+                    }
+
                     if (!SourceConnectors.ContainsKey(targetConnector))
                     {
                         SourceConnectors[targetConnector] = new List<IConnectable>();
