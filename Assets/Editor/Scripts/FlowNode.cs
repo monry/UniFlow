@@ -265,7 +265,9 @@ namespace UniFlow.Editor
                 return GameObject.Find(DefaultTargetGameObjectName);
             }
 
-            return new GameObject(DefaultTargetGameObjectName);
+            var go = new GameObject(DefaultTargetGameObjectName);
+            Undo.RegisterCreatedObjectUndo(go, "New UniFlowController");
+            return go;
         }
 
         private void AddPorts()
