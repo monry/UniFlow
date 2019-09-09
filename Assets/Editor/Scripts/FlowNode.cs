@@ -33,6 +33,16 @@ namespace UniFlow.Editor
                 Capabilities.Ascendable |
                 Capabilities.Renamable;
 
+            if (ConnectableInfo.GameObject == default)
+            {
+                ConnectableInfo.GameObject = DeterminateGameObject();
+            }
+
+            if (ConnectableInfo.Connectable == default)
+            {
+                ConnectableInfo.Connectable = Undo.AddComponent(ConnectableInfo.GameObject, ConnectableInfo.Type) as IConnectable;
+            }
+
             AddParameters();
             AddPorts();
             RegisterCallback((GeometryChangedEvent e) => ApplyPosition());
@@ -44,7 +54,9 @@ namespace UniFlow.Editor
         private ConnectableInfo ConnectableInfo { get; }
         private IEdgeConnectorListener EdgeConnectorListener { get; }
 
-        private static IDictionary<Type, Func<ConnectableInfo.Parameter, BindableElement>> CreateFieldFunctions { get; } = new Dictionary<Type, Func<ConnectableInfo.Parameter, BindableElement>>
+        private const string DefaultTargetGameObjectName = "UniFlowController";
+
+        private static IDictionary<Type, Func<ConnectableInfo, ConnectableInfo.Parameter, BindableElement>> CreateFieldFunctions { get; } = new Dictionary<Type, Func<ConnectableInfo, ConnectableInfo.Parameter, BindableElement>>
         {
             {typeof(string), CreateBindableElement<string, TextField>},
             {typeof(int), CreateBindableElement<int, IntegerField>},
@@ -135,6 +147,11 @@ namespace UniFlow.Editor
                                 EditorUtility.SetDirty(x.newValue);
                             }
 
+                            if (x.previousValue != default && x.previousValue is GameObject previousGameObject && previousGameObject.name == "Dummy")
+                            {
+                                Object.Destroy(previousGameObject);
+                            }
+
                             Undo.CollapseUndoOperations(groupId);
                         }
                     );
@@ -159,8 +176,22 @@ namespace UniFlow.Editor
             contentsElement.Add(parametersElement);
         }
 
-        private static BindableElement CreateField(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter)
+        private static VisualElement CreateField(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter)
         {
+            // List field only be rendered by PropertyField
+            if (parameter.Type.IsGenericType && typeof(List<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition()))
+            {
+                if (connectableInfo.GameObject == default || connectableInfo.Connectable == default)
+                {
+                    return null;
+                }
+
+                var serializedObject = new SerializedObject(connectableInfo.Connectable as Component);
+                var field = new PropertyField(serializedObject.FindProperty(parameter.Name), ToDisplayName(parameter.Name));
+                field.Bind(serializedObject);
+                return field;
+            }
+
             // EnumField does not work unless the initial value is given to the second argument
             if (parameter.Type.IsEnum)
             {
@@ -184,16 +215,19 @@ namespace UniFlow.Editor
                 fieldType = typeof(Object);
             }
 
-            return CreateFieldFunctions[fieldType](parameter);
+            return CreateFieldFunctions[fieldType](connectableInfo, parameter);
         }
 
-        private static BindableElement CreateBindableElement<TValue, TResult>(ConnectableInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
+        private static BindableElement CreateBindableElement<TValue, TResult>(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
         {
             var field = new TResult
             {
                 label = ToDisplayName(parameter.Name),
-                value = (TValue) parameter.Value,
             };
+            if (parameter.Value != default)
+            {
+                field.value = (TValue) parameter.Value;
+            }
 
             if (field is INotifyValueChanged<TValue> notifyValueChanged)
             {
@@ -203,6 +237,7 @@ namespace UniFlow.Editor
                         // 直接 Component 監視させちゃう？
                         Undo.RecordObject(FlowEditorWindow.Window, "Change Value");
                         parameter.Value = x.newValue;
+                        connectableInfo.ApplyParameter(parameter);
                         FlowEditorWindow.Window.ForceRegisterUndo();
                     }
                 );
@@ -216,6 +251,23 @@ namespace UniFlow.Editor
             }
 
             return field;
+        }
+
+        private static GameObject DeterminateGameObject()
+        {
+            if (Selection.activeGameObject != default)
+            {
+                return Selection.activeGameObject;
+            }
+
+            if (GameObject.Find(DefaultTargetGameObjectName) != default)
+            {
+                return GameObject.Find(DefaultTargetGameObjectName);
+            }
+
+            var go = new GameObject(DefaultTargetGameObjectName);
+            Undo.RegisterCreatedObjectUndo(go, "New UniFlowController");
+            return go;
         }
 
         private void AddPorts()

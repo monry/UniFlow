@@ -173,6 +173,8 @@ Component supports below events to observe.
 * MouseOver
 * MouseDrag
 
+Note: Do not notify on mobile platforms.
+
 ### Messaging from Physics
 
 #### `PhysicsCollisionEvent`
@@ -224,6 +226,26 @@ Component supports below events to observe.
 * TriggerStay2D
 
 ### Messaging from time related components
+
+#### `ActivationController`
+
+This component will control activation of `GameObject` and `MonoBehaviour`.
+
+Invoke `GameObject.SetActive(bool)` if `TargetGameObjects` field specified.
+
+Change `MonoBehaviour.enabled` field if `TargetMonoBaheviours` field specified.
+
+#### `DestroyInstance`
+
+This component will destroy instances.
+
+#### `SimpleAnimationController`
+
+This component will control [SimpleAnimation](https://github.com/Unity-Technologies/SimpleAnimation) components.
+
+#### `SimpleAnimationEvent`
+
+This component will observe event that triggered from [SimpleAnimation](https://github.com/Unity-Technologies/SimpleAnimation) components.
 
 #### `AnimatorTrigger`
 
@@ -277,6 +299,36 @@ If you do not specify instance of `PlayableDirector` will be obtained by `GetCom
 This component observes Timeline Signals emission.
 
 Specify `TimelineSignal.Dispatch()` in the destination method of the `UnityEngine.Timeline.SignalReceiver` component
+
+#### `RaycasterController`
+
+This component controls some Raycaster such as `PhysicsRaycaster`, `Physics2DRaycaster` and `GraphicRaycaster`.
+
+#### `RaycastTargetController`
+
+This component controls raycastTarget such as `Collider.enabled`, `Graphic.raycastTarget`.
+
+#### `MoveParentTransform`
+
+This component changes parent transform.
+
+### Scene management
+
+#### `LoadScene`
+
+This component will load scene specified as string.
+
+#### `LoadScene<TEnum>`
+
+This component will load scene specified as enum.
+
+#### `UnloadScene`
+
+This component will unload scene specified as string.
+
+#### `UnloadScene<TEnum>`
+
+This component will unload scene specified as enum.
 
 ### Other utilities
 

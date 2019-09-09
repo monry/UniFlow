@@ -32,7 +32,7 @@ namespace UniFlow.Connector.Controller
         }
     }
 
-    [AddComponentMenu("UniFlow/Controller//UnloadScene", (int) ConnectorType.UnloadScene)]
+    [AddComponentMenu("UniFlow/Controller/UnloadScene", (int) ConnectorType.UnloadScene)]
     public class UnloadScene : UnloadSceneBase
     {
         [SerializeField] private List<string> sceneNames = default;

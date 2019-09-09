@@ -32,7 +32,7 @@ namespace UniFlow.Connector.Controller
         }
     }
 
-    [AddComponentMenu("UniFlow/Controller//LoadScene", (int) ConnectorType.LoadScene)]
+    [AddComponentMenu("UniFlow/Controller/LoadScene", (int) ConnectorType.LoadScene)]
     public class LoadScene : LoadSceneBase
     {
         [SerializeField] private List<string> sceneNames = default;

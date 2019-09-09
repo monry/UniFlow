@@ -18,7 +18,9 @@ namespace UniFlow
         PhysicsTriggerEvent,
         PhysicsTrigger2DEvent,
 
-        SimpleAnimationController = 300,
+        ActivationController      = 300,
+        DestroyInstance,
+        SimpleAnimationController,
         SimpleAnimationEvent,
         AnimatorTrigger,
         AnimationEvent,
@@ -40,7 +42,7 @@ namespace UniFlow
         TimeScaleController,
         Empty,
 
-        Bundle                    = 10000,
+        Preset                    = 10000,
 
         Receiver                  = 20000,
 

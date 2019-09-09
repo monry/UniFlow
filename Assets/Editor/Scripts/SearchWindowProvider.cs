@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace UniFlow.Editor
 {
@@ -90,7 +87,6 @@ namespace UniFlow.Editor
             }
 
             var node = FlowGraphView.AddNode((Type) searchTreeEntry.userData, null, FlowGraphView.NormalizeMousePosition(context.screenMousePosition));
-            node.Query<ObjectField>().Build().First().value = Selection.activeGameObject;
 
             if (FlowPort != default)
             {
