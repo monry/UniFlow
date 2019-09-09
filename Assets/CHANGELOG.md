@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.1.0-preview.17] - 2019-09-09
+
+Fix undo
+
+### Fixes
+
+* Register GameObject creation event to undo stack
+
+## [0.1.0-preview.16] - 2019-09-09
+
+Fix error in FlowGraph
+
+### Fixes
+
+* Fix NullReferenceException in FlowGraph
+* Support to render `List<T>`
+
+## [0.1.0-preview.15] - 2019-09-06
+
+Fix build issue
+
+### Fixes
+
+* Avoid compile error on build
+
+## [0.1.0-preview.14] - 2019-09-02
+
+None
+
+## [0.1.0-preview.13] - 2019-09-02
+
+Tweak
+
+### Changes
+
+* Rename connectables
+
+### Fixes
+
+* Omit shared components
+* Fix `IObservable.Subscribe()`
+
 ## [0.1.0-preview.12] - 2019-09-02
 
 Tweak
