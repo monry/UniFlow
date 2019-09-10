@@ -51,7 +51,8 @@ namespace UniFlow.Editor
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
 
-        private ConnectableInfo ConnectableInfo { get; }
+        internal ConnectableInfo ConnectableInfo { get; }
+
         private IEdgeConnectorListener EdgeConnectorListener { get; }
 
         private const string DefaultTargetGameObjectName = "UniFlowController";
