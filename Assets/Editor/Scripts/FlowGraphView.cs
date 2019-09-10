@@ -163,7 +163,7 @@ namespace UniFlow.Editor
                 }
 
                 var connector = connectable as ConnectorBase;
-                if (connector == default)
+                if (connector == default || connector.TargetComponents == null)
                 {
                     continue;
                 }
