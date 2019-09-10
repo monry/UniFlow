@@ -27,6 +27,8 @@ namespace UniFlow.Editor
     {
         internal static FlowEditorWindow Window { get; private set; } = default;
 
+        internal FlowGraphView FlowGraphView { get; private set; }
+
         [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
         [SerializeField] [UsedImplicitly] private int counter = default;
 
@@ -56,6 +58,7 @@ namespace UniFlow.Editor
             };
             flowVisualElement.Initialize();
             rootVisualElement.Add(flowVisualElement);
+            FlowGraphView = flowVisualElement.FlowGraphView;
 
             Repaint();
         }

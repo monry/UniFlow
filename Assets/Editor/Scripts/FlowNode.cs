@@ -21,6 +21,7 @@ namespace UniFlow.Editor
 
         public void Initialize()
         {
+            name = ConnectableInfo.Name;
             title = ConnectableInfo.Name;
             styleSheets.Add(AssetReferences.Instance.FlowNode);
             capabilities =
@@ -75,6 +76,7 @@ namespace UniFlow.Editor
             }
 
             Undo.DestroyObjectImmediate(component);
+            FlowEditorWindow.Window.FlowGraphView.SetupActAsTrigger();
         }
 
         public Vector2 GetRecordedPosition()
@@ -179,8 +181,14 @@ namespace UniFlow.Editor
 
         private static VisualElement CreateField(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter)
         {
-            // List field only be rendered by PropertyField
-            if (parameter.Type.IsGenericType && typeof(List<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition()))
+            // Generic types field only be rendered by PropertyField
+            if (
+                parameter.Type.IsGenericType
+                && (
+                    typeof(List<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition())
+                    || typeof(ExposedReference<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition())
+                )
+            )
             {
                 if (connectableInfo.GameObject == default || connectableInfo.Connectable == default)
                 {

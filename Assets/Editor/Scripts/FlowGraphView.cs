@@ -58,6 +58,23 @@ namespace UniFlow.Editor
                     );
             };
 
+            deleteSelection += (operationName, user) =>
+            {
+                DeleteSelection();
+                SetupActAsTrigger();
+            };
+
+            elementsRemovedFromStackNode += (stackNode, removedGraphElements) =>
+            {
+                removedGraphElements.ToList().ForEach(Debug.Log);
+                SetupActAsTrigger();
+            };
+            elementsRemovedFromGroup += (group, removedGraphElements) =>
+            {
+                removedGraphElements.ToList().ForEach(Debug.Log);
+                SetupActAsTrigger();
+            };
+
             graphViewChanged += change =>
             {
                 change
@@ -67,6 +84,7 @@ namespace UniFlow.Editor
                     .ForEach(
                         x => x.RemoveFromGraphView()
                     );
+                SetupActAsTrigger();
                 return change;
             };
 
@@ -149,11 +167,27 @@ namespace UniFlow.Editor
                 );
         }
 
+        internal void SetupActAsTrigger()
+        {
+            this.Query()
+                .Children<FlowNode>()
+                .Where(x => x.ConnectableInfo.Connectable is ConnectorBase)
+                .ForEach(x => ((ConnectorBase) x.ConnectableInfo.Connectable).ActAsTrigger = (x.InputPort.connections == null || !x.InputPort.connections.Any()));
+        }
+
         private void CreateNodesFromInstance()
         {
             var connectables = Selection.activeGameObject == default || Selection.activeGameObject.scene.IsValid()
-                ? SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<ConnectableBase>()).ToArray()
-                : Selection.activeGameObject.GetComponentsInChildren<ConnectableBase>().ToArray();
+                ? Enumerable
+                    .Range(0, SceneManager.sceneCount)
+                    .Select(SceneManager.GetSceneAt)
+                    .SelectMany(x => x.GetRootGameObjects())
+                    .SelectMany(x => x.GetComponentsInChildren<ConnectableBase>())
+                    .ToArray()
+                : Selection
+                    .activeGameObject
+                    .GetComponentsInChildren<ConnectableBase>()
+                    .ToArray();
 
             foreach (var connectable in connectables)
             {
@@ -257,6 +291,7 @@ namespace UniFlow.Editor
             edge.output.Connect(edge);
             edge.input.Connect(edge);
             AddElement(edge);
+            SetupActAsTrigger();
             return edge;
         }
 

@@ -7,7 +7,7 @@ namespace UniFlow.Editor
 {
     public class FlowVisualElement : VisualElement
     {
-        private FlowGraphView FlowGraphView { get; set; }
+        internal FlowGraphView FlowGraphView { get; private set; }
         private VisualElement Content { get; set; }
 
         public void Initialize()
