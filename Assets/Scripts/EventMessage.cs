@@ -3,9 +3,9 @@ using JetBrains.Annotations;
 namespace UniFlow
 {
     [PublicAPI]
-    public struct EventMessage
+    public class EventMessage
     {
-        private EventMessage(ConnectorType connectorType, object sender, object data)
+        protected EventMessage(ConnectorType connectorType, object sender, object data)
         {
             ConnectorType = connectorType;
             Sender = sender;
@@ -20,5 +20,17 @@ namespace UniFlow
         {
             return new EventMessage(connectorType, sender, data);
         }
+    }
+
+    public class EventMessage2<TData>
+    {
+        protected EventMessage2(ConnectorType connectorType, TData data)
+        {
+            ConnectorType = connectorType;
+            Data = data;
+        }
+
+        public ConnectorType ConnectorType { get; }
+        public TData Data { get; }
     }
 }
