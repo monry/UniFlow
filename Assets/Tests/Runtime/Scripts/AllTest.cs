@@ -1,8 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
-using UniFlow.Connector;
+using UniFlow.Connector.Controller;
 using UniFlow.Connector.Event;
-using UniFlow.Message;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -46,34 +45,51 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAll(EventMessages eventMessages)
+        private void AssertAll(Messages messages)
         {
-            Assert.AreEqual(5, eventMessages.Count);
+            Assert.AreEqual(5, messages.Count);
 
-            Assert.IsInstanceOf<Image>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].Data);
+            {
+                Assert.True(messages[0].Is<UIBehaviourEventTrigger.Message>());
+                var message = messages[0].As<UIBehaviourEventTrigger.Message>();
+                Assert.AreEqual(message.ConnectorType, ConnectorType.UIBehaviourEventTrigger);
+                Assert.IsInstanceOf<Image>(message.Sender.UIBehaviour);
+                Assert.IsInstanceOf<PointerEventData>(message.Data);
+            }
 
-            Assert.IsInstanceOf<Animator>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[1].Data);
+            {
+                Assert.True(messages[1].Is<AnimatorTrigger.Message>());
+                var message = messages[1].As<AnimatorTrigger.Message>();
+                Assert.IsInstanceOf<Animator>(message.Sender.Animator);
+            }
 
-            Assert.IsInstanceOf<AnimationEvent>(eventMessages[2].Sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[2].Data);
-            var animationEvent = eventMessages[2].Data as UnityEngine.AnimationEvent;
-            Assert.NotNull(animationEvent);
-            Assert.AreEqual(222.2f, animationEvent.floatParameter);
-            Assert.AreEqual(333, animationEvent.intParameter);
-            Assert.AreEqual("444", animationEvent.stringParameter);
-            Assert.IsInstanceOf<Material>(animationEvent.objectReferenceParameter);
-            Assert.AreEqual("All", animationEvent.objectReferenceParameter.name);
+            {
+                Assert.True(messages[2].Is<AnimationEvent.Message>());
+                var message = messages[2].As<AnimationEvent.Message>();
+                Assert.IsInstanceOf<Animator>(message.Sender.Animator);
+                Assert.IsInstanceOf<UnityEngine.AnimationEvent>(message.Data);
+                var animationEvent = message.Data;
+                Assert.NotNull(animationEvent);
+                Assert.AreEqual(222.2f, animationEvent.floatParameter);
+                Assert.AreEqual(333, animationEvent.intParameter);
+                Assert.AreEqual("444", animationEvent.stringParameter);
+                Assert.IsInstanceOf<Material>(animationEvent.objectReferenceParameter);
+                Assert.AreEqual("All", animationEvent.objectReferenceParameter.name);
+            }
 
-            Assert.IsInstanceOf<PlayableDirector>(eventMessages[3].Sender);
-            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[3].Data);
+            {
+                Assert.True(messages[3].Is<PlayableController.Message>());
+                var message = messages[3].As<PlayableController.Message>();
+                Assert.IsInstanceOf<PlayableDirector>(message.Sender.PlayableDirector);
+            }
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[4].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[4].Data);
-            var timelineEvent = eventMessages[4].Data as TimelineEventData;
-            Assert.NotNull(timelineEvent);
-            Assert.AreEqual(999, timelineEvent.IntParameter);
+            {
+                Assert.True(messages[4].Is<TimelineSignal.Message>());
+                var message = messages[4].As<TimelineSignal.Message>();
+                var timelineEvent = message.Data;
+                Assert.AreEqual(999, timelineEvent.intParameter);
+            }
+
             HasAssert = true;
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -24,12 +25,14 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertUIBehaviourEventTrigger(EventMessages eventMessages)
+        private void AssertUIBehaviourEventTrigger(Messages messages)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.IsInstanceOf<Image>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<UIBehaviourEventTrigger.Message>());
+            var message = messages[0].As<UIBehaviourEventTrigger.Message>();
+            Assert.IsInstanceOf<Image>(message.Sender.UIBehaviour);
+            Assert.IsInstanceOf<PointerEventData>(message.Data);
             HasAssert = true;
         }
     }

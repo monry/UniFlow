@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UniRx;
@@ -97,15 +95,16 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertLifecycleEvent(EventMessages eventMessages)
+        private void AssertLifecycleEvent(Messages messages)
         {
-            Assert.NotNull(eventMessages);
-            Assert.GreaterOrEqual(eventMessages.Count, 1);
+            Assert.NotNull(messages);
+            Assert.GreaterOrEqual(messages.Count, 1);
 
-            Assert.IsInstanceOf<LifecycleEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<LifecycleEvent.Message>());
+            var message = messages[0].As<LifecycleEvent.Message>();
+            Assert.IsInstanceOf<LifecycleEvent>(message.Sender);
 
-            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].Data).EventType);
+            Assert.AreEqual(CurrentLifecycleEventType, message.Sender.LifecycleEventType);
 
             HasAssert = true;
         }

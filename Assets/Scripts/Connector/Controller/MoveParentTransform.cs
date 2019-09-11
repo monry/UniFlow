@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -34,14 +33,14 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
                         Transform.SetParent(TargetTransform, WorldPositionStays);
-                        observer.OnNext(EventMessage.Create(ConnectorType.MoveParentTransform, this, MoveParentTransformEventData.Create(TargetTransform)));
+                        observer.OnNext(Message.Create(this, Transform));
                         return Disposable;
                     }
                 );
@@ -50,6 +49,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<MoveParentTransform, Transform>
+        {
+            public static Message Create(MoveParentTransform sender, Transform movedTransform)
+            {
+                return Create<Message>(ConnectorType.MoveParentTransform, sender, movedTransform);
+            }
         }
     }
 }

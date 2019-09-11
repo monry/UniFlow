@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -24,9 +23,11 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
-            OnEventAsObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.MouseEvent, Component, MouseEventData.Create(MouseEventType)));
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        {
+            return OnEventAsObservable()
+                .Select(_ => Message.Create(this));
+        }
 
         private IObservable<Unit> OnEventAsObservable()
         {
@@ -53,6 +54,14 @@ namespace UniFlow.Connector.Event
 #else
             throw new PlatformNotSupportedException("MouseEvent does not support mobile platform");
 #endif
+        }
+
+        public class Message : MessageBase<MouseEvent>
+        {
+            public static Message Create(MouseEvent sender)
+            {
+                return Create<Message>(ConnectorType.MouseEvent, sender);
+            }
         }
     }
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -33,15 +32,20 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
-                        MonoBehaviours.ToList().ForEach(x => x.enabled = Activated);
-                        GameObjects.ToList().ForEach(x => x.SetActive(Activated));
-                        observer.OnNext(EventMessage.Create(ConnectorType.ActivationController, this, ActivationControllerEventData.Create(Activated)));
+                        var count = 0;
+                        var monoBehaviours = MonoBehaviours.ToList();
+                        count += monoBehaviours.Count;
+                        monoBehaviours.ForEach(x => x.enabled = Activated);
+                        var gameObjects = GameObjects.ToList();
+                        count += gameObjects.Count();
+                        gameObjects.ForEach(x => x.SetActive(Activated));
+                        observer.OnNext(Message.Create(this, count));
                         return Disposable;
                     }
                 );
@@ -50,6 +54,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<ActivationController, int>
+        {
+            public static Message Create(ActivationController sender, int count)
+            {
+                return Create<Message>(ConnectorType.ActivationController, sender, count);
+            }
         }
     }
 }

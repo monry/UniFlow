@@ -1,6 +1,4 @@
 using System.Collections;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UnityEngine.TestTools;
@@ -21,15 +19,16 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertTimelineSignal(EventMessages eventMessages)
+        private void AssertTimelineSignal(Messages messages)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].Data);
-            var timelineEvent = eventMessages[0].Data as TimelineEventData;
+            Assert.True(messages[0].Is<TimelineSignal.Message>());
+            var message = messages[0].As<TimelineSignal.Message>();
+            Assert.IsInstanceOf<TimelineSignal>(message.Sender);
+            var timelineEvent = message.Data;
             Assert.NotNull(timelineEvent);
-            Assert.AreEqual("TimelineSignalTest", timelineEvent.StringParameter);
+            Assert.AreEqual("TimelineSignalTest", timelineEvent.stringParameter);
             HasAssert = true;
         }
     }

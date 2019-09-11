@@ -20,13 +20,14 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAnimationEvent(EventMessages eventMessages)
+        private void AssertAnimationEvent(Messages messages)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.IsInstanceOf<AnimationEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[0].Data);
-            var animationEvent = eventMessages[0].Data as UnityEngine.AnimationEvent;
+            Assert.True(messages[0].Is<AnimationEvent.Message>());
+            var message = messages[0].As<AnimationEvent.Message>();
+            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(message.Data);
+            var animationEvent = message.Data;
             Assert.NotNull(animationEvent);
             Assert.AreEqual(11.1f, animationEvent.floatParameter);
             Assert.AreEqual(22, animationEvent.intParameter);

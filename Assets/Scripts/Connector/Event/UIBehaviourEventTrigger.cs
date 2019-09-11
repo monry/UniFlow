@@ -24,10 +24,10 @@ namespace UniFlow.Connector.Event
             set => uiBehaviour = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnEventTriggerAsObservable()
-                .Select(x => EventMessage.Create(ConnectorType.UIBehaviourEventTrigger, UIBehaviour, x));
+                .Select(x => Message.Create(this, x));
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -70,6 +70,14 @@ namespace UniFlow.Connector.Event
                     return UIBehaviour.OnCancelAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<UIBehaviourEventTrigger, BaseEventData>
+        {
+            public static Message Create(UIBehaviourEventTrigger sender, BaseEventData baseEventData)
+            {
+                return Create<Message>(ConnectorType.UIBehaviourEventTrigger, sender, baseEventData);
             }
         }
     }

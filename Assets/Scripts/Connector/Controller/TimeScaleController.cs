@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -30,10 +31,10 @@ namespace UniFlow.Connector.Controller
 
         private ISubject<Unit> OnCompleteTweenSubject { get; } = new Subject<Unit>();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             ChangeTimeScale();
-            return OnCompleteTweenSubject.Select(_ => EventMessage.Create(ConnectorType.TimeScaleController, this));
+            return OnCompleteTweenSubject.Select(_ => Message.Create(this));
         }
 
         private void ChangeTimeScale()
@@ -56,6 +57,14 @@ namespace UniFlow.Connector.Controller
                     true
                 )
                 .Subscribe(x => Time.timeScale = x);
+        }
+
+        public class Message : MessageBase<TimeScaleController>
+        {
+            public static Message Create(TimeScaleController sender)
+            {
+                return Create<Message>(ConnectorType.TimeScaleController, sender);
+            }
         }
     }
 }

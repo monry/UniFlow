@@ -1,7 +1,7 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -65,14 +65,36 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
+//            if (latestMessage is IValueHolder<SimpleAnimationControlMethod> simpleAnimationControlMethodHolder)
+//            {
+//                SimpleAnimationControlMethod = simpleAnimationControlMethodHolder.Value;
+//            }
+//
+//            if (latestMessage is IValueHolder<AnimationClip> animationClipHolder)
+//            {
+//                AnimationClip = animationClipHolder.Value;
+//            }
+//
+//            if (latestMessage is IValueHolder<AnimatorCullingMode> animatorCullingModeHolder)
+//            {
+//                CullingMode = animatorCullingModeHolder.Value;
+//            }
+//
+//            if (latestMessage is IValueHolder<AnimatorUpdateMode> animatorUpdateModeHolder)
+//            {
+//                UpdateMode = animatorUpdateModeHolder.Value;
+//            }
+
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
                         InvokeSimpleAnimationMethod();
-                        observer.OnNext(EventMessage.Create(ConnectorType.SimpleAnimationController, SimpleAnimation, SimpleAnimationControllerEventData.Create(SimpleAnimationControlMethod)));
+                        observer.OnNext(Message.Create(this));
                         return Disposable;
                     }
                 );
@@ -125,6 +147,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<SimpleAnimationController>
+        {
+            public static Message Create(SimpleAnimationController sender)
+            {
+                return Create<Message>(ConnectorType.SimpleAnimationController, sender);
+            }
         }
     }
 

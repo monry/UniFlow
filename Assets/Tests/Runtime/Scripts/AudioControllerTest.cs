@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
 using UniFlow.Connector.Controller;
 using UniRx;
@@ -133,19 +131,19 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAudioEvent(EventMessages eventMessages, AudioControlMethod audioControlMethod, Action<AudioSource> callback)
+        private void AssertAudioEvent(Messages messages, AudioControlMethod audioControlMethod, Action<AudioSource> callback)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(2, eventMessages.Count);
+            Assert.NotNull(messages);
+            Assert.AreEqual(2, messages.Count);
 
-            Assert.IsInstanceOf<AudioSource>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<AudioControllerEventData>(eventMessages[1].Data);
+            Assert.True(messages[1].Is<AudioController.Message>());
+            var message = messages[1].As<AudioController.Message>();
 
-            Assert.NotNull(eventMessages[1].Data);
+            Assert.NotNull(message.Data);
 
-            Assert.AreEqual(audioControlMethod, ((AudioControllerEventData) eventMessages[1].Data).AudioControlMethod);
+            Assert.AreEqual(audioControlMethod, message.Sender.AudioControlMethod);
 
-            callback(eventMessages[1].Sender as AudioSource);
+            callback(message.Sender.AudioSource);
 
             HasAssert = true;
         }

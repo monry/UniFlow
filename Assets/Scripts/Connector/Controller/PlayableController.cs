@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -40,14 +39,14 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
                         InvokePlayableDirectorMethod();
-                        observer.OnNext(EventMessage.Create(ConnectorType.PlayableController, PlayableDirector, PlayableControllerEventData.Create(PlayableControlMethod)));
+                        observer.OnNext(Message.Create(this));
                         return Disposable;
                     }
                 );
@@ -82,6 +81,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<PlayableController>
+        {
+            public static Message Create(PlayableController sender)
+            {
+                return Create<Message>(ConnectorType.PlayableController, sender);
+            }
         }
     }
 

@@ -58,7 +58,7 @@ namespace UniFlow.Connector.Event
 
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             if (AnimationClip != default && GetComponent<Animator>() == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
             {
@@ -68,7 +68,7 @@ namespace UniFlow.Connector.Event
             return Subject
                 // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
-                .Select(x => EventMessage.Create(ConnectorType.AnimationEvent, this, x));
+                .Select(x => Message.Create(this, x));
         }
 
         /// <summary>
@@ -90,6 +90,14 @@ namespace UniFlow.Connector.Event
                 SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
                 SimpleAnimation.cullingMode = CullingMode;
                 Animator.updateMode = UpdateMode;
+            }
+        }
+
+        public class Message : MessageBase<AnimationEvent, UnityEngine.AnimationEvent>
+        {
+            public static Message Create(AnimationEvent sender, UnityEngine.AnimationEvent data)
+            {
+                return Create<Message>(ConnectorType.AnimationEvent, sender, data);
             }
         }
     }
