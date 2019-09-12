@@ -50,8 +50,9 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             if (ActAsTrigger)
             {
                 ((IConnector) this).Connect(Observable.Return<Messages>(default));

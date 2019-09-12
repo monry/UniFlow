@@ -9,29 +9,40 @@ namespace UniFlow.Connector.Controller
     public class MoveParentTransform : ConnectorBase
     {
         // ReSharper disable once InconsistentNaming
-        [SerializeField] private Transform _transform = default;
         [SerializeField] private Transform targetTransform = default;
+        [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
+
+        [SerializeField] private ConnectorBase targetGameObjectProvider = default;
+        [SerializeField] private ConnectorBase parentGameObjectProvider = default;
 
         [UsedImplicitly] public Transform Transform
         {
-            get => _transform != default
-                ? _transform
-                : _transform = transform;
-            set => _transform = value;
-        }
-        [UsedImplicitly] public Transform TargetTransform
-        {
-            get => targetTransform;
+            get => targetTransform != default
+                ? targetTransform
+                : targetTransform = transform;
             set => targetTransform = value;
+        }
+        [UsedImplicitly] public Transform ParentTransform
+        {
+            get => parentTransform;
+            set => parentTransform = value;
         }
         [UsedImplicitly] public bool WorldPositionStays
         {
             get => worldPositionStays;
             set => worldPositionStays = value;
         }
+        [UsedImplicitly] public IValueProvider<GameObject> TargetGameObjectProvider => targetGameObjectProvider as IValueProvider<GameObject>;
+        [UsedImplicitly] public IValueProvider<GameObject> ParentGameObjectProvider => parentGameObjectProvider as IValueProvider<GameObject>;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
+
+        protected override void CollectSuppliedValues()
+        {
+            TargetGameObjectProvider?.OnProvideAsObservable().Subscribe(x => Transform = x.transform);
+            ParentGameObjectProvider?.OnProvideAsObservable().Subscribe(x => ParentTransform = x.transform);
+        }
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
@@ -39,7 +50,7 @@ namespace UniFlow.Connector.Controller
                 .Create<IMessage>(
                     observer =>
                     {
-                        Transform.SetParent(TargetTransform, WorldPositionStays);
+                        Transform.SetParent(ParentTransform, WorldPositionStays);
                         observer.OnNext(Message.Create(this, Transform));
                         return Disposable;
                     }

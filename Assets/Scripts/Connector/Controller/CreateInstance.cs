@@ -5,7 +5,9 @@ using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
-    public class CreateInstance : ConnectorBase
+    [OutputValue(typeof(GameObject))]
+    [AddComponentMenu("UniFlow/Controller/CreateInstance", (int) ConnectorType.CreateInstance)]
+    public class CreateInstance : ConnectorBase, IValueProvider<GameObject>
     {
         [SerializeField] private GameObject source = default;
         private GameObject Source => source == default ? gameObject : source;
@@ -13,6 +15,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private Transform parent = default;
         private Transform Parent => parent == default ? transform : parent;
 
+        private ISubject<GameObject> GameObjectSubject { get; } = new Subject<GameObject>();
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
@@ -22,6 +25,7 @@ namespace UniFlow.Connector.Controller
                     observer =>
                     {
                         var go = Instantiate(Source, Parent);
+                        GameObjectSubject.OnNext(go);
                         observer.OnNext(Message.Create(this, go));
                         return Disposable;
                     }
@@ -41,6 +45,11 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        IObservable<GameObject> IValueProvider<GameObject>.OnProvideAsObservable()
+        {
+            return GameObjectSubject;
         }
     }
 }
