@@ -28,6 +28,7 @@ namespace UniFlow
         AudioController,
         AudioEvent,
         PlayableController,
+        TimelineEvent,
         TimelineSignal,
         RaycasterController,
         RaycastTargetController,
