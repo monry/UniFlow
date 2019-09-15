@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
     public class SimpleAnimationEvent : ConnectorBase
     {
-        [SerializeField] private SimpleAnimationEventType simpleAnimationEventType = (SimpleAnimationEventType) (-1);
+        [SerializeField] private SimpleAnimationEventType simpleAnimationEventType = SimpleAnimationEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will not be filtered")]
         private AnimationClip animationClip = default;
@@ -58,11 +57,11 @@ namespace UniFlow.Connector.Event
             ObserveSimpleAnimation();
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .Select(_ => EventMessage.Create(ConnectorType.SimpleAnimationEvent, this, SimpleAnimationEventData.Create(SimpleAnimationEventType)));
+                .Select(_ => Message.Create(this));
         }
 
         private void ObserveSimpleAnimation()
@@ -90,6 +89,14 @@ namespace UniFlow.Connector.Event
             else if (pair.Previous.normalizedTime < 1.0f && Mathf.Approximately(pair.Current.normalizedTime, 1.0f))
             {
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
+            }
+        }
+
+        public class Message : MessageBase<SimpleAnimationEvent>
+        {
+            public static Message Create(SimpleAnimationEvent sender)
+            {
+                return Create<Message>(ConnectorType.SimpleAnimationEvent, sender);
             }
         }
     }

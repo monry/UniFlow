@@ -1,7 +1,6 @@
 using System.Collections;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Controller;
 using UniFlow.Connector.Event;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
@@ -23,18 +22,25 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertPlayableController(EventMessages eventMessages)
+        private void AssertPlayableController(Messages messages)
         {
-            Assert.AreEqual(2, eventMessages.Count);
+            Assert.AreEqual(2, messages.Count);
 
-            Assert.IsInstanceOf<PlayableDirector>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[0].Data);
+            {
+                Assert.True(messages[0].Is<PlayableController.Message>());
+                var message = messages[0].As<PlayableController.Message>();
+                Assert.IsInstanceOf<PlayableDirector>(message.Sender.PlayableDirector);
+            }
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[1].Data);
-            var timelineEvent = eventMessages[1].Data as TimelineEventData;
-            Assert.NotNull(timelineEvent);
-            Assert.AreEqual("PlayableControllerTest", timelineEvent.StringParameter);
+            {
+                Assert.True(messages[1].Is<TimelineSignal.Message>());
+                var message = messages[1].As<TimelineSignal.Message>();
+                Assert.IsInstanceOf<TimelineSignal>(message.Sender);
+                var timelineEvent = message.Data;
+                Assert.True(timelineEvent != default);
+                Assert.AreEqual("PlayableControllerTest", timelineEvent.stringParameter);
+            }
+
             HasAssert = true;
         }
     }

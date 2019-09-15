@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UniRx;
@@ -183,10 +181,10 @@ namespace UniFlow.Tests.Runtime
                     {
                         Assert.NotNull(em);
                         Assert.AreEqual(4, em.Count);
-                        Assert.AreEqual(AudioEventType.Play, ((AudioEventData) em[0].Data).EventType);
-                        Assert.AreEqual(AudioEventType.Pause, ((AudioEventData) em[1].Data).EventType);
-                        Assert.AreEqual(AudioEventType.UnPause, ((AudioEventData) em[2].Data).EventType);
-                        Assert.AreEqual(AudioEventType.Stop, ((AudioEventData) em[3].Data).EventType);
+                        Assert.AreEqual(AudioEventType.Play, em[0].As<AudioEvent.Message>().Sender.AudioEventType);
+                        Assert.AreEqual(AudioEventType.Pause, em[1].As<AudioEvent.Message>().Sender.AudioEventType);
+                        Assert.AreEqual(AudioEventType.UnPause, em[2].As<AudioEvent.Message>().Sender.AudioEventType);
+                        Assert.AreEqual(AudioEventType.Stop, em[3].As<AudioEvent.Message>().Sender.AudioEventType);
                         HasAssert = true;
                     },
                     () =>
@@ -206,18 +204,19 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAudioEvent(EventMessages eventMessages, AudioEventType audioEventType, int receiveCount = 1)
+        private void AssertAudioEvent(Messages messages, AudioEventType audioEventType, int receiveCount = 1)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.NotNull(messages);
+            Assert.AreEqual(1, messages.Count);
             Assert.AreEqual(receiveCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
 
-            Assert.IsInstanceOf<AudioSource>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<AudioEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<AudioEvent.Message>());
+            var message = messages[0].As<AudioEvent.Message>();
+            Assert.IsInstanceOf<AudioSource>(message.Sender.AudioSource);
 
-            Assert.NotNull(eventMessages[0].Data);
+            Assert.NotNull(message.Data);
 
-            Assert.AreEqual(audioEventType, ((AudioEventData) eventMessages[0].Data).EventType);
+            Assert.AreEqual(audioEventType, message.Sender.AudioEventType);
 
             HasAssert = true;
         }

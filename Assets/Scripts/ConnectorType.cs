@@ -19,6 +19,7 @@ namespace UniFlow
         PhysicsTrigger2DEvent,
 
         ActivationController      = 300,
+        CreateInstance,
         DestroyInstance,
         SimpleAnimationController,
         SimpleAnimationEvent,
@@ -27,6 +28,7 @@ namespace UniFlow
         AudioController,
         AudioEvent,
         PlayableController,
+        TimelineEvent,
         TimelineSignal,
         RaycasterController,
         RaycastTargetController,

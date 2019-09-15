@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/LifecycleEvent", (int) ConnectorType.LifecycleEvent)]
     public class LifecycleEvent : ConnectorBase
     {
-        [SerializeField] private LifecycleEventType lifecycleEventType = (LifecycleEventType) (-1);
+        [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public LifecycleEventType LifecycleEventType
@@ -27,10 +26,10 @@ namespace UniFlow.Connector.Event
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnEventAsObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.LifecycleEvent, Component, LifecycleEventData.Create(LifecycleEventType)));
+                .Select(_ => Message.Create(this));
         }
 
         private void Awake()
@@ -76,6 +75,14 @@ namespace UniFlow.Connector.Event
                     return OnEnableProperty.Where(x => !x).AsUnitObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<LifecycleEvent>
+        {
+            public static Message Create(LifecycleEvent sender)
+            {
+                return Create<Message>(ConnectorType.LifecycleEvent, sender);
             }
         }
     }

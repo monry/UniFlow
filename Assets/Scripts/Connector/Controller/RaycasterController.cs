@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,7 +11,7 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/RaycasterController", (int) ConnectorType.RaycasterController)]
     public class RaycasterController : ConnectorBase
     {
-        [SerializeField] private RaycasterControlMethod raycasterControlMethod = (RaycasterControlMethod) (-1);
+        [SerializeField] private RaycasterControlMethod raycasterControlMethod = RaycasterControlMethod.Activate;
         [SerializeField] private List<BaseRaycaster> raycasters = default;
 
         [UsedImplicitly] private RaycasterControlMethod RaycasterControlMethod
@@ -28,22 +27,35 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
-                        HandleActivation();
-                        observer.OnNext(EventMessage.Create(ConnectorType.RaycasterController, this, RaycasterControllerEventData.Create(RaycasterControlMethod)));
+                        var count = HandleActivation();
+                        observer.OnNext(Message.Create(this, count));
                         return Disposable;
                     }
                 );
         }
 
-        private void HandleActivation()
+        private int HandleActivation()
         {
-            Raycasters.ToList().ForEach(x => x.enabled = RaycasterControlMethod == RaycasterControlMethod.Activate);
+            var targets = Raycasters.Where(x => x.enabled != (RaycasterControlMethod == RaycasterControlMethod.Activate)).ToList();
+            var count = targets.Count;
+            targets.ForEach(x => x.enabled = RaycasterControlMethod == RaycasterControlMethod.Activate);
+            return count;
+        }
+
+        public class Message : MessageBase<RaycasterController, int>, IValueHolder<int>
+        {
+            public static Message Create(RaycasterController sender, int count)
+            {
+                return Create<Message>(ConnectorType.RaycasterController, sender, count);
+            }
+
+            public int Value => Data;
         }
     }
 

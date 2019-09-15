@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/RectTransformEvent", (int) ConnectorType.RectTransformEvent)]
     public class RectTransformEvent : ConnectorBase
     {
-        [SerializeField] private RectTransformEventType rectTransformEventType = (RectTransformEventType) (-1);
+        [SerializeField] private RectTransformEventType rectTransformEventType = RectTransformEventType.CanvasGroupChanged;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public RectTransformEventType RectTransformEventType
@@ -24,10 +23,10 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnEventAsObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.RectTransformEvent, Component, RectTransformEventData.Create(RectTransformEventType)));
+                .Select(_ => Message.Create(this));
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -42,6 +41,14 @@ namespace UniFlow.Connector.Event
                     return Component.OnRectTransformRemovedAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<RectTransformEvent>
+        {
+            public static Message Create(RectTransformEvent sender)
+            {
+                return Create<Message>(ConnectorType.RectTransformEvent, sender);
             }
         }
     }

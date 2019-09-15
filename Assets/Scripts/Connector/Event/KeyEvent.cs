@@ -1,5 +1,4 @@
 using System;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -9,15 +8,15 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/KeyEvent", (int) ConnectorType.KeyEvent)]
     public class KeyEvent : ConnectorBase
     {
-        [SerializeField] private KeyEventType keyEventType = (KeyEventType) (-1);
+        [SerializeField] private KeyEventType keyEventType = KeyEventType.Down;
         [SerializeField] private KeyCode keyCode = default;
 
         private KeyEventType KeyEventType => keyEventType;
         private KeyCode KeyCode => keyCode;
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return KeyEventAsObservable().Select(_ => EventMessage.Create(ConnectorType.KeyEvent, this, KeyEventData.Create(KeyCode, KeyEventType)));
+            return KeyEventAsObservable().Select(_ => Message.Create(this));
         }
 
         private IObservable<Unit> KeyEventAsObservable()
@@ -41,6 +40,14 @@ namespace UniFlow.Connector.Event
                         .AsUnitObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<KeyEvent>
+        {
+            public static Message Create(KeyEvent sender)
+            {
+                return Create<Message>(ConnectorType.KeyEvent, sender);
             }
         }
     }

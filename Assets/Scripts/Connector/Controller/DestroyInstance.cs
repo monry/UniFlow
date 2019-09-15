@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace UniFlow.Connector.Controller
 {
@@ -27,15 +27,16 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
-                        Components.ToList().ForEach(Destroy);
-                        GameObjects.ToList().ForEach(Destroy);
-                        observer.OnNext(EventMessage.Create(ConnectorType.DestroyInstance, this, DestroyInstanceEventData.Create()));
+                        var targets = Components.Concat<Object>(GameObjects).ToList();
+                        var count = targets.Count;
+                        targets.ToList().ForEach(Destroy);
+                        observer.OnNext(Message.Create(this, count));
                         return Disposable;
                     }
                 );
@@ -44,6 +45,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<DestroyInstance, int>
+        {
+            public static Message Create(DestroyInstance sender, int count)
+            {
+                return Create<Message>(ConnectorType.DestroyInstance, sender, count);
+            }
         }
     }
 }
