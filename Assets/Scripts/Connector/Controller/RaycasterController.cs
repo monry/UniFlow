@@ -11,7 +11,7 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/RaycasterController", (int) ConnectorType.RaycasterController)]
     public class RaycasterController : ConnectorBase
     {
-        [SerializeField] private RaycasterControlMethod raycasterControlMethod = (RaycasterControlMethod) (-1);
+        [SerializeField] private RaycasterControlMethod raycasterControlMethod = RaycasterControlMethod.Activate;
         [SerializeField] private List<BaseRaycaster> raycasters = default;
 
         [UsedImplicitly] private RaycasterControlMethod RaycasterControlMethod

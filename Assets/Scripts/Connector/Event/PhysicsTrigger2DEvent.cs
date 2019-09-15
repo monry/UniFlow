@@ -9,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/PhysicsTrigger2DEvent", (int) ConnectorType.PhysicsTrigger2DEvent)]
     public class PhysicsTrigger2DEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = (PhysicsTrigger2DEventType) (-1);
+        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = PhysicsTrigger2DEventType.TriggerEnter2D;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public PhysicsTrigger2DEventType PhysicsTrigger2DEventType

@@ -10,7 +10,7 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/PlayableController", (int) ConnectorType.PlayableController)]
     public class PlayableController : ConnectorBase
     {
-        [SerializeField] private PlayableControlMethod playableControlMethod = (PlayableControlMethod) (-1);
+        [SerializeField] private PlayableControlMethod playableControlMethod = PlayableControlMethod.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
         [SerializeField] private PlayableDirector playableDirector = default;
 

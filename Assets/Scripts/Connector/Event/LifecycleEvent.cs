@@ -9,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/LifecycleEvent", (int) ConnectorType.LifecycleEvent)]
     public class LifecycleEvent : ConnectorBase
     {
-        [SerializeField] private LifecycleEventType lifecycleEventType = (LifecycleEventType) (-1);
+        [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public LifecycleEventType LifecycleEventType

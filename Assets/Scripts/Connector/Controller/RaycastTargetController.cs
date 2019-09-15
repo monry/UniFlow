@@ -11,7 +11,7 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/RaycastTargetController", (int) ConnectorType.RaycastTargetController)]
     public class RaycastTargetController : ConnectorBase
     {
-        [SerializeField] private RaycastTargetControlMethod raycastTargetControlMethod = (RaycastTargetControlMethod) (-1);
+        [SerializeField] private RaycastTargetControlMethod raycastTargetControlMethod = RaycastTargetControlMethod.Activate;
         [SerializeField] private List<Graphic> graphics = default;
         [SerializeField] private List<Collider> colliders = default;
         [SerializeField] private List<Collider2D> collider2Ds = default;

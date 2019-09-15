@@ -8,7 +8,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/KeyEvent", (int) ConnectorType.KeyEvent)]
     public class KeyEvent : ConnectorBase
     {
-        [SerializeField] private KeyEventType keyEventType = (KeyEventType) (-1);
+        [SerializeField] private KeyEventType keyEventType = KeyEventType.Down;
         [SerializeField] private KeyCode keyCode = default;
 
         private KeyEventType KeyEventType => keyEventType;

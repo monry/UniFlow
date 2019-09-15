@@ -13,7 +13,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/TimelineEvent", (int) ConnectorType.TimelineEvent)]
     public class TimelineEvent : ConnectorBase
     {
-        [SerializeField] private TimelineEventType timelineEventType = (TimelineEventType) (-1);
+        [SerializeField] private TimelineEventType timelineEventType = TimelineEventType.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
         [SerializeField] private PlayableDirector playableDirector = default;
 

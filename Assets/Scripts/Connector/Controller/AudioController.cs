@@ -8,7 +8,7 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/AudioController", (int) ConnectorType.AudioController)]
     public class AudioController : ConnectorBase
     {
-        [SerializeField] private AudioControlMethod audioControlMethod = (AudioControlMethod) (-1);
+        [SerializeField] private AudioControlMethod audioControlMethod = AudioControlMethod.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;

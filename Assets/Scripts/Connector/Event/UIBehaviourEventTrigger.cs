@@ -10,7 +10,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
     public class UIBehaviourEventTrigger : ConnectorBase
     {
-        [SerializeField] private EventTriggerType eventTriggerType = (EventTriggerType) (-1);
+        [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
         [SerializeField] private UIBehaviour uiBehaviour = default;
 
         [UsedImplicitly] public EventTriggerType EventTriggerType

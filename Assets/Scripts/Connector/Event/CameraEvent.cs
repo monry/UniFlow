@@ -9,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/CameraEvent", (int) ConnectorType.CameraEvent)]
     public class CameraEvent : ConnectorBase
     {
-        [SerializeField] private CameraEventType cameraEventType = (CameraEventType) (-1);
+        [SerializeField] private CameraEventType cameraEventType = CameraEventType.BecomeVisible;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public CameraEventType CameraEventType

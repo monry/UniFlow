@@ -8,7 +8,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
     public class AudioEvent : ConnectorBase
     {
-        [SerializeField] private AudioEventType audioEventType = (AudioEventType) (-1);
+        [SerializeField] private AudioEventType audioEventType = AudioEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
