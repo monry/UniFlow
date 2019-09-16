@@ -237,6 +237,7 @@ namespace UniFlow.Editor
         {
             return haystack
                 .TargetComponents
+                .Where(x => x != default)
                 .Any(
                     x =>
                         x.gameObject == UniFlowSettings.instance.SelectedGameObject
