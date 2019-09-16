@@ -12,6 +12,7 @@ namespace UniFlow.Connector.Controller
     {
         [SerializeField] private List<GameObject> targetGameObjects = default;
         [SerializeField] private List<MonoBehaviour> targetMonoBehaviours = default;
+        [SerializeField] private bool controlSelfInstance = default;
         [SerializeField] private bool activated = default;
 
         [UsedImplicitly] public IEnumerable<GameObject> GameObjects
@@ -23,6 +24,11 @@ namespace UniFlow.Connector.Controller
         {
             get => targetMonoBehaviours;
             set => targetMonoBehaviours = value.ToList();
+        }
+        [UsedImplicitly] public bool ControlSelfInstance
+        {
+            get => controlSelfInstance;
+            set => controlSelfInstance = value;
         }
         [UsedImplicitly] public bool Activated
         {
@@ -45,14 +51,17 @@ namespace UniFlow.Connector.Controller
                         var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
                         count += monoBehaviours.Count;
                         monoBehaviours.ForEach(x => x.enabled = Activated);
-                        if (gameObject.activeSelf != Activated)
+                        if (ControlSelfInstance)
                         {
-                            count++;
-                            gameObject.SetActive(Activated);
+                            if (gameObject.activeSelf != Activated)
+                            {
+                                count++;
+                                gameObject.SetActive(Activated);
+                            }
+                            var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
+                            count += components.Count;
+                            components.ForEach(x => x.enabled = Activated);
                         }
-                        var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
-                        count += components.Count;
-                        components.ForEach(x => x.enabled = Activated);
                         observer.OnNext(Message.Create(this, count, gameObjects, monoBehaviours));
                         return Disposable;
                     }
