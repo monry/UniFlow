@@ -45,6 +45,14 @@ namespace UniFlow.Connector.Controller
                         var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
                         count += monoBehaviours.Count;
                         monoBehaviours.ForEach(x => x.enabled = Activated);
+                        if (gameObject.activeSelf != Activated)
+                        {
+                            count++;
+                            gameObject.SetActive(Activated);
+                        }
+                        var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
+                        count += components.Count;
+                        components.ForEach(x => x.enabled = Activated);
                         observer.OnNext(Message.Create(this, count, gameObjects, monoBehaviours));
                         return Disposable;
                     }

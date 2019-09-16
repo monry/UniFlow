@@ -70,10 +70,30 @@ namespace UniFlow.Connector.Controller
                         .Where(x => x.enabled != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                         .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                 )
+                .Concat(
+                    GetComponents<Graphic>()
+                        .Where(x => x.raycastTarget != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                        .Select(x => new Action(() => x.raycastTarget = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                )
+                .Concat(
+                    GetComponents<Collider>()
+                        .Where(x => x.enabled != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                        .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                )
+                .Concat(
+                    GetComponents<Collider2D>()
+                        .Where(x => x.enabled != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                        .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                )
                 .ToList();
             var count = handleTargets.Count;
             handleTargets.ForEach(x => x.Invoke());
             return count;
+        }
+
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
         }
 
         public class Message : MessageBase<RaycastTargetController, int>, IValueHolder<int>
@@ -84,11 +104,6 @@ namespace UniFlow.Connector.Controller
             {
                 return Create<Message>(ConnectorType.RaycastTargetController, sender, count);
             }
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
         }
     }
 
