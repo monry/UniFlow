@@ -17,7 +17,7 @@ namespace UniFlow.Receiver
             {
                 if (target != default && target.activeSelf)
                 {
-                    (target.GetComponent<Receive>() as IConnector)?.Connect(Observable.Return(messages));
+                    (target.GetComponent<Receive>() as IConnector)?.Connect(Observable.Return(((IMessage) default, messages)));
                 }
             }
         }
