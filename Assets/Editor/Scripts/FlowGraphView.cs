@@ -179,12 +179,13 @@ namespace UniFlow.Editor
         {
             var connectables = UniFlowSettings.instance.IsPrefabMode
                 ? UniFlowSettings.instance.SelectedGameObject
-                    .GetComponentsInChildren<ConnectableBase>()
+                    .GetComponentsInChildren<ConnectableBase>(true)
                     .ToArray()
                 : (UniFlowSettings.instance.SelectedGameObject == default ? SceneManager.GetActiveScene() : UniFlowSettings.instance.SelectedGameObject.scene)
                     .GetRootGameObjects()
                     .SelectMany(x => x.GetComponentsInChildren<ConnectableBase>(true))
                     .ToArray();
+
 
             foreach (var connectable in connectables)
             {
@@ -235,8 +236,14 @@ namespace UniFlow.Editor
 
         private static bool ContainsSelectedGameObjectInConnectableTree(ConnectorBase haystack)
         {
+            if (haystack.gameObject == UniFlowSettings.instance.SelectedGameObject)
+            {
+                return true;
+            }
+
             return haystack
                 .TargetComponents
+                .Where(x => x != default)
                 .Any(
                     x =>
                         x.gameObject == UniFlowSettings.instance.SelectedGameObject

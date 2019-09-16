@@ -11,10 +11,10 @@ namespace UniFlow
     public abstract class ConnectorBase : ConnectableBase, IConnector
     {
         [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
-        private List<ConnectableBase> targetComponents = default;
+        private List<ConnectableBase> targetComponents = new List<ConnectableBase>();
 
         [SerializeField] [Tooltip("Specify identifiers of IEventConnectable that resolve from Zenject.DiContainer")]
-        private List<string> targetIds = default;
+        private List<string> targetIds = new List<string>();
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         protected bool actAsTrigger = false;
@@ -50,22 +50,22 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
             if (ActAsTrigger)
             {
-                ((IConnector) this).Connect(Observable.Return<Messages>(default));
+                ((IConnector) this).Connect(Observable.Return<(IMessage, Messages)>(default));
             }
         }
 
-        void IConnector.Connect(IObservable<Messages> source)
+        void IConnector.Connect(IObservable<(IMessage latestMessage, Messages massages)> source)
         {
             var observable = source
                 .SelectMany(
                     eventMessages => (this as IConnector)
-                        .OnConnectAsObservable(eventMessages?.LastOrDefault())
-                        .Select(x => (eventMessages ?? Messages.Create()).Append(x))
+                        .OnConnectAsObservable(eventMessages.latestMessage)
+                        .Select(x => (latestMessage: x, messages: (eventMessages.massages ?? Messages.Create()).Append(x)))
                 )
                 .Share();
             TargetConnectors
@@ -75,7 +75,7 @@ namespace UniFlow
             TargetConnectors
                 .OfType<IReceiver>()
                 .ToList()
-                .ForEach(x => observable.Subscribe(x.OnReceive));
+                .ForEach(x => observable.Subscribe(y => x.OnReceive(y.messages)));
 
             if (!TargetConnectors.Any())
             {

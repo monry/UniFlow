@@ -12,10 +12,10 @@ namespace UniFlow.Receiver
             sb.AppendLine($"<b>EventCount</b>: {messages.Count}");
             sb.AppendLine("<b>Messages</b>:");
             var index = 0;
-            foreach (var eventMessage in messages)
+            foreach (var message in messages)
             {
                 sb.AppendLine($"  {index}");
-                sb.AppendLine($"    <b>Type</b>:\n      {eventMessage.ConnectorType}");
+                sb.AppendLine($"    <b>Type</b>:\n      {message.ConnectorType}");
                 // TODO: データの送り方を考える
 //                sb.AppendLine($"    <b>Data</b>:\n      {eventMessage.Data?.ToString().Replace("\n", "\n      ")}");
                 index++;

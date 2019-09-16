@@ -2,7 +2,7 @@ using UniFlow.Message;
 
 namespace UniFlow
 {
-    public class MessageBase<TSender, TData> : IMessage<TSender> where TSender : IConnectable
+    public class MessageBase<TSender, TData> : IMessage<TSender, TData> where TSender : IConnectable
     {
         public ConnectorType ConnectorType { get; private set; }
         public TSender Sender { get; private set; }

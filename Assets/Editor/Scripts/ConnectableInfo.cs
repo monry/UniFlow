@@ -71,7 +71,7 @@ namespace UniFlow.Editor
                     .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
                 CollectFields(type)
                     .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<SuppliableTypeAttribute>() != null && x.GetCustomAttribute<HideInInspector>() == null)
-                    .Select(x => SuppliableParameter.Create(x.GetCustomAttribute<SuppliableTypeAttribute>().Types.ToArray()))
+                    .Select(x => SuppliableParameter.Create(x.Name, x.GetCustomAttribute<SuppliableTypeAttribute>().Types.ToArray()))
             );
         }
 
@@ -120,16 +120,18 @@ namespace UniFlow.Editor
 
         public class SuppliableParameter
         {
-            private SuppliableParameter(params Type[] types)
+            public SuppliableParameter(string name, IEnumerable<Type> types)
             {
+                Name = name;
                 Types = types;
             }
 
+            public string Name { get; }
             public IEnumerable<Type> Types { get; }
 
-            public static SuppliableParameter Create(params Type[] types)
+            public static SuppliableParameter Create(string name, params Type[] types)
             {
-                return new SuppliableParameter(types);
+                return new SuppliableParameter(name, types);
             }
         }
     }

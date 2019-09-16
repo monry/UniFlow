@@ -4,7 +4,7 @@ namespace UniFlow
 {
     public abstract class ConnectableBase : MonoBehaviour, IConnectable
     {
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             CollectSuppliedValues();
         }
