@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
 namespace UniFlow.Editor
 {
-    internal class FlowGraphParameters : ScriptableSingleton<FlowGraphParameters>
+    internal class UniFlowSettings : ScriptableSingleton<UniFlowSettings>
     {
         [SerializeField] private Vector3 latestPosition = Vector3.zero;
         [SerializeField] private Vector3 latestScale = Vector3.one;
@@ -20,7 +21,8 @@ namespace UniFlow.Editor
             get => latestScale;
             set => latestScale = value;
         }
-        internal static bool IsPrefabMode => Selection.activeGameObject != default && !Selection.activeGameObject.scene.IsValid();
+        internal bool IsPrefabMode => SelectedGameObject != default && !SelectedGameObject.scene.IsValid();
+        internal GameObject SelectedGameObject { get; set; } = null;
     }
 
     public class FlowEditorWindow : EditorWindow
@@ -39,6 +41,7 @@ namespace UniFlow.Editor
         {
             GetWindow<FlowEditorWindow>();
             Window.titleContent = new GUIContent("UniFlow Graph");
+
         }
 
         public void ForceRegisterUndo()
@@ -70,9 +73,9 @@ namespace UniFlow.Editor
             Reload();
         }
 
+        [SuppressMessage("ReSharper", "DelegateSubtraction")]
         private void OnDisable()
         {
-            // ReSharper disable once DelegateSubtraction
             Undo.undoRedoPerformed -= Reload;
         }
 

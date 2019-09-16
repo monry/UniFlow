@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Editor
@@ -10,13 +11,14 @@ namespace UniFlow.Editor
     [Serializable]
     public class ConnectableInfo
     {
-        private ConnectableInfo(GameObject gameObject, IConnectable connectable, Type type, string name, IEnumerable<Parameter> parameters)
+        private ConnectableInfo(GameObject gameObject, IConnectable connectable, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
         {
             GameObject = gameObject;
             Connectable = connectable;
             Type = type;
             Name = name;
             parameterList = parameters.ToList();
+            suppliableParameterList = suppliableParameters.ToList();
         }
 
         public GameObject GameObject { get; set; }
@@ -25,6 +27,8 @@ namespace UniFlow.Editor
         public string Name { get; }
         [SerializeField] private List<Parameter> parameterList = default;
         public IEnumerable<Parameter> ParameterList => parameterList;
+        [SerializeField] private List<SuppliableParameter> suppliableParameterList = default;
+        public IEnumerable<SuppliableParameter> SuppliableParameterList => suppliableParameterList;
 
         public void ApplyParameter(Parameter parameter)
         {
@@ -62,17 +66,30 @@ namespace UniFlow.Editor
                 instance,
                 type,
                 type.Name,
-                type
-                    .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(x => x.GetCustomAttribute<SerializeField>() != null || x.IsPublic)
-                    .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default))
+                CollectFields(type)
+                    .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<SuppliableTypeAttribute>() == null && x.GetCustomAttribute<HideInInspector>() == null)
+                    .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
+                CollectFields(type)
+                    .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<SuppliableTypeAttribute>() != null && x.GetCustomAttribute<HideInInspector>() == null)
+                    .Select(x => SuppliableParameter.Create(x.GetCustomAttribute<SuppliableTypeAttribute>().Types.ToArray()))
             );
         }
 
-        [PublicAPI]
-        public static ConnectableInfo Create(GameObject gameObject, IConnectable instance, Type type, string name, IEnumerable<Parameter> parameters)
+        private static FieldInfo[] CollectFields(Type type)
         {
-            return new ConnectableInfo(gameObject, instance, type, name, parameters);
+            var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (typeof(IConnectable).IsAssignableFrom(type.BaseType))
+            {
+                fields = fields.Concat(CollectFields(type.BaseType)).ToArray();
+            }
+
+            return fields;
+        }
+
+        [PublicAPI]
+        public static ConnectableInfo Create(GameObject gameObject, IConnectable instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
+        {
+            return new ConnectableInfo(gameObject, instance, type, name, parameters, suppliableParameters);
         }
 
         [Serializable]
@@ -98,6 +115,21 @@ namespace UniFlow.Editor
             public static Parameter Create(Type type, string name, object value)
             {
                 return new Parameter(type, name, value);
+            }
+        }
+
+        public class SuppliableParameter
+        {
+            private SuppliableParameter(params Type[] types)
+            {
+                Types = types;
+            }
+
+            public IEnumerable<Type> Types { get; }
+
+            public static SuppliableParameter Create(params Type[] types)
+            {
+                return new SuppliableParameter(types);
             }
         }
     }
