@@ -22,11 +22,19 @@ namespace UniFlow.Connector.Logic
             set => ignoreTimeScale = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
                 .Timer(TimeSpan.FromSeconds(Seconds), IgnoreTimeScale ? Scheduler.MainThreadIgnoreTimeScale : Scheduler.MainThread)
-                .Select(_ => EventMessage.Create(ConnectorType.Timer, this, Seconds));
+                .Select(_ => Message.Create(this));
+        }
+
+        public class Message : MessageBase<Timer>
+        {
+            public static Message Create(Timer sender)
+            {
+                return Create<Message>(ConnectorType.Timer, sender);
+            }
         }
     }
 }

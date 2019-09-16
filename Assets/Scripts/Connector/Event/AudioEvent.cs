@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
     public class AudioEvent : ConnectorBase
     {
-        [SerializeField] private AudioEventType audioEventType = (AudioEventType) (-1);
+        [SerializeField] private AudioEventType audioEventType = AudioEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
@@ -39,10 +38,10 @@ namespace UniFlow.Connector.Event
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnAudioEventAsObservable()
-                .Select(x => EventMessage.Create(ConnectorType.AudioEvent, AudioSource, AudioEventData.Create(x)));
+                .Select(x => Message.Create(this));
         }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
@@ -100,6 +99,14 @@ namespace UniFlow.Connector.Event
             }
 
             return (AudioEventType) -1;
+        }
+
+        public class Message : MessageBase<AudioEvent>
+        {
+            public static Message Create(AudioEvent sender)
+            {
+                return Create<Message>(ConnectorType.AudioEvent, sender);
+            }
         }
     }
 

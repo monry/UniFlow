@@ -1,7 +1,7 @@
 using System.Collections;
-using UniFlow.Connector;
 using NUnit.Framework;
 using UniFlow.Connector.Logic;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace UniFlow.Tests.Runtime
@@ -20,15 +20,16 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertInterval(EventMessages eventMessages)
+        private void AssertInterval(Messages messages)
         {
-            Assert.AreEqual(2, UnityEngine.Object.FindObjectOfType<TestReceiver>().ReceiveCount);
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.AreEqual(2, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.AreEqual(ConnectorType.Interval, eventMessages[0].ConnectorType);
-            Assert.IsInstanceOf<Interval>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<float>(eventMessages[0].Data);
-            Assert.AreEqual(1.0f, eventMessages[0].Data);
+            Assert.AreEqual(ConnectorType.Interval, messages[0].ConnectorType);
+            var message = messages[0].As<Interval.Message>();
+            Assert.IsInstanceOf<Interval>(message.Sender);
+            Assert.IsInstanceOf<float>(message.Sender.Seconds);
+            Assert.AreEqual(1.0f, message.Sender.Seconds);
 
             HasAssert = true;
         }

@@ -17,7 +17,7 @@ namespace UniFlow
         private List<string> targetIds = default;
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
-        private bool actAsTrigger = false;
+        protected bool actAsTrigger = false;
 
         private IEnumerable<IConnectable> TargetConnectors =>
             new List<IConnectable>()
@@ -42,7 +42,7 @@ namespace UniFlow
         }
 #endif
 
-        [UsedImplicitly] public bool ActAsTrigger
+        [UsedImplicitly] public virtual bool ActAsTrigger
         {
             get => actAsTrigger;
             set => actAsTrigger = value;
@@ -50,21 +50,22 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             if (ActAsTrigger)
             {
-                ((IConnector) this).Connect(Observable.Return<EventMessages>(default));
+                ((IConnector) this).Connect(Observable.Return<Messages>(default));
             }
         }
 
-        void IConnector.Connect(IObservable<EventMessages> source)
+        void IConnector.Connect(IObservable<Messages> source)
         {
             var observable = source
                 .SelectMany(
                     eventMessages => (this as IConnector)
-                        .OnConnectAsObservable()
-                        .Select(x => (eventMessages ?? EventMessages.Create()).Append(x))
+                        .OnConnectAsObservable(eventMessages?.LastOrDefault())
+                        .Select(x => (eventMessages ?? Messages.Create()).Append(x))
                 )
                 .Share();
             TargetConnectors
@@ -82,7 +83,7 @@ namespace UniFlow
             }
         }
 
-        public abstract IObservable<EventMessage> OnConnectAsObservable();
+        public abstract IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage);
 
         [PublicAPI]
         public void AddConnectable(ConnectableBase connectable)

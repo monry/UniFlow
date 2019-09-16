@@ -4,6 +4,6 @@ namespace UniFlow
 {
     public interface IObservableReceiver : IReceiver
     {
-        IObservable<EventMessages> OnReceiveAsObservable();
+        IObservable<Messages> OnReceiveAsObservable();
     }
 }

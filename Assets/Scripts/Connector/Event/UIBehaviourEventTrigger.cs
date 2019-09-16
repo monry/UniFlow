@@ -4,14 +4,17 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
     public class UIBehaviourEventTrigger : ConnectorBase
     {
-        [SerializeField] private EventTriggerType eventTriggerType = (EventTriggerType) (-1);
+        [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
         [SerializeField] private UIBehaviour uiBehaviour = default;
+        [SerializeField] private bool activateBeforeConnect = default;
+        [SerializeField] private bool deactivateAfterConnect = default;
 
         [UsedImplicitly] public EventTriggerType EventTriggerType
         {
@@ -23,11 +26,43 @@ namespace UniFlow.Connector.Event
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
-
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        [UsedImplicitly] public bool ActivateBeforeConnect
         {
-            return OnEventTriggerAsObservable()
-                .Select(x => EventMessage.Create(ConnectorType.UIBehaviourEventTrigger, UIBehaviour, x));
+            get => activateBeforeConnect;
+            set => activateBeforeConnect = value;
+        }
+        [UsedImplicitly] public bool DeactivateAfterConnect
+        {
+            get => deactivateAfterConnect;
+            set => deactivateAfterConnect = value;
+        }
+
+        private IDisposable Disposable { get; } = new CompositeDisposable();
+
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        {
+            return Observable
+                .ReturnUnit()
+                .Do(
+                    _ =>
+                    {
+                        if (ActivateBeforeConnect && UIBehaviour is Graphic graphic)
+                        {
+                            graphic.raycastTarget = true;
+                        }
+                    }
+                )
+                .SelectMany(_ => OnEventTriggerAsObservable())
+                .Do(
+                    _ =>
+                    {
+                        if (DeactivateAfterConnect && UIBehaviour is Graphic graphic)
+                        {
+                            graphic.raycastTarget = false;
+                        }
+                    }
+                )
+                .Select(x => Message.Create(this, x));
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -70,6 +105,19 @@ namespace UniFlow.Connector.Event
                     return UIBehaviour.OnCancelAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<UIBehaviourEventTrigger, BaseEventData>
+        {
+            public static Message Create(UIBehaviourEventTrigger sender, BaseEventData baseEventData)
+            {
+                return Create<Message>(ConnectorType.UIBehaviourEventTrigger, sender, baseEventData);
             }
         }
     }

@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/CameraEvent", (int) ConnectorType.CameraEvent)]
     public class CameraEvent : ConnectorBase
     {
-        [SerializeField] private CameraEventType cameraEventType = (CameraEventType) (-1);
+        [SerializeField] private CameraEventType cameraEventType = CameraEventType.BecomeVisible;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public CameraEventType CameraEventType
@@ -24,10 +23,10 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnEventAsObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.CameraEvent, Component, CameraEventData.Create(CameraEventType)));
+                .Select(_ => Message.Create(this));
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -40,6 +39,14 @@ namespace UniFlow.Connector.Event
                     return Component.OnBecameInvisibleAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<CameraEvent>
+        {
+            public static Message Create(CameraEvent sender)
+            {
+                return Create<Message>(ConnectorType.CameraEvent, sender);
             }
         }
     }

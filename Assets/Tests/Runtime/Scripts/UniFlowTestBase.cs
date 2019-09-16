@@ -19,7 +19,7 @@ namespace UniFlow.Tests.Runtime
             HasAssert = false;
         }
 
-        protected IEnumerator RunAssert(string sceneName, Action<EventMessages> assertCallback, Action beforeAssertCallback, double waitBeforeAssert = 0, int invokeCount = 1)
+        protected IEnumerator RunAssert(string sceneName, Action<Messages> assertCallback, Action beforeAssertCallback, double waitBeforeAssert = 0, int invokeCount = 1)
         {
             PreInstall();
             yield return SceneManager.LoadSceneAsync($"{ScenePath}{sceneName}", LoadSceneMode.Additive);
@@ -31,7 +31,7 @@ namespace UniFlow.Tests.Runtime
                 {
                     yield return Observable.Timer(TimeSpan.FromSeconds(waitBeforeAssert)).StartAsCoroutine();
                 }
-                assertCallback(Object.FindObjectOfType<TestReceiver>().SentEventMessages);
+                assertCallback(Object.FindObjectOfType<TestReceiver>().SentMessages);
             }
             Assert.GreaterOrEqual(Object.FindObjectOfType<TestReceiver>().ReceiveCount, invokeCount);
             Assert.True(HasAssert);

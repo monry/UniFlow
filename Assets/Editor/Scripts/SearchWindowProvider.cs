@@ -96,6 +96,7 @@ namespace UniFlow.Editor
                     targetConnector.TargetComponents = new List<ConnectableBase> {node.ConnectableInfo.Connectable as ConnectableBase};
                 }
             }
+            FlowGraphView.SetupActAsTrigger();
 
             return true;
         }

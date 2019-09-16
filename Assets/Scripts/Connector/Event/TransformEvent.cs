@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/TransformEvent", (int) ConnectorType.TransformEvent)]
     public class TransformEvent : ConnectorBase
     {
-        [SerializeField] private TransformEventType transformEventType = (TransformEventType) (-1);
+        [SerializeField] private TransformEventType transformEventType = TransformEventType.TransformChildrenChanged;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public TransformEventType TransformEventType
@@ -24,10 +23,10 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return OnEventAsObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.TransformEvent, Component, TransformEventData.Create(TransformEventType)));
+                .Select(_ => Message.Create(this));
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -42,6 +41,14 @@ namespace UniFlow.Connector.Event
                     return Component.OnTransformChildrenChangedAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<TransformEvent>
+        {
+            public static Message Create(TransformEvent sender)
+            {
+                return Create<Message>(ConnectorType.TransformEvent, sender);
             }
         }
     }

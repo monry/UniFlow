@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UniFlow.Connector;
-using UniFlow.Message;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UniRx;
@@ -56,32 +54,30 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertCameraBecomeVisibleEvent(EventMessages eventMessages)
+        private void AssertCameraBecomeVisibleEvent(Messages messages)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.NotNull(messages);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<CameraEvent.Message>());
+            var message = messages[0].As<CameraEvent.Message>();
+            Assert.IsInstanceOf<CameraEvent>(message.Sender);
 
-            Assert.NotNull(eventMessages[0].Data);
-
-            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].Data).EventType);
+            Assert.AreEqual(CameraEventType.BecomeVisible, message.Sender.CameraEventType);
 
             HasAssert = true;
         }
 
-        private void AssertCameraBecomeInvisibleEvent(EventMessages eventMessages)
+        private void AssertCameraBecomeInvisibleEvent(Messages messages)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            Assert.NotNull(messages);
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<CameraEvent.Message>());
+            var message = messages[0].As<CameraEvent.Message>();
+            Assert.IsInstanceOf<CameraEvent>(message.Sender);
 
-            Assert.NotNull(eventMessages[0].Data);
-
-            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].Data).EventType);
+            Assert.AreEqual(CameraEventType.BecomeInvisible, message.Sender.CameraEventType);
 
             HasAssert = true;
         }

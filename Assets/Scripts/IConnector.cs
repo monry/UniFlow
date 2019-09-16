@@ -4,7 +4,7 @@ namespace UniFlow
 {
     public interface IConnector : IConnectable
     {
-        IObservable<EventMessage> OnConnectAsObservable();
-        void Connect(IObservable<EventMessages> source);
+        IObservable<IMessage> OnConnectAsObservable(IMessage previousMessage);
+        void Connect(IObservable<Messages> source);
     }
 }

@@ -16,12 +16,14 @@ namespace UniFlow.Connector.Controller
         [UsedImplicitly]
         public abstract IEnumerable<string> SceneNames { get; set; }
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return UnloadScenes()
                 .ToObservable()
-                .Select(_ => EventMessage.Create(ConnectorType.UnloadScene, this, SceneNames));
+                .Select(_ => CreateMessage());
         }
+
+        protected abstract IMessage CreateMessage();
 
         private async UniTask UnloadScenes()
         {
@@ -41,6 +43,19 @@ namespace UniFlow.Connector.Controller
         {
             get => sceneNames;
             set => sceneNames = value.ToList();
+        }
+
+        protected override IMessage CreateMessage()
+        {
+            return Message.Create(this);
+        }
+
+        public class Message : MessageBase<UnloadScene>
+        {
+            public static Message Create(UnloadScene sender)
+            {
+                return Create<Message>(ConnectorType.UnloadScene, sender);
+            }
         }
     }
 
@@ -62,6 +77,19 @@ namespace UniFlow.Connector.Controller
                         )
                 )
                 .ToList();
+        }
+
+        protected override IMessage CreateMessage()
+        {
+            return Message.Create(this);
+        }
+
+        public class Message : MessageBase<UnloadScene<TSceneName>>
+        {
+            public static Message Create(UnloadScene<TSceneName> sender)
+            {
+                return Create<Message>(ConnectorType.UnloadScene_Enum, sender);
+            }
         }
     }
 }

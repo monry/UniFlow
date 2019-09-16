@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7e0c3e70e31f4801a6fdf1ac6facdab6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - beginSignal: {fileID: 11400000, guid: 3dbc3d1c5a0704ea6ade5b04509bc240, type: 2}
+  - endSignal: {fileID: 11400000, guid: 51b2d11bb0d2d403d8f39dde22b9effd, type: 2}
+  - timelineAsset: {instanceID: 0}
+  - playableDirector: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

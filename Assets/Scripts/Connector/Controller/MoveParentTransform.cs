@@ -1,6 +1,6 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -10,38 +10,49 @@ namespace UniFlow.Connector.Controller
     public class MoveParentTransform : ConnectorBase
     {
         // ReSharper disable once InconsistentNaming
-        [SerializeField] private Transform _transform = default;
         [SerializeField] private Transform targetTransform = default;
+        [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
+
+        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase targetGameObjectProvider = default;
+        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase parentGameObjectProvider = default;
 
         [UsedImplicitly] public Transform Transform
         {
-            get => _transform != default
-                ? _transform
-                : _transform = transform;
-            set => _transform = value;
-        }
-        [UsedImplicitly] public Transform TargetTransform
-        {
-            get => targetTransform;
+            get => targetTransform != default
+                ? targetTransform
+                : targetTransform = transform;
             set => targetTransform = value;
+        }
+        [UsedImplicitly] public Transform ParentTransform
+        {
+            get => parentTransform;
+            set => parentTransform = value;
         }
         [UsedImplicitly] public bool WorldPositionStays
         {
             get => worldPositionStays;
             set => worldPositionStays = value;
         }
+        [UsedImplicitly] public IValueProvider<GameObject> TargetGameObjectProvider => targetGameObjectProvider as IValueProvider<GameObject>;
+        [UsedImplicitly] public IValueProvider<GameObject> ParentGameObjectProvider => parentGameObjectProvider as IValueProvider<GameObject>;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        protected override void CollectSuppliedValues()
+        {
+            TargetGameObjectProvider?.OnProvideAsObservable().Subscribe(x => Transform = x.transform);
+            ParentGameObjectProvider?.OnProvideAsObservable().Subscribe(x => ParentTransform = x.transform);
+        }
+
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
-                        Transform.SetParent(TargetTransform, WorldPositionStays);
-                        observer.OnNext(EventMessage.Create(ConnectorType.MoveParentTransform, this, MoveParentTransformEventData.Create(TargetTransform)));
+                        Transform.SetParent(ParentTransform, WorldPositionStays);
+                        observer.OnNext(Message.Create(this, Transform));
                         return Disposable;
                     }
                 );
@@ -50,6 +61,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<MoveParentTransform, Transform>
+        {
+            public static Message Create(MoveParentTransform sender, Transform movedTransform)
+            {
+                return Create<Message>(ConnectorType.MoveParentTransform, sender, movedTransform);
+            }
         }
     }
 }

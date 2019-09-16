@@ -1,6 +1,6 @@
 using System.Collections;
-using UniFlow.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Controller;
 using UnityEngine;
 using UnityEngine.TestTools;
 using AnimationEvent = UniFlow.Connector.Event.AnimationEvent;
@@ -21,16 +21,16 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAnimatorTrigger(EventMessages eventMessages)
+        private void AssertAnimatorTrigger(Messages messages)
         {
-            Assert.AreEqual(2, eventMessages.Count);
+            Assert.AreEqual(2, messages.Count);
 
-            Assert.IsInstanceOf<Animator>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<AnimatorTriggerEventData>(eventMessages[0].Data);
+            Assert.True(messages[0].Is<AnimatorTrigger.Message>());
 
-            Assert.IsInstanceOf<AnimationEvent>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[1].Data);
-            var animationEvent = eventMessages[1].Data as UnityEngine.AnimationEvent;
+            Assert.True(messages[1].Is<AnimationEvent.Message>());
+            var message = messages[1].As<AnimationEvent.Message>();
+            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(message.Data);
+            var animationEvent = message.Data;
             Assert.NotNull(animationEvent);
             Assert.AreEqual(22.2f, animationEvent.floatParameter);
             Assert.AreEqual(33, animationEvent.intParameter);

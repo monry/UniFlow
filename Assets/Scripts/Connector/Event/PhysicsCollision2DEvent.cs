@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/PhysicsCollision2DEvent", (int) ConnectorType.PhysicsCollision2DEvent)]
     public class PhysicsCollision2DEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = (PhysicsCollision2DEventType) (-1);
+        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = PhysicsCollision2DEventType.CollisionEnter2D;
         [SerializeField] private Component component = default;
 
         [UsedImplicitly] public PhysicsCollision2DEventType PhysicsCollision2DEventType
@@ -24,9 +23,9 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<EventMessage> OnConnectAsObservable() =>
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage) =>
             OnEventAsObservable()
-                .Select(x => EventMessage.Create(ConnectorType.PhysicsCollision2DEvent, Component, PhysicsCollision2DEventData.Create(PhysicsCollision2DEventType, x)));
+                .Select(x => Message.Create(this, x));
 
         private IObservable<Collision2D> OnEventAsObservable()
         {
@@ -40,6 +39,14 @@ namespace UniFlow.Connector.Event
                     return Component.OnCollisionStay2DAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class Message : MessageBase<PhysicsCollision2DEvent, Collision2D>
+        {
+            public static Message Create(PhysicsCollision2DEvent sender, Collision2D collision2D)
+            {
+                return Create<Message>(ConnectorType.PhysicsCollision2DEvent, sender, collision2D);
             }
         }
     }

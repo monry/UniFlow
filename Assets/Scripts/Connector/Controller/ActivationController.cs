@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Message;
 using UniRx;
 using UnityEngine;
 
@@ -11,19 +10,19 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/ActivationController", (int) ConnectorType.LoadScene)]
     public class ActivationController : ConnectorBase
     {
-        [SerializeField] private List<MonoBehaviour> targetMonoBehaviours = default;
         [SerializeField] private List<GameObject> targetGameObjects = default;
+        [SerializeField] private List<MonoBehaviour> targetMonoBehaviours = default;
         [SerializeField] private bool activated = default;
 
-        [UsedImplicitly] public IEnumerable<MonoBehaviour> MonoBehaviours
-        {
-            get => targetMonoBehaviours;
-            set => targetMonoBehaviours = value.ToList();
-        }
         [UsedImplicitly] public IEnumerable<GameObject> GameObjects
         {
             get => targetGameObjects;
             set => targetGameObjects = value.ToList();
+        }
+        [UsedImplicitly] public IEnumerable<MonoBehaviour> MonoBehaviours
+        {
+            get => targetMonoBehaviours;
+            set => targetMonoBehaviours = value.ToList();
         }
         [UsedImplicitly] public bool Activated
         {
@@ -33,15 +32,28 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<EventMessage> OnConnectAsObservable()
+        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             return Observable
-                .Create<EventMessage>(
+                .Create<IMessage>(
                     observer =>
                     {
-                        MonoBehaviours.ToList().ForEach(x => x.enabled = Activated);
-                        GameObjects.ToList().ForEach(x => x.SetActive(Activated));
-                        observer.OnNext(EventMessage.Create(ConnectorType.ActivationController, this, ActivationControllerEventData.Create(Activated)));
+                        var count = 0;
+                        var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
+                        count += gameObjects.Count;
+                        gameObjects.ForEach(x => x.SetActive(Activated));
+                        var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
+                        count += monoBehaviours.Count;
+                        monoBehaviours.ForEach(x => x.enabled = Activated);
+                        if (gameObject.activeSelf != Activated)
+                        {
+                            count++;
+                            gameObject.SetActive(Activated);
+                        }
+                        var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
+                        count += components.Count;
+                        components.ForEach(x => x.enabled = Activated);
+                        observer.OnNext(Message.Create(this, count, gameObjects, monoBehaviours));
                         return Disposable;
                     }
                 );
@@ -50,6 +62,14 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
+        }
+
+        public class Message : MessageBase<ActivationController, (int count, IEnumerable<GameObject> gameObjects, IEnumerable<MonoBehaviour> monoBehaviours)>
+        {
+            public static Message Create(ActivationController sender, int count, IEnumerable<GameObject> gameObjects, IEnumerable<MonoBehaviour> monoBehaviours)
+            {
+                return Create<Message>(ConnectorType.ActivationController, sender, (count, gameObjects, monoBehaviours));
+            }
         }
     }
 }
