@@ -4,6 +4,7 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UniFlow.Connector.Event
 {
@@ -12,6 +13,8 @@ namespace UniFlow.Connector.Event
     {
         [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
         [SerializeField] private UIBehaviour uiBehaviour = default;
+        [SerializeField] private bool activateBeforeConnect = default;
+        [SerializeField] private bool deactivateAfterConnect = default;
 
         [UsedImplicitly] public EventTriggerType EventTriggerType
         {
@@ -23,10 +26,42 @@ namespace UniFlow.Connector.Event
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
+        [UsedImplicitly] public bool ActivateBeforeConnect
+        {
+            get => activateBeforeConnect;
+            set => activateBeforeConnect = value;
+        }
+        [UsedImplicitly] public bool DeactivateAfterConnect
+        {
+            get => deactivateAfterConnect;
+            set => deactivateAfterConnect = value;
+        }
+
+        private IDisposable Disposable { get; } = new CompositeDisposable();
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return OnEventTriggerAsObservable()
+            return Observable
+                .ReturnUnit()
+                .Do(
+                    _ =>
+                    {
+                        if (ActivateBeforeConnect && UIBehaviour is Graphic graphic)
+                        {
+                            graphic.raycastTarget = true;
+                        }
+                    }
+                )
+                .SelectMany(_ => OnEventTriggerAsObservable())
+                .Do(
+                    _ =>
+                    {
+                        if (DeactivateAfterConnect && UIBehaviour is Graphic graphic)
+                        {
+                            graphic.raycastTarget = false;
+                        }
+                    }
+                )
                 .Select(x => Message.Create(this, x));
         }
 
@@ -71,6 +106,11 @@ namespace UniFlow.Connector.Event
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void OnDestroy()
+        {
+            Disposable.Dispose();
         }
 
         public class Message : MessageBase<UIBehaviourEventTrigger, BaseEventData>
