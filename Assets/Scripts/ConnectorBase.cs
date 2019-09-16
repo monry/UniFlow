@@ -17,7 +17,7 @@ namespace UniFlow
         private List<string> targetIds = default;
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
-        private bool actAsTrigger = false;
+        protected bool actAsTrigger = false;
 
         private IEnumerable<IConnectable> TargetConnectors =>
             new List<IConnectable>()
@@ -42,7 +42,7 @@ namespace UniFlow
         }
 #endif
 
-        [UsedImplicitly] public bool ActAsTrigger
+        [UsedImplicitly] public virtual bool ActAsTrigger
         {
             get => actAsTrigger;
             set => actAsTrigger = value;
