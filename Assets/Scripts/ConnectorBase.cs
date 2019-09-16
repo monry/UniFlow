@@ -55,17 +55,17 @@ namespace UniFlow
             base.Awake();
             if (ActAsTrigger)
             {
-                ((IConnector) this).Connect(Observable.Return<Messages>(default));
+                ((IConnector) this).Connect(Observable.Return<(IMessage, Messages)>(default));
             }
         }
 
-        void IConnector.Connect(IObservable<Messages> source)
+        void IConnector.Connect(IObservable<(IMessage latestMessage, Messages massages)> source)
         {
             var observable = source
                 .SelectMany(
                     eventMessages => (this as IConnector)
-                        .OnConnectAsObservable(eventMessages?.LastOrDefault())
-                        .Select(x => (eventMessages ?? Messages.Create()).Append(x))
+                        .OnConnectAsObservable(eventMessages.latestMessage)
+                        .Select(x => (latestMessage: x, messages: (eventMessages.massages ?? Messages.Create()).Append(x)))
                 )
                 .Share();
             TargetConnectors
@@ -75,7 +75,7 @@ namespace UniFlow
             TargetConnectors
                 .OfType<IReceiver>()
                 .ToList()
-                .ForEach(x => observable.Subscribe(x.OnReceive));
+                .ForEach(x => observable.Subscribe(y => x.OnReceive(y.messages)));
 
             if (!TargetConnectors.Any())
             {
