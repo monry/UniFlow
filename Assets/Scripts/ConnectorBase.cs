@@ -50,9 +50,9 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
             if (ActAsTrigger)
             {
                 ((IConnector) this).Connect(Observable.Return<Messages>(default));

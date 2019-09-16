@@ -32,15 +32,14 @@ namespace UniFlow.Connector.Event
                 .Select(_ => Message.Create(this));
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             OnEnableProperty.Value = enabled;
         }
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-
             StartProperty.Value = true;
         }
 
