@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
@@ -51,6 +52,8 @@ namespace UniFlow.Connector.Event
 
         private ISubject<(SimpleAnimationEventType eventType, AnimationClip animationClip)> CurrentStateSubject { get; } = new Subject<(SimpleAnimationEventType, AnimationClip)>();
 
+        private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
+
         protected override void Start()
         {
             base.Start();
@@ -68,6 +71,7 @@ namespace UniFlow.Connector.Event
         {
             foreach (var state in SimpleAnimation.GetStates())
             {
+                PlayingStatuses[state] = false;
                 state
                     .ObserveEveryValueChanged(x => (SimpleAnimation.IsPlaying(x.name), x.normalizedTime))
                     .Pairwise()
@@ -78,16 +82,19 @@ namespace UniFlow.Connector.Event
 
         private void OnChangeAnimatorStateInfo(Pair<(bool isPlaying, float normalizedTime)> pair, SimpleAnimation.State state)
         {
-            if (!pair.Previous.isPlaying && pair.Current.isPlaying)
+            if (!pair.Previous.isPlaying && pair.Current.isPlaying && !PlayingStatuses[state])
             {
+                PlayingStatuses[state] = true;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Play, state.clip));
             }
-            else if (pair.Previous.isPlaying && !pair.Current.isPlaying)
+            else if (pair.Previous.isPlaying && !pair.Current.isPlaying && PlayingStatuses[state])
             {
+                PlayingStatuses[state] = false;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
             }
-            else if (pair.Previous.normalizedTime < 1.0f && Mathf.Approximately(pair.Current.normalizedTime, 1.0f))
+            else if (pair.Previous.normalizedTime < 1.0f && Mathf.Approximately(pair.Current.normalizedTime, 1.0f) && PlayingStatuses[state])
             {
+                PlayingStatuses[state] = false;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
             }
         }

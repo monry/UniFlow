@@ -1,11 +1,9 @@
 using System;
-using UniFlow.Connector.Attribute;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
-    [OutputValue(typeof(GameObject))]
     [AddComponentMenu("UniFlow/Controller/CreateInstance", (int) ConnectorType.CreateInstance)]
     public class CreateInstance : ConnectorBase, IValueProvider<GameObject>
     {

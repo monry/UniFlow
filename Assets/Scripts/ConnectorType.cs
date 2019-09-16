@@ -44,6 +44,9 @@ namespace UniFlow
         TimeScaleController,
         Empty,
 
+        Toss                      = 9100,
+        Receive                   = 9101,
+
         Preset                    = 10000,
 
         Receiver                  = 20000,

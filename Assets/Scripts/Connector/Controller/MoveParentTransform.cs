@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -13,8 +14,8 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
 
-        [SerializeField] private ConnectorBase targetGameObjectProvider = default;
-        [SerializeField] private ConnectorBase parentGameObjectProvider = default;
+        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase targetGameObjectProvider = default;
+        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase parentGameObjectProvider = default;
 
         [UsedImplicitly] public Transform Transform
         {

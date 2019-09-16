@@ -24,7 +24,7 @@ namespace UniFlow.Editor
 
         public void Initialize()
         {
-            UpdateViewTransform(FlowGraphParameters.instance.LatestPosition, FlowGraphParameters.instance.LatestScale);
+            UpdateViewTransform(UniFlowSettings.instance.LatestPosition, UniFlowSettings.instance.LatestScale);
             styleSheets.Add(AssetReferences.Instance.FlowGraphView);
             SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
             this.AddManipulator(new ContentDragger());
@@ -44,8 +44,8 @@ namespace UniFlow.Editor
 
             viewTransformChanged += graphView =>
             {
-                FlowGraphParameters.instance.LatestPosition = graphView.viewTransform.position;
-                FlowGraphParameters.instance.LatestScale = graphView.viewTransform.scale;
+                UniFlowSettings.instance.LatestPosition = graphView.viewTransform.position;
+                UniFlowSettings.instance.LatestScale = graphView.viewTransform.scale;
             };
 
             nodeCreationRequest += context =>
@@ -177,16 +177,13 @@ namespace UniFlow.Editor
 
         private void CreateNodesFromInstance()
         {
-            var connectables = Selection.activeGameObject == default || Selection.activeGameObject.scene.IsValid()
-                ? Enumerable
-                    .Range(0, SceneManager.sceneCount)
-                    .Select(SceneManager.GetSceneAt)
-                    .SelectMany(x => x.GetRootGameObjects())
-                    .SelectMany(x => x.GetComponentsInChildren<ConnectableBase>())
-                    .ToArray()
-                : Selection
-                    .activeGameObject
+            var connectables = UniFlowSettings.instance.IsPrefabMode
+                ? UniFlowSettings.instance.SelectedGameObject
                     .GetComponentsInChildren<ConnectableBase>()
+                    .ToArray()
+                : (UniFlowSettings.instance.SelectedGameObject == default ? SceneManager.GetActiveScene() : UniFlowSettings.instance.SelectedGameObject.scene)
+                    .GetRootGameObjects()
+                    .SelectMany(x => x.GetComponentsInChildren<ConnectableBase>(true))
                     .ToArray();
 
             foreach (var connectable in connectables)
@@ -225,10 +222,26 @@ namespace UniFlow.Editor
                 rootConnectables = new[] {connectables.First()};
             }
 
+            if (UniFlowSettings.instance.SelectedGameObject != default && !UniFlowSettings.instance.IsPrefabMode)
+            {
+                rootConnectables = rootConnectables.Where(x => x is ConnectorBase connector && connector != default && ContainsSelectedGameObjectInConnectableTree(connector)).ToArray();
+            }
+
             foreach (var (rootConnectable, index) in rootConnectables.Select((v, i) => (v, i)))
             {
                 CreateNodeRecursive(rootConnectable, new Vector2Int(0, index));
             }
+        }
+
+        private static bool ContainsSelectedGameObjectInConnectableTree(ConnectorBase haystack)
+        {
+            return haystack
+                .TargetComponents
+                .Any(
+                    x =>
+                        x.gameObject == UniFlowSettings.instance.SelectedGameObject
+                        || x is ConnectorBase child && child != default && ContainsSelectedGameObjectInConnectableTree(child)
+                );
         }
 
         private void CreateNodeRecursive(IConnectable connectable, Vector2Int normalizedPosition)

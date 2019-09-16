@@ -14,31 +14,40 @@ namespace UniFlow.Editor
         {
             styleSheets.Add(AssetReferences.Instance.FlowVisualElement);
 
-            Selection.selectionChanged += () =>
-            {
-                if (FlowEditorWindow.Window != default)
-                {
-                    if (Contains(Content))
-                    {
-                        Remove(Content);
-                    }
-                    Load();
-                }
-            };
-
             var toolbar = new IMGUIContainer(
                 () =>
                 {
                     GUILayout.BeginHorizontal(EditorStyles.toolbar);
-                    if (GUILayout.Button($"Save {(FlowGraphParameters.IsPrefabMode ? "Prefab" : "Scenes")}", EditorStyles.toolbarButton))
+                    if (GUILayout.Button("Load", EditorStyles.toolbarButton))
                     {
-                        if (FlowGraphParameters.IsPrefabMode)
+                        UniFlowSettings.instance.SelectedGameObject = Selection.activeGameObject;
+                        if (Contains(Content))
                         {
-                            PrefabUtility.SavePrefabAsset(Selection.activeGameObject);
+                            Remove(Content);
                         }
-                        else if (Selection.activeGameObject != default)
+                        Load();
+                    }
+                    if (GUILayout.Button("Load All in Scene", EditorStyles.toolbarButton))
+                    {
+                        UniFlowSettings.instance.SelectedGameObject = null;
+                        if (Contains(Content))
                         {
-                            EditorSceneManager.SaveScene(Selection.activeGameObject.scene);
+                            Remove(Content);
+                        }
+                        Load();
+                    }
+
+                    GUILayout.Space(6);
+
+                    if (GUILayout.Button($"Save {(UniFlowSettings.instance.IsPrefabMode ? "Prefab" : "Scenes")}", EditorStyles.toolbarButton))
+                    {
+                        if (UniFlowSettings.instance.IsPrefabMode)
+                        {
+                            PrefabUtility.SavePrefabAsset(UniFlowSettings.instance.SelectedGameObject);
+                        }
+                        else if (UniFlowSettings.instance.SelectedGameObject != default)
+                        {
+                            EditorSceneManager.SaveScene(UniFlowSettings.instance.SelectedGameObject.scene);
                         }
                     }
 
@@ -46,14 +55,28 @@ namespace UniFlow.Editor
 
                     if (GUILayout.Button("Reset Viewport", EditorStyles.toolbarButton))
                     {
-                        FlowGraphParameters.instance.LatestPosition = Vector3.zero;
-                        FlowGraphParameters.instance.LatestScale = Vector3.one;
+                        UniFlowSettings.instance.LatestPosition = Vector3.zero;
+                        UniFlowSettings.instance.LatestScale = Vector3.one;
                         Remove(Content);
                         Load();
                     }
                     if (GUILayout.Button("Auto Layout", EditorStyles.toolbarButton))
                     {
                         FlowGraphView.Relocation(true);
+                    }
+
+                    if (UniFlowSettings.instance.SelectedGameObject != default)
+                    {
+                        GUILayout.Space(6);
+
+                        if (UniFlowSettings.instance.IsPrefabMode)
+                        {
+                            GUILayout.Label($"[Prefab] {CreateGameObjectTreeString(UniFlowSettings.instance.SelectedGameObject.transform)}");
+                        }
+                        else
+                        {
+                            GUILayout.Label($"[{UniFlowSettings.instance.SelectedGameObject.scene.name}] {CreateGameObjectTreeString(UniFlowSettings.instance.SelectedGameObject.transform)}");
+                        }
                     }
 
                     GUILayout.FlexibleSpace();
@@ -63,6 +86,17 @@ namespace UniFlow.Editor
             Add(toolbar);
 
             Load();
+        }
+
+        private static string CreateGameObjectTreeString(Transform transform)
+        {
+            if (!transform.gameObject.scene.IsValid())
+            {
+                return AssetDatabase.GetAssetPath(transform.gameObject);
+            }
+
+            var parent = transform.parent;
+            return parent == default ? transform.name : $"{CreateGameObjectTreeString(parent)} > {transform.name}";
         }
 
         private void Load()

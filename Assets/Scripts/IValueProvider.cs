@@ -2,7 +2,11 @@ using System;
 
 namespace UniFlow
 {
-    public interface IValueProvider<out TValue>
+    public interface IValueProvider
+    {
+    }
+
+    public interface IValueProvider<out TValue> : IValueProvider
     {
         IObservable<TValue> OnProvideAsObservable();
     }
