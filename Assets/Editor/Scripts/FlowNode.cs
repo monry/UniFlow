@@ -313,7 +313,7 @@ namespace UniFlow.Editor
             foreach (var suppliableParameter in ConnectableInfo.SuppliableParameterList)
             {
                 var suppliedPort = FlowPort.Create(Orientation.Vertical, Direction.Input, Port.Capacity.Multi);
-                suppliedPort.portName = suppliableParameter.ToString();
+                suppliedPort.portName = suppliableParameter.Name;
                 inputContainer.Add(suppliedPort);
             }
         }
