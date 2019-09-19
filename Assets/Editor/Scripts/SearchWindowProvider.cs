@@ -23,8 +23,8 @@ namespace UniFlow.Editor
         {
             "Controller",
             "Event",
-            "Comparer",
-            "Value",
+            "ValueProvider",
+            "ValueComparer",
             "Logic",
             "Receiver",
             "Misc",
