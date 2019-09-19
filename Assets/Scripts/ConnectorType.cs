@@ -39,6 +39,8 @@ namespace UniFlow
         UnloadScene,
         UnloadScene_Enum,
 
+        ValueProvider             = 1000,
+
         ValueComparerBool         = 2000,
         ValueComparerInt,
         ValueComparerFloat,
