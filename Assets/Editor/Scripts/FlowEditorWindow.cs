@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UniFlow.Editor
 {
@@ -66,27 +68,35 @@ namespace UniFlow.Editor
             Repaint();
         }
 
+        private void OnPlayModeStateChanged(PlayModeStateChange playModeStateChange)
+        {
+            switch (playModeStateChange)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    Reload();
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    break;
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);
+            }
+        }
+
+        private void ActiveSceneChangedInEditMode(Scene from, Scene to)
+        {
+            Reload();
+        }
+
         private void OnEnable()
         {
             Window = this;
             Undo.undoRedoPerformed += Reload;
-            EditorApplication.playModeStateChanged += playModeStateChange =>
-            {
-                switch (playModeStateChange)
-                {
-                    case PlayModeStateChange.EnteredEditMode:
-                        Reload();
-                        break;
-                    case PlayModeStateChange.ExitingEditMode:
-                        break;
-                    case PlayModeStateChange.EnteredPlayMode:
-                        break;
-                    case PlayModeStateChange.ExitingPlayMode:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);
-                }
-            };
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            EditorSceneManager.activeSceneChangedInEditMode += ActiveSceneChangedInEditMode;
             Reload();
         }
 
@@ -94,6 +104,8 @@ namespace UniFlow.Editor
         private void OnDisable()
         {
             Undo.undoRedoPerformed -= Reload;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorSceneManager.activeSceneChangedInEditMode -= ActiveSceneChangedInEditMode;
         }
 
         private void OnDestroy()

@@ -92,14 +92,18 @@ namespace UniFlow.Editor
 
         public void ApplyPosition()
         {
-            if (!(ConnectorInfo.Connector is ConnectorBase connectable) || connectable == default || Mathf.Approximately(layout.position.magnitude, 0.0f))
+            if (!(ConnectorInfo.Connector is ConnectorBase connector) || connector == default || Mathf.Approximately(layout.position.magnitude, 0.0f))
             {
                 return;
             }
 
-            Undo.RecordObject(connectable, "Move Node");
-            connectable.FlowGraphNodePosition = layout.position;
-            EditorUtility.SetDirty(connectable);
+            Undo.RecordObject(connector, "Move Node");
+            // ReSharper disable once InvertIf
+            if (connector.FlowGraphNodePosition != layout.position)
+            {
+                connector.FlowGraphNodePosition = layout.position;
+                EditorUtility.SetDirty(connector);
+            }
         }
 
         public void ApplyTargetConnectors()
@@ -262,6 +266,7 @@ namespace UniFlow.Editor
                         parameter.Value = x.newValue;
                         connectorInfo.ApplyParameter(parameter);
                         FlowEditorWindow.Window.ForceRegisterUndo();
+                        EditorUtility.SetDirty(connectorInfo.Connector as Component);
                     }
                 );
             }
