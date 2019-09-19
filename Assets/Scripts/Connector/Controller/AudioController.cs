@@ -40,15 +40,17 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        InvokeAudioSourceMethod();
-                        observer.OnNext(Message.Create(this));
-                        return Disposable;
-                    }
-                );
+            InvokeAudioSourceMethod();
+            return Observable.Return(Message.Create(this));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        InvokeAudioSourceMethod();
+//                        observer.OnNext(Message.Create(this));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private void InvokeAudioSourceMethod()

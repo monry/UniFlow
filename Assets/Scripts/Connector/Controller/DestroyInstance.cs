@@ -29,17 +29,21 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        var targets = Components.Concat<Object>(GameObjects).ToList();
-                        var count = targets.Count;
-                        targets.ToList().ForEach(Destroy);
-                        observer.OnNext(Message.Create(this, count));
-                        return Disposable;
-                    }
-                );
+            var targets = Components.Concat<Object>(GameObjects).ToList();
+            var count = targets.Count;
+            targets.ToList().ForEach(Destroy);
+            return Observable.Return(Message.Create(this, count));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        var targets = Components.Concat<Object>(GameObjects).ToList();
+//                        var count = targets.Count;
+//                        targets.ToList().ForEach(Destroy);
+//                        observer.OnNext(Message.Create(this, count));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private void OnDestroy()

@@ -18,16 +18,20 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        var go = Instantiate(Source, Parent);
-                        GameObjectSubject.OnNext(go);
-                        observer.OnNext(Message.Create(this, go));
-                        return Disposable;
-                    }
-                );
+            var go = Instantiate(Source, Parent);
+            GameObjectSubject.OnNext(go);
+            return Observable.Return(Message.Create(this, go));
+
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        var go = Instantiate(Source, Parent);
+//                        GameObjectSubject.OnNext(go);
+//                        observer.OnNext(Message.Create(this, go));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         public class Message : MessageBase<CreateInstance, GameObject>, IValueHolder<GameObject>
