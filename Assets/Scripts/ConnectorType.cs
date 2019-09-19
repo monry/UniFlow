@@ -39,6 +39,13 @@ namespace UniFlow
         UnloadScene,
         UnloadScene_Enum,
 
+        ValueComparerBool         = 2000,
+        ValueComparerInt,
+        ValueComparerFloat,
+        ValueComparerString,
+        ValueComparerEnum,
+        ValueComparerObject,
+
         Timer                     = 9000,
         Interval,
         TimeScaleController,
