@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
@@ -41,7 +42,6 @@ namespace UniFlow.Editor
         {
             GetWindow<FlowEditorWindow>();
             Window.titleContent = new GUIContent("UniFlow Graph");
-
         }
 
         public void ForceRegisterUndo()
@@ -70,6 +70,23 @@ namespace UniFlow.Editor
         {
             Window = this;
             Undo.undoRedoPerformed += Reload;
+            EditorApplication.playModeStateChanged += playModeStateChange =>
+            {
+                switch (playModeStateChange)
+                {
+                    case PlayModeStateChange.EnteredEditMode:
+                        Reload();
+                        break;
+                    case PlayModeStateChange.ExitingEditMode:
+                        break;
+                    case PlayModeStateChange.EnteredPlayMode:
+                        break;
+                    case PlayModeStateChange.ExitingPlayMode:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);
+                }
+            };
             Reload();
         }
 
