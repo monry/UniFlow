@@ -37,9 +37,28 @@ namespace UniFlow.Editor
                 return;
             }
 
-            Type
-                .GetField(parameter.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?
+            GetFieldRecursive(Type, parameter.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?
                 .SetValue(Connectable, parameter.Value);
+        }
+
+        private static FieldInfo GetFieldRecursive(Type type, string name, BindingFlags bindingFlags)
+        {
+            do
+            {
+                var fieldInfo = type.GetField(name, bindingFlags);
+                if (fieldInfo != default)
+                {
+                    return fieldInfo;
+                }
+
+                if (type.BaseType == default)
+                {
+                    break;
+                }
+
+                type = type.BaseType;
+            } while (true);
+            return default;
         }
 
         public void ApplyParameters()

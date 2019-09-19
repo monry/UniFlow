@@ -19,6 +19,17 @@ namespace UniFlow.Editor
 
         private IDictionary<string, SearchTreeGroupEntry> SearchTreeGroupEntries { get; } = new Dictionary<string, SearchTreeGroupEntry>();
 
+        private static IEnumerable<string> DirectoryOrder { get; } = new[]
+        {
+            "Controller",
+            "Event",
+            "Comparer",
+            "Value",
+            "Logic",
+            "Receiver",
+            "Misc",
+        };
+
         public void Initialize(FlowGraphView flowGraphView)
         {
             FlowGraphView = flowGraphView;
@@ -39,18 +50,16 @@ namespace UniFlow.Editor
                 .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectableBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
                 .Where(x => x.GetCustomAttributes(typeof(AddComponentMenu), false).Any())
                 .Select(x => (menu: x.GetCustomAttributes(typeof(AddComponentMenu), false).OfType<AddComponentMenu>().First(), type: x))
-                .OrderBy(x => x.menu.componentMenu)
+                .Select(x => (x.menu, x.type, entries: x.menu.componentMenu.Split('/').Skip(1).ToArray()))
+                .Select(x => (x.menu, x.type, x.entries, directory: x.entries.Take(x.entries.Length - 1).Aggregate((a, b) => $"{a}/{b}")))
+                .Select(x => (x.menu, x.type, x.entries, x.directory, directoryOrder: DirectoryOrder.Contains(x.directory) ? DirectoryOrder.Select((directory, index) => (directory, index)).First(y => y.directory == x.directory).index : int.MaxValue))
+                .OrderBy(x => x.directoryOrder)
+                .ThenBy(x => x.menu.componentOrder)
                 .ToList()
                 .ForEach(
                     item =>
                     {
-                        var (menu, type) = item;
-                        var componentMenuEntries = menu
-                            .componentMenu
-                            .Split('/')
-                            // Ignore first entry `UniFlow`
-                            .Skip(1)
-                            .ToArray();
+                        var (_, type, componentMenuEntries, _, _) = item;
                         var fullPath = new StringBuilder();
                         foreach (var (componentMenuEntry, index) in componentMenuEntries.Select((x, i) => (x, i)))
                         {

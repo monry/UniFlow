@@ -69,6 +69,7 @@ namespace UniFlow.Editor
                     {
                         GUILayout.Space(6);
 
+                        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                         if (UniFlowSettings.instance.IsPrefabMode)
                         {
                             GUILayout.Label($"[Prefab] {CreateGameObjectTreeString(UniFlowSettings.instance.SelectedGameObject.transform)}");
