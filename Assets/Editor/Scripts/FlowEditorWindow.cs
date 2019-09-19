@@ -32,10 +32,10 @@ namespace UniFlow.Editor
 
         internal FlowGraphView FlowGraphView { get; private set; }
 
-        [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
+        [SerializeField] private List<ConnectorInfo> connectableInfoList = new List<ConnectorInfo>();
         [SerializeField] [UsedImplicitly] private int counter = default;
 
-        public IList<ConnectableInfo> ConnectableInfoList => connectableInfoList;
+        public IList<ConnectorInfo> ConnectableInfoList => connectableInfoList;
 
         [MenuItem("Window/UniFlow/Open UniFlow Graph")]
         public static void Open()
@@ -54,7 +54,7 @@ namespace UniFlow.Editor
             AssetReferences.Reload();
 
             rootVisualElement.Clear();
-            connectableInfoList = new List<ConnectableInfo>();
+            connectableInfoList = new List<ConnectorInfo>();
             var flowVisualElement = new FlowVisualElement
             {
                 name = typeof(FlowVisualElement).Name,

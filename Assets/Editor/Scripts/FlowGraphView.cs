@@ -11,9 +11,9 @@ namespace UniFlow.Editor
 {
     public class FlowGraphView : GraphView
     {
-        private IDictionary<IConnectable, IList<IConnectable>> DestinationConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
-        private IDictionary<IConnectable, IList<IConnectable>> SourceConnectors { get; } = new Dictionary<IConnectable, IList<IConnectable>>();
-        private IDictionary<IConnectable, FlowNode> RenderedNodes { get; } = new Dictionary<IConnectable, FlowNode>();
+        private IDictionary<IConnector, IList<IConnector>> DestinationConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
+        private IDictionary<IConnector, IList<IConnector>> SourceConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
+        private IDictionary<IConnector, FlowNode> RenderedNodes { get; } = new Dictionary<IConnector, FlowNode>();
         private IDictionary<FlowNode, Vector2Int> NormalizedPositionDictionary { get; } = new Dictionary<FlowNode, Vector2Int>();
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
@@ -171,19 +171,19 @@ namespace UniFlow.Editor
         {
             this.Query()
                 .Children<FlowNode>()
-                .Where(x => x.ConnectableInfo.Connectable is ConnectorBase)
-                .ForEach(x => ((ConnectorBase) x.ConnectableInfo.Connectable).ActAsTrigger = (x.InputPort.connections == null || !x.InputPort.connections.Any()));
+                .Where(x => x.ConnectorInfo.Connector is ConnectorBase)
+                .ForEach(x => ((ConnectorBase) x.ConnectorInfo.Connector).ActAsTrigger = (x.InputPort.connections == null || !x.InputPort.connections.Any()));
         }
 
         private void CreateNodesFromInstance()
         {
             var connectables = UniFlowSettings.instance.IsPrefabMode
                 ? UniFlowSettings.instance.SelectedGameObject
-                    .GetComponentsInChildren<ConnectableBase>(true)
+                    .GetComponentsInChildren<ConnectorBase>(true)
                     .ToArray()
                 : (UniFlowSettings.instance.SelectedGameObject == default ? SceneManager.GetActiveScene() : UniFlowSettings.instance.SelectedGameObject.scene)
                     .GetRootGameObjects()
-                    .SelectMany(x => x.GetComponentsInChildren<ConnectableBase>(true))
+                    .SelectMany(x => x.GetComponentsInChildren<ConnectorBase>(true))
                     .ToArray();
 
 
@@ -191,10 +191,10 @@ namespace UniFlow.Editor
             {
                 if (!DestinationConnectors.ContainsKey(connectable))
                 {
-                    DestinationConnectors[connectable] = new List<IConnectable>();
+                    DestinationConnectors[connectable] = new List<IConnector>();
                 }
 
-                var connector = connectable as ConnectorBase;
+                var connector = connectable;
                 if (connector == default || connector.TargetComponents == null)
                 {
                     continue;
@@ -209,7 +209,7 @@ namespace UniFlow.Editor
 
                     if (!SourceConnectors.ContainsKey(targetConnector))
                     {
-                        SourceConnectors[targetConnector] = new List<IConnectable>();
+                        SourceConnectors[targetConnector] = new List<IConnector>();
                     }
 
                     DestinationConnectors[connectable].Add(targetConnector);
@@ -251,7 +251,7 @@ namespace UniFlow.Editor
                 );
         }
 
-        private void CreateNodeRecursive(IConnectable connectable, Vector2Int normalizedPosition)
+        private void CreateNodeRecursive(IConnector connectable, Vector2Int normalizedPosition)
         {
             var node = AddNode(connectable.GetType(), connectable, Vector2.zero);
             NormalizedPositionDictionary[node] = normalizedPosition;
@@ -290,9 +290,9 @@ namespace UniFlow.Editor
             }
         }
 
-        public FlowNode AddNode(Type connectableType, IConnectable connectableInstance, Vector2 position)
+        public FlowNode AddNode(Type connectableType, IConnector connectableInstance, Vector2 position)
         {
-            var connectableInfo = ConnectableInfo.Create(connectableType, connectableInstance);
+            var connectableInfo = ConnectorInfo.Create(connectableType, connectableInstance);
             FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
             var node = new FlowNode(connectableInfo, EdgeConnectorListener);
             node.Initialize();

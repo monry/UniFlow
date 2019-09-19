@@ -13,16 +13,16 @@ namespace UniFlow.Editor
 {
     public class FlowNode : Node, IRemovableElement
     {
-        public FlowNode(ConnectableInfo connectableInfo, IEdgeConnectorListener edgeConnectorListener)
+        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener)
         {
-            ConnectableInfo = connectableInfo;
+            ConnectorInfo = connectorInfo;
             EdgeConnectorListener = edgeConnectorListener;
         }
 
         public void Initialize()
         {
-            name = ConnectableInfo.Name;
-            title = ConnectableInfo.Name;
+            name = ConnectorInfo.Name;
+            title = ConnectorInfo.Name;
             styleSheets.Add(AssetReferences.Instance.FlowNode);
             capabilities =
                 Capabilities.Selectable |
@@ -34,14 +34,14 @@ namespace UniFlow.Editor
                 Capabilities.Ascendable |
                 Capabilities.Renamable;
 
-            if (ConnectableInfo.GameObject == default)
+            if (ConnectorInfo.GameObject == default)
             {
-                ConnectableInfo.GameObject = DeterminateGameObject();
+                ConnectorInfo.GameObject = DeterminateGameObject();
             }
 
-            if (ConnectableInfo.Connectable == default)
+            if (ConnectorInfo.Connector == default)
             {
-                ConnectableInfo.Connectable = Undo.AddComponent(ConnectableInfo.GameObject, ConnectableInfo.Type) as IConnectable;
+                ConnectorInfo.Connector = Undo.AddComponent(ConnectorInfo.GameObject, ConnectorInfo.Type) as IConnector;
             }
 
             AddParameters();
@@ -52,7 +52,7 @@ namespace UniFlow.Editor
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
 
-        internal ConnectableInfo ConnectableInfo { get; }
+        internal ConnectorInfo ConnectorInfo { get; }
 
         private IEdgeConnectorListener EdgeConnectorListener { get; }
 
@@ -64,7 +64,7 @@ namespace UniFlow.Editor
             "targetIds",
         };
 
-        private static IDictionary<Type, Func<ConnectableInfo, ConnectableInfo.Parameter, BindableElement>> CreateFieldFunctions { get; } = new Dictionary<Type, Func<ConnectableInfo, ConnectableInfo.Parameter, BindableElement>>
+        private static IDictionary<Type, Func<ConnectorInfo, ConnectorInfo.Parameter, BindableElement>> CreateFieldFunctions { get; } = new Dictionary<Type, Func<ConnectorInfo, ConnectorInfo.Parameter, BindableElement>>
         {
             {typeof(string), CreateBindableElement<string, TextField>},
             {typeof(int), CreateBindableElement<int, IntegerField>},
@@ -76,7 +76,7 @@ namespace UniFlow.Editor
 
         void IRemovableElement.RemoveFromGraphView()
         {
-            if (ConnectableInfo.Connectable == default || !(ConnectableInfo.Connectable is Component component))
+            if (ConnectorInfo.Connector == default || !(ConnectorInfo.Connector is Component component))
             {
                 return;
             }
@@ -87,12 +87,12 @@ namespace UniFlow.Editor
 
         public Vector2 GetRecordedPosition()
         {
-            return ((ConnectableBase) ConnectableInfo.Connectable).FlowGraphNodePosition;
+            return ((ConnectorBase) ConnectorInfo.Connector).FlowGraphNodePosition;
         }
 
         public void ApplyPosition()
         {
-            if (!(ConnectableInfo.Connectable is ConnectableBase connectable) || connectable == default || Mathf.Approximately(layout.position.magnitude, 0.0f))
+            if (!(ConnectorInfo.Connector is ConnectorBase connectable) || connectable == default || Mathf.Approximately(layout.position.magnitude, 0.0f))
             {
                 return;
             }
@@ -104,7 +104,7 @@ namespace UniFlow.Editor
 
         public void ApplyTargetConnectors()
         {
-            if (ConnectableInfo.Connectable == default || !(ConnectableInfo.Connectable is ConnectorBase connector) || connector == default)
+            if (ConnectorInfo.Connector == default || !(ConnectorInfo.Connector is ConnectorBase connector) || connector == default)
             {
                 return;
             }
@@ -114,8 +114,8 @@ namespace UniFlow.Editor
                 .connections
                 .Select(x => x.input.node as FlowNode)
                 .Where(x => x != default)
-                .Select(x => x.ConnectableInfo.Connectable)
-                .OfType<ConnectableBase>();
+                .Select(x => x.ConnectorInfo.Connector)
+                .OfType<ConnectorBase>();
             EditorUtility.SetDirty(connector);
         }
 
@@ -134,13 +134,13 @@ namespace UniFlow.Editor
 
                 {
                     var element = new VisualElement();
-                    var field = new ObjectField("GameObject") {value = ConnectableInfo.GameObject, objectType = typeof(GameObject), allowSceneObjects = true};
+                    var field = new ObjectField("GameObject") {value = ConnectorInfo.GameObject, objectType = typeof(GameObject), allowSceneObjects = true};
                     field.RegisterValueChangedCallback(
                         x =>
                         {
                             var groupId = Undo.GetCurrentGroup();
 
-                            if (x.previousValue != default && ConnectableInfo.Connectable is Component component && component != default)
+                            if (x.previousValue != default && ConnectorInfo.Connector is Component component && component != default)
                             {
                                 Undo.DestroyObjectImmediate(component);
                                 EditorUtility.SetDirty(x.previousValue);
@@ -148,9 +148,9 @@ namespace UniFlow.Editor
 
                             if (x.newValue != default && x.newValue is GameObject newGameObject)
                             {
-                                ConnectableInfo.GameObject = newGameObject;
-                                ConnectableInfo.Connectable = Undo.AddComponent(ConnectableInfo.GameObject, ConnectableInfo.Type) as IConnectable;
-                                ConnectableInfo.ApplyParameters();
+                                ConnectorInfo.GameObject = newGameObject;
+                                ConnectorInfo.Connector = Undo.AddComponent(ConnectorInfo.GameObject, ConnectorInfo.Type) as IConnector;
+                                ConnectorInfo.ApplyParameters();
                                 ApplyTargetConnectors();
                                 InputPort?.connections.Select(y => y.output.node).OfType<FlowNode>().ToList().ForEach(y => y.ApplyTargetConnectors());
                                 EditorUtility.SetDirty(x.newValue);
@@ -168,7 +168,7 @@ namespace UniFlow.Editor
                     element.Add(field);
                     itemsElement.Add(element);
 
-                    if (ConnectableInfo.ParameterList.Any(x => !ParameterNamesHideInNode.Contains(x.Name)))
+                    if (ConnectorInfo.ParameterList.Any(x => !ParameterNamesHideInNode.Contains(x.Name)))
                     {
                         var innerDividerElement = new VisualElement {name = "divider"};
                         innerDividerElement.AddToClassList("horizontal");
@@ -176,7 +176,7 @@ namespace UniFlow.Editor
                     }
                 }
 
-                foreach (var parameter in ConnectableInfo.ParameterList)
+                foreach (var parameter in ConnectorInfo.ParameterList)
                 {
                     if (ParameterNamesHideInNode.Contains(parameter.Name))
                     {
@@ -184,7 +184,7 @@ namespace UniFlow.Editor
                     }
 
                     var element = new VisualElement();
-                    var field = CreateField(ConnectableInfo, parameter);
+                    var field = CreateField(ConnectorInfo, parameter);
                     element.Add(field);
                     itemsElement.Add(element);
                 }
@@ -193,7 +193,7 @@ namespace UniFlow.Editor
             contentsElement.Add(parametersElement);
         }
 
-        private static VisualElement CreateField(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter)
+        private static VisualElement CreateField(ConnectorInfo connectorInfo, ConnectorInfo.Parameter parameter)
         {
             // Generic types field only be rendered by PropertyField
             if (
@@ -204,12 +204,12 @@ namespace UniFlow.Editor
                 )
             )
             {
-                if (connectableInfo.GameObject == default || connectableInfo.Connectable == default)
+                if (connectorInfo.GameObject == default || connectorInfo.Connector == default)
                 {
                     return null;
                 }
 
-                var serializedObject = new SerializedObject(connectableInfo.Connectable as Component);
+                var serializedObject = new SerializedObject(connectorInfo.Connector as Component);
                 var field = new PropertyField(serializedObject.FindProperty(parameter.Name), ToDisplayName(parameter.Name));
                 field.Bind(serializedObject);
                 return field;
@@ -223,9 +223,9 @@ namespace UniFlow.Editor
                     x =>
                     {
                         parameter.Value = x.newValue;
-                        Undo.RecordObject(connectableInfo.Connectable as Component, $"Change {connectableInfo.Name}.{parameter.Name}");
-                        connectableInfo.ApplyParameter(parameter);
-                        EditorUtility.SetDirty(connectableInfo.Connectable as Component);
+                        Undo.RecordObject(connectorInfo.Connector as Component, $"Change {connectorInfo.Name}.{parameter.Name}");
+                        connectorInfo.ApplyParameter(parameter);
+                        EditorUtility.SetDirty(connectorInfo.Connector as Component);
                     }
                 );
                 return field;
@@ -238,10 +238,10 @@ namespace UniFlow.Editor
                 fieldType = typeof(Object);
             }
 
-            return CreateFieldFunctions[fieldType](connectableInfo, parameter);
+            return CreateFieldFunctions[fieldType](connectorInfo, parameter);
         }
 
-        private static BindableElement CreateBindableElement<TValue, TResult>(ConnectableInfo connectableInfo, ConnectableInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
+        private static BindableElement CreateBindableElement<TValue, TResult>(ConnectorInfo connectorInfo, ConnectorInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
         {
             var field = new TResult
             {
@@ -260,7 +260,7 @@ namespace UniFlow.Editor
                         // 直接 Component 監視させちゃう？
                         Undo.RecordObject(FlowEditorWindow.Window, "Change Value");
                         parameter.Value = x.newValue;
-                        connectableInfo.ApplyParameter(parameter);
+                        connectorInfo.ApplyParameter(parameter);
                         FlowEditorWindow.Window.ForceRegisterUndo();
                     }
                 );
@@ -295,7 +295,7 @@ namespace UniFlow.Editor
 
         private void AddPorts()
         {
-            if (typeof(IConnector).IsAssignableFrom(ConnectableInfo.Type))
+            if (typeof(IConnector).IsAssignableFrom(ConnectorInfo.Type))
             {
                 OutputPort = FlowPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, EdgeConnectorListener);
                 OutputPort.portName = "Out";
@@ -310,7 +310,7 @@ namespace UniFlow.Editor
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
 
-            foreach (var suppliableParameter in ConnectableInfo.SuppliableParameterList)
+            foreach (var suppliableParameter in ConnectorInfo.SuppliableParameterList)
             {
                 var suppliedPort = FlowPort.Create(Orientation.Vertical, Direction.Input, Port.Capacity.Multi);
                 suppliedPort.portName = suppliableParameter.Name;

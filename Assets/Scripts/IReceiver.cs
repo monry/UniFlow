@@ -1,6 +1,6 @@
 namespace UniFlow
 {
-    public interface IReceiver : IConnectable
+    public interface IReceiver : IConnector
     {
         void OnReceive(Messages messages);
     }

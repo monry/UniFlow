@@ -8,27 +8,38 @@ using Zenject;
 
 namespace UniFlow
 {
-    public abstract class ConnectorBase : ConnectableBase, IConnector
+    public abstract class ConnectorBase : MonoBehaviour, IConnector
     {
-        [SerializeField] [Tooltip("Specify instances of IEventConnectable directly")]
-        private List<ConnectableBase> targetComponents = new List<ConnectableBase>();
+#if UNITY_EDITOR
+        [SerializeField] [HideInInspector] private Vector2 flowGraphNodePosition = default;
+        public Vector2 FlowGraphNodePosition
+        {
+            get => flowGraphNodePosition;
+            set => flowGraphNodePosition = value;
+        }
+#endif
 
-        [SerializeField] [Tooltip("Specify identifiers of IEventConnectable that resolve from Zenject.DiContainer")]
+        [SerializeField] [Tooltip("Specify instances of IEventConnector directly")]
+        private List<ConnectorBase> targetComponents = new List<ConnectorBase>();
+
+        [SerializeField] [Tooltip("Specify identifiers of IEventConnector that resolve from Zenject.DiContainer")]
         private List<string> targetIds = new List<string>();
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         protected bool actAsTrigger = false;
 
-        private IEnumerable<IConnectable> TargetConnectors =>
-            new List<IConnectable>()
-                .Concat(targetComponents ?? new List<ConnectableBase>())
-                .Concat((targetIds ?? new List<string>()).SelectMany(x => Container?.ResolveIdAll<IConnectable>(x)))
+        protected Messages Messages { get; private set; }
+
+        protected virtual IEnumerable<IConnector> TargetConnectors =>
+            new List<IConnector>()
+                .Concat(targetComponents ?? new List<ConnectorBase>())
+                .Concat((targetIds ?? new List<string>()).SelectMany(x => Container?.ResolveIdAll<IConnector>(x)))
                 .Where(x => !ReferenceEquals(x, this))
                 .ToArray();
 
 #if UNITY_EDITOR
         [UsedImplicitly]
-        public IEnumerable<ConnectableBase> TargetComponents
+        public IEnumerable<ConnectorBase> TargetComponents
         {
             get => targetComponents;
             set => targetComponents = value.ToList();
@@ -50,9 +61,9 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected override void Awake()
+        protected virtual void Awake()
         {
-            base.Awake();
+            CollectSuppliedValues();
             if (ActAsTrigger)
             {
                 ((IConnector) this).Connect(Observable.Return<(IMessage, Messages)>(default));
@@ -63,18 +74,17 @@ namespace UniFlow
         {
             var observable = source
                 .SelectMany(
-                    eventMessages => (this as IConnector)
-                        .OnConnectAsObservable(eventMessages.latestMessage)
-                        .Select(x => (latestMessage: x, messages: (eventMessages.massages ?? Messages.Create()).Append(x)))
-                );
+                    eventMessages =>
+                    {
+                        var (latestMessage, massages) = eventMessages;
+                        Messages = massages;
+                        return (this as IConnector)
+                            .OnConnectAsObservable(latestMessage)
+                            .Select(x => (latestMessage: x, messages: (massages ?? Messages.Create()).Append(x)));
+                    });
             TargetConnectors
-                .OfType<IConnector>()
                 .ToList()
                 .ForEach(x => x.Connect(observable));
-            TargetConnectors
-                .OfType<IReceiver>()
-                .ToList()
-                .ForEach(x => observable.Subscribe(y => x.OnReceive(y.messages)));
 
             if (!TargetConnectors.Any())
             {
@@ -82,14 +92,19 @@ namespace UniFlow
             }
         }
 
+        protected virtual void CollectSuppliedValues()
+        {
+            // Do nothing
+        }
+
         public abstract IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage);
 
         [PublicAPI]
-        public void AddConnectable(ConnectableBase connectable)
+        public void AddConnector(ConnectorBase connectable)
         {
             if (targetComponents == default)
             {
-                targetComponents = new List<ConnectableBase>();
+                targetComponents = new List<ConnectorBase>();
             }
             targetComponents.Add(connectable);
         }
