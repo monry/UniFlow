@@ -66,8 +66,7 @@ namespace UniFlow
                     eventMessages => (this as IConnector)
                         .OnConnectAsObservable(eventMessages.latestMessage)
                         .Select(x => (latestMessage: x, messages: (eventMessages.massages ?? Messages.Create()).Append(x)))
-                )
-                .Share();
+                );
             TargetConnectors
                 .OfType<IConnector>()
                 .ToList()
