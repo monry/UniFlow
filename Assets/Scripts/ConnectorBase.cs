@@ -81,7 +81,12 @@ namespace UniFlow
                         return (this as IConnector)
                             .OnConnectAsObservable(latestMessage)
                             .Select(x => (latestMessage: x, messages: (massages ?? Messages.Create()).Append(x)));
-                    });
+                    }
+                );
+            if (TargetConnectors.Count() > 1)
+            {
+                observable = observable.Share();
+            }
             TargetConnectors
                 .ToList()
                 .ForEach(x => x.Connect(observable));
