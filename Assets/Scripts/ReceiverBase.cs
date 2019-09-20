@@ -11,9 +11,17 @@ namespace UniFlow
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
             OnReceive(Messages);
-            return Observable.Empty<IMessage>();
+            return Observable.Return(Message.Create(this));
         }
 
         public abstract void OnReceive(Messages messages);
+
+        public class Message : MessageBase<ReceiverBase>
+        {
+            public static Message Create(ReceiverBase sender)
+            {
+                return Create<Message>(ConnectorType.Receiver, sender);
+            }
+        }
     }
 }
