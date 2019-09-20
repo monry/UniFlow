@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace UniFlow.Editor
 {
@@ -86,17 +84,11 @@ namespace UniFlow.Editor
             }
         }
 
-        private void ActiveSceneChangedInEditMode(Scene from, Scene to)
-        {
-            Reload();
-        }
-
         private void OnEnable()
         {
             Window = this;
             Undo.undoRedoPerformed += Reload;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            EditorSceneManager.activeSceneChangedInEditMode += ActiveSceneChangedInEditMode;
             Reload();
         }
 
@@ -105,7 +97,6 @@ namespace UniFlow.Editor
         {
             Undo.undoRedoPerformed -= Reload;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-            EditorSceneManager.activeSceneChangedInEditMode -= ActiveSceneChangedInEditMode;
         }
 
         private void OnDestroy()
