@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.1.0-preview.21] - 2019-09-20
+
+### Implementations
+
+* Implement ValueComparer
+* Implement ValueProvider
+
+### Fixes
+
+* Fix observable
+    * Split message correctly
+    * Send `ObservableReceiverBase` message correctly
+* Fix GraphView
+
+## [0.1.0-preview.20] - 2019-09-17
+
+### Changes
+
+* Change timing of preparing to `Awake()` instead of `Start()`
+
+### Fixes
+
+* Fix some bugs in GraphView
+* Change method interface to send latest message correctly
+
+## [0.1.0-preview.19] - 2019-09-16
+
+### Implementations
+
+* Add `Toss` and `Receive` connector to split graph
+
+### Destructive Changes
+
+* Pass previous message to `IConnector.OnConnectAsObservable()`
+
+### Fixes
+
+* `SimpleAnimationEvent`: Waiting animation correctly
+
+## [0.1.0-preview.18] - 2019-09-10
+
+Fix editor bug
+
+### Fixes
+
+* Set TargetComponents correctly when connect from search window
+
 ## [0.1.0-preview.17] - 2019-09-09
 
 Fix undo
