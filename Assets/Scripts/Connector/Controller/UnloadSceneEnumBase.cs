@@ -8,7 +8,7 @@ using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
-    public abstract class UnloadScene<TSceneName> : UnloadSceneBase where TSceneName : Enum
+    public abstract class UnloadSceneEnumBase<TSceneName> : UnloadSceneBase where TSceneName : Enum
     {
         [SerializeField] private List<TSceneName> sceneNames = default;
 
@@ -33,9 +33,9 @@ namespace UniFlow.Connector.Controller
             return Message.Create(this);
         }
 
-        public class Message : MessageBase<UnloadScene<TSceneName>>
+        public class Message : MessageBase<UnloadSceneEnumBase<TSceneName>>
         {
-            public static Message Create(UnloadScene<TSceneName> sender)
+            public static Message Create(UnloadSceneEnumBase<TSceneName> sender)
             {
                 return Create<Message>(ConnectorType.UnloadScene_Enum, sender);
             }
