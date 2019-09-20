@@ -2,7 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace UniFlow.Connector
+namespace UniFlow.Connector.Misc
 {
     [AddComponentMenu("UniFlow/Misc/Receive", (int) ConnectorType.Receive)]
     public class Receive : ConnectorBase
@@ -20,14 +20,7 @@ namespace UniFlow.Connector
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        observer.OnNext(Message.Create(this));
-                        return Disposable;
-                    }
-                );
+            return Observable.Return(Message.Create(this));
         }
 
         private void OnDestroy()

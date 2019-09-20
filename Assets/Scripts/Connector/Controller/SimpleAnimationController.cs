@@ -89,19 +89,22 @@ namespace UniFlow.Connector.Controller
 //                UpdateMode = animatorUpdateModeHolder.Value;
 //            }
 
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        InvokeSimpleAnimationMethod();
-                        observer.OnNext(Message.Create(this));
-                        return Disposable;
-                    }
-                );
+            InvokeSimpleAnimationMethod();
+            return Observable.Return(Message.Create(this));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        InvokeSimpleAnimationMethod();
+//                        observer.OnNext(Message.Create(this));
+//                        return Disposable;
+//                    }
+//                );
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             // ReSharper disable once InvertIf
             // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
             if (AnimationClip != default && Animator != default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))

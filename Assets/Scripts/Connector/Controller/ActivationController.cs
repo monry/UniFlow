@@ -40,32 +40,53 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        var count = 0;
-                        var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
-                        count += gameObjects.Count;
-                        gameObjects.ForEach(x => x.SetActive(Activated));
-                        var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
-                        count += monoBehaviours.Count;
-                        monoBehaviours.ForEach(x => x.enabled = Activated);
-                        if (ControlSelfInstance)
-                        {
-                            if (gameObject.activeSelf != Activated)
-                            {
-                                count++;
-                                gameObject.SetActive(Activated);
-                            }
-                            var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
-                            count += components.Count;
-                            components.ForEach(x => x.enabled = Activated);
-                        }
-                        observer.OnNext(Message.Create(this, count, gameObjects, monoBehaviours));
-                        return Disposable;
-                    }
-                );
+            var count = 0;
+            var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
+            count += gameObjects.Count;
+            gameObjects.ForEach(x => x.SetActive(Activated));
+            var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
+            count += monoBehaviours.Count;
+            monoBehaviours.ForEach(x => x.enabled = Activated);
+            // ReSharper disable once InvertIf
+            if (ControlSelfInstance)
+            {
+                if (gameObject.activeSelf != Activated)
+                {
+                    count++;
+                    gameObject.SetActive(Activated);
+                }
+                var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
+                count += components.Count;
+                components.ForEach(x => x.enabled = Activated);
+            }
+
+            return Observable.Return(Message.Create(this, count, gameObjects, monoBehaviours));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        var count = 0;
+//                        var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
+//                        count += gameObjects.Count;
+//                        gameObjects.ForEach(x => x.SetActive(Activated));
+//                        var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
+//                        count += monoBehaviours.Count;
+//                        monoBehaviours.ForEach(x => x.enabled = Activated);
+//                        if (ControlSelfInstance)
+//                        {
+//                            if (gameObject.activeSelf != Activated)
+//                            {
+//                                count++;
+//                                gameObject.SetActive(Activated);
+//                            }
+//                            var components = GetComponents<MonoBehaviour>().Where(x => x.enabled != Activated).ToList();
+//                            count += components.Count;
+//                            components.ForEach(x => x.enabled = Activated);
+//                        }
+//                        observer.OnNext(Message.Create(this, count, gameObjects, monoBehaviours));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private void OnDestroy()

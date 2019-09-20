@@ -29,15 +29,17 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        var count = HandleActivation();
-                        observer.OnNext(Message.Create(this, count));
-                        return Disposable;
-                    }
-                );
+            var count = HandleActivation();
+            return Observable.Return(Message.Create(this, count));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        var count = HandleActivation();
+//                        observer.OnNext(Message.Create(this, count));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private int HandleActivation()

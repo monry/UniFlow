@@ -9,12 +9,12 @@ using UnityEngine;
 namespace UniFlow.Editor
 {
     [Serializable]
-    public class ConnectableInfo
+    public class ConnectorInfo
     {
-        private ConnectableInfo(GameObject gameObject, IConnectable connectable, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
+        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
         {
             GameObject = gameObject;
-            Connectable = connectable;
+            Connector = connector;
             Type = type;
             Name = name;
             parameterList = parameters.ToList();
@@ -22,7 +22,7 @@ namespace UniFlow.Editor
         }
 
         public GameObject GameObject { get; set; }
-        public IConnectable Connectable { get; set; }
+        public IConnector Connector { get; set; }
         public Type Type { get; }
         public string Name { get; }
         [SerializeField] private List<Parameter> parameterList = default;
@@ -32,13 +32,13 @@ namespace UniFlow.Editor
 
         public void ApplyParameter(Parameter parameter)
         {
-            if (Connectable == default)
+            if (Connector == default)
             {
                 return;
             }
 
             GetFieldRecursive(Type, parameter.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?
-                .SetValue(Connectable, parameter.Value);
+                .SetValue(Connector, parameter.Value);
         }
 
         private static FieldInfo GetFieldRecursive(Type type, string name, BindingFlags bindingFlags)
@@ -63,7 +63,7 @@ namespace UniFlow.Editor
 
         public void ApplyParameters()
         {
-            if (Connectable == default)
+            if (Connector == default)
             {
                 return;
             }
@@ -72,13 +72,13 @@ namespace UniFlow.Editor
         }
 
         [PublicAPI]
-        public static ConnectableInfo Create(IConnectable instance)
+        public static ConnectorInfo Create(IConnector instance)
         {
             return Create(instance.GetType(), instance);
         }
 
         [PublicAPI]
-        public static ConnectableInfo Create(Type type, IConnectable instance = default)
+        public static ConnectorInfo Create(Type type, IConnector instance = default)
         {
             return Create(
                 ((Component) instance)?.gameObject,
@@ -94,10 +94,10 @@ namespace UniFlow.Editor
             );
         }
 
-        private static FieldInfo[] CollectFields(Type type)
+        private static IEnumerable<FieldInfo> CollectFields(Type type)
         {
             var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (typeof(IConnectable).IsAssignableFrom(type.BaseType))
+            if (typeof(IConnector).IsAssignableFrom(type.BaseType))
             {
                 fields = fields.Concat(CollectFields(type.BaseType)).ToArray();
             }
@@ -106,9 +106,9 @@ namespace UniFlow.Editor
         }
 
         [PublicAPI]
-        public static ConnectableInfo Create(GameObject gameObject, IConnectable instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
+        public static ConnectorInfo Create(GameObject gameObject, IConnector instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
         {
-            return new ConnectableInfo(gameObject, instance, type, name, parameters, suppliableParameters);
+            return new ConnectorInfo(gameObject, instance, type, name, parameters, suppliableParameters);
         }
 
         [Serializable]

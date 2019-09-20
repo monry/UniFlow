@@ -23,8 +23,8 @@ namespace UniFlow.Editor
         {
             "Controller",
             "Event",
-            "Comparer",
-            "Value",
+            "ValueProvider",
+            "ValueComparer",
             "Logic",
             "Receiver",
             "Misc",
@@ -47,7 +47,7 @@ namespace UniFlow.Editor
                 .CurrentDomain
                 .GetAssemblies()
                 .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectableBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
+                .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectorBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
                 .Where(x => x.GetCustomAttributes(typeof(AddComponentMenu), false).Any())
                 .Select(x => (menu: x.GetCustomAttributes(typeof(AddComponentMenu), false).OfType<AddComponentMenu>().First(), type: x))
                 .Select(x => (x.menu, x.type, entries: x.menu.componentMenu.Split('/').Skip(1).ToArray()))
@@ -90,7 +90,7 @@ namespace UniFlow.Editor
 
         bool ISearchWindowProvider.OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            if (!typeof(IConnectable).IsAssignableFrom((Type) searchTreeEntry.userData))
+            if (!typeof(IConnector).IsAssignableFrom((Type) searchTreeEntry.userData))
             {
                 return false;
             }
@@ -100,9 +100,9 @@ namespace UniFlow.Editor
             if (FlowPort != default)
             {
                 FlowGraphView.AddEdge(FlowPort, (FlowPort) node.InputPort);
-                if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectableInfo.Connectable is ConnectorBase targetConnector)
+                if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectorInfo.Connector is ConnectorBase targetConnector)
                 {
-                    targetConnector.TargetComponents = new List<ConnectableBase> {node.ConnectableInfo.Connectable as ConnectableBase};
+                    targetConnector.TargetComponents = new List<ConnectorBase> {node.ConnectorInfo.Connector as ConnectorBase};
                 }
             }
             FlowGraphView.SetupActAsTrigger();

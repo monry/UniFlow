@@ -81,8 +81,9 @@ namespace UniFlow.Connector.Event
             Subject.OnNext(animationEvent);
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             // ReSharper disable once InvertIf
             // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
             if (AnimationClip != default && Animator == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
