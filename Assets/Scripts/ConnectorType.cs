@@ -33,6 +33,7 @@ namespace UniFlow
         RaycasterController,
         RaycastTargetController,
         MoveParentTransform,
+        CanvasGroupController,
 
         LoadScene                 = 400,
         LoadScene_Enum,
