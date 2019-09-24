@@ -47,15 +47,17 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        Transform.SetParent(ParentTransform, WorldPositionStays);
-                        observer.OnNext(Message.Create(this, Transform));
-                        return Disposable;
-                    }
-                );
+            Transform.SetParent(ParentTransform, WorldPositionStays);
+            return Observable.Return(Message.Create(this, Transform));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        Transform.SetParent(ParentTransform, WorldPositionStays);
+//                        observer.OnNext(Message.Create(this, Transform));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private void OnDestroy()

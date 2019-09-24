@@ -1,0 +1,17 @@
+# editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Default settings:
+# A newline ending every file
+# Use 4 spaces as indentation
+[*]
+insert_final_newline = true
+indent_style = space
+
+# Unity scripts
+[Assets/**/*.cs]
+charset = utf-8
+end_of_line = lf
+indent_size = 4

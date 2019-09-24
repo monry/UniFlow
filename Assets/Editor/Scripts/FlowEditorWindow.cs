@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
@@ -31,17 +32,16 @@ namespace UniFlow.Editor
 
         internal FlowGraphView FlowGraphView { get; private set; }
 
-        [SerializeField] private List<ConnectableInfo> connectableInfoList = new List<ConnectableInfo>();
+        [SerializeField] private List<ConnectorInfo> connectableInfoList = new List<ConnectorInfo>();
         [SerializeField] [UsedImplicitly] private int counter = default;
 
-        public IList<ConnectableInfo> ConnectableInfoList => connectableInfoList;
+        public IList<ConnectorInfo> ConnectableInfoList => connectableInfoList;
 
         [MenuItem("Window/UniFlow/Open UniFlow Graph")]
         public static void Open()
         {
             GetWindow<FlowEditorWindow>();
             Window.titleContent = new GUIContent("UniFlow Graph");
-
         }
 
         public void ForceRegisterUndo()
@@ -54,7 +54,7 @@ namespace UniFlow.Editor
             AssetReferences.Reload();
 
             rootVisualElement.Clear();
-            connectableInfoList = new List<ConnectableInfo>();
+            connectableInfoList = new List<ConnectorInfo>();
             var flowVisualElement = new FlowVisualElement
             {
                 name = typeof(FlowVisualElement).Name,
@@ -66,10 +66,29 @@ namespace UniFlow.Editor
             Repaint();
         }
 
+        private void OnPlayModeStateChanged(PlayModeStateChange playModeStateChange)
+        {
+            switch (playModeStateChange)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    Reload();
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    break;
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);
+            }
+        }
+
         private void OnEnable()
         {
             Window = this;
             Undo.undoRedoPerformed += Reload;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             Reload();
         }
 
@@ -77,6 +96,7 @@ namespace UniFlow.Editor
         private void OnDisable()
         {
             Undo.undoRedoPerformed -= Reload;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
         private void OnDestroy()

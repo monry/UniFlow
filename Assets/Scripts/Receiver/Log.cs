@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -16,8 +18,12 @@ namespace UniFlow.Receiver
             {
                 sb.AppendLine($"  {index}");
                 sb.AppendLine($"    <b>Type</b>:\n      {message.ConnectorType}");
-                // TODO: データの送り方を考える
-//                sb.AppendLine($"    <b>Data</b>:\n      {eventMessage.Data?.ToString().Replace("\n", "\n      ")}");
+                sb.AppendLine($"    <b>Message Type</b>:\n      {message.GetType()}");
+                if (message.GetType().BaseType is Type baseType && baseType.IsGenericType && baseType.GenericTypeArguments.Length == 2)
+                {
+                    var data = message.GetType().GetProperty("Data", BindingFlags.Instance | BindingFlags.Public)?.GetValue(message);
+                    sb.AppendLine($"    <b>Data</b>:\n      <b>Type</b>:\n        {data?.GetType()}\n      <b>Value</b>:\n        {data?.ToString().Replace("\n", "\n        ")}");
+                }
                 index++;
             }
             Debug.Log(sb.ToString());

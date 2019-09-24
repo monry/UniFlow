@@ -19,6 +19,17 @@ namespace UniFlow.Editor
 
         private IDictionary<string, SearchTreeGroupEntry> SearchTreeGroupEntries { get; } = new Dictionary<string, SearchTreeGroupEntry>();
 
+        private static IEnumerable<string> DirectoryOrder { get; } = new[]
+        {
+            "Controller",
+            "Event",
+            "ValueProvider",
+            "ValueComparer",
+            "Logic",
+            "Receiver",
+            "Misc",
+        };
+
         public void Initialize(FlowGraphView flowGraphView)
         {
             FlowGraphView = flowGraphView;
@@ -36,21 +47,19 @@ namespace UniFlow.Editor
                 .CurrentDomain
                 .GetAssemblies()
                 .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectableBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
+                .Where(x => x.IsClass && x.IsSubclassOf(typeof(ConnectorBase)) && !x.IsAbstract && x.GetCustomAttributes(false).Any(y => y is AddComponentMenu))
                 .Where(x => x.GetCustomAttributes(typeof(AddComponentMenu), false).Any())
                 .Select(x => (menu: x.GetCustomAttributes(typeof(AddComponentMenu), false).OfType<AddComponentMenu>().First(), type: x))
-                .OrderBy(x => x.menu.componentMenu)
+                .Select(x => (x.menu, x.type, entries: x.menu.componentMenu.Split('/').Skip(1).ToArray()))
+                .Select(x => (x.menu, x.type, x.entries, directory: x.entries.Take(x.entries.Length - 1).Aggregate((a, b) => $"{a}/{b}")))
+                .Select(x => (x.menu, x.type, x.entries, x.directory, directoryOrder: DirectoryOrder.Contains(x.directory) ? DirectoryOrder.Select((directory, index) => (directory, index)).First(y => y.directory == x.directory).index : int.MaxValue))
+                .OrderBy(x => x.directoryOrder)
+                .ThenBy(x => x.menu.componentOrder)
                 .ToList()
                 .ForEach(
                     item =>
                     {
-                        var (menu, type) = item;
-                        var componentMenuEntries = menu
-                            .componentMenu
-                            .Split('/')
-                            // Ignore first entry `UniFlow`
-                            .Skip(1)
-                            .ToArray();
+                        var (_, type, componentMenuEntries, _, _) = item;
                         var fullPath = new StringBuilder();
                         foreach (var (componentMenuEntry, index) in componentMenuEntries.Select((x, i) => (x, i)))
                         {
@@ -81,7 +90,7 @@ namespace UniFlow.Editor
 
         bool ISearchWindowProvider.OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            if (!typeof(IConnectable).IsAssignableFrom((Type) searchTreeEntry.userData))
+            if (!typeof(IConnector).IsAssignableFrom((Type) searchTreeEntry.userData))
             {
                 return false;
             }
@@ -91,9 +100,9 @@ namespace UniFlow.Editor
             if (FlowPort != default)
             {
                 FlowGraphView.AddEdge(FlowPort, (FlowPort) node.InputPort);
-                if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectableInfo.Connectable is ConnectorBase targetConnector)
+                if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectorInfo.Connector is ConnectorBase targetConnector)
                 {
-                    targetConnector.TargetComponents = new List<ConnectableBase> {node.ConnectableInfo.Connectable as ConnectableBase};
+                    targetConnector.TargetComponents = new List<ConnectorBase> {node.ConnectorInfo.Connector as ConnectorBase};
                 }
             }
             FlowGraphView.SetupActAsTrigger();

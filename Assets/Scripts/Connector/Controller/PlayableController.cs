@@ -41,15 +41,17 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            return Observable
-                .Create<IMessage>(
-                    observer =>
-                    {
-                        InvokePlayableDirectorMethod();
-                        observer.OnNext(Message.Create(this));
-                        return Disposable;
-                    }
-                );
+            InvokePlayableDirectorMethod();
+            return Observable.Return(Message.Create(this));
+//            return Observable
+//                .Create<IMessage>(
+//                    observer =>
+//                    {
+//                        InvokePlayableDirectorMethod();
+//                        observer.OnNext(Message.Create(this));
+//                        return Disposable;
+//                    }
+//                );
         }
 
         private void InvokePlayableDirectorMethod()
