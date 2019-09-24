@@ -49,6 +49,8 @@ namespace UniFlow
             get => flowGraphNodePosition;
             set => flowGraphNodePosition = value;
         }
+
+        public ISubject<IMessage> OnConnectSubject { get; } = new Subject<IMessage>();
 #endif
 
         [UsedImplicitly] public virtual bool ActAsTrigger
@@ -78,6 +80,9 @@ namespace UniFlow
                         Messages = massages;
                         return (this as IConnector)
                             .OnConnectAsObservable(latestMessage)
+#if UNITY_EDITOR
+                            .Do(OnConnectSubject.OnNext)
+#endif
                             .Select(x => (latestMessage: x, messages: (massages ?? Messages.Create()).Append(x)));
                     }
                 );
