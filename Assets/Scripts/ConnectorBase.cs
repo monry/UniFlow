@@ -10,15 +10,6 @@ namespace UniFlow
 {
     public abstract class ConnectorBase : MonoBehaviour, IConnector
     {
-#if UNITY_EDITOR
-        [SerializeField] [HideInInspector] private Vector2 flowGraphNodePosition = default;
-        public Vector2 FlowGraphNodePosition
-        {
-            get => flowGraphNodePosition;
-            set => flowGraphNodePosition = value;
-        }
-#endif
-
         [SerializeField] [Tooltip("Specify instances of IEventConnector directly")]
         private List<ConnectorBase> targetComponents = new List<ConnectorBase>();
 
@@ -51,6 +42,15 @@ namespace UniFlow
             get => targetIds;
             set => targetIds = value.ToList();
         }
+
+        [SerializeField] [HideInInspector] private Vector2 flowGraphNodePosition = default;
+        public Vector2 FlowGraphNodePosition
+        {
+            get => flowGraphNodePosition;
+            set => flowGraphNodePosition = value;
+        }
+
+        public ISubject<IMessage> OnConnectSubject { get; } = new Subject<IMessage>();
 #endif
 
         [UsedImplicitly] public virtual bool ActAsTrigger
@@ -80,6 +80,9 @@ namespace UniFlow
                         Messages = massages;
                         return (this as IConnector)
                             .OnConnectAsObservable(latestMessage)
+#if UNITY_EDITOR
+                            .Do(OnConnectSubject.OnNext)
+#endif
                             .Select(x => (latestMessage: x, messages: (massages ?? Messages.Create()).Append(x)));
                     }
                 );

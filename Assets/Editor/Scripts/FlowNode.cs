@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UniRx;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -47,6 +48,17 @@ namespace UniFlow.Editor
             AddParameters();
             AddPorts();
             RegisterCallback((GeometryChangedEvent e) => ApplyPosition());
+            ConnectorInfo
+                .Connector?
+                .OnConnectSubject
+                .Subscribe(
+                    x =>
+                    {
+                        var messagedBorder = new VisualElement {name = "messaged-border"};
+                        Add(messagedBorder);
+                        Observable.Timer(TimeSpan.FromSeconds(1.0)).Subscribe(_ => Remove(messagedBorder));
+                    }
+                );
         }
 
         public Port InputPort { get; private set; }
