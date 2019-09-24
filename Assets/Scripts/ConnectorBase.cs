@@ -10,15 +10,6 @@ namespace UniFlow
 {
     public abstract class ConnectorBase : MonoBehaviour, IConnector
     {
-#if UNITY_EDITOR
-        [SerializeField] [HideInInspector] private Vector2 flowGraphNodePosition = default;
-        public Vector2 FlowGraphNodePosition
-        {
-            get => flowGraphNodePosition;
-            set => flowGraphNodePosition = value;
-        }
-#endif
-
         [SerializeField] [Tooltip("Specify instances of IEventConnector directly")]
         private List<ConnectorBase> targetComponents = new List<ConnectorBase>();
 
@@ -50,6 +41,13 @@ namespace UniFlow
         {
             get => targetIds;
             set => targetIds = value.ToList();
+        }
+
+        [SerializeField] [HideInInspector] private Vector2 flowGraphNodePosition = default;
+        public Vector2 FlowGraphNodePosition
+        {
+            get => flowGraphNodePosition;
+            set => flowGraphNodePosition = value;
         }
 #endif
 
