@@ -52,6 +52,7 @@ namespace UniFlow
         Interval,
         TimeScaleController,
         Empty,
+        BoolToggle,
 
         Toss                      = 9100,
         Receive                   = 9101,
