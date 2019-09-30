@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Color", (int) ConnectorType.ValueProviderColor)]
-    public class Color : ValueProviderBase<UnityEngine.Color>
+    public class Color : Base<UnityEngine.Color>
     {
         [SerializeField] private UnityEngine.Color value = default;
         private UnityEngine.Color Value => value;

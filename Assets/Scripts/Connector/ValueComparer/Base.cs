@@ -5,16 +5,16 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    public abstract class ComparerBase<TValue, TOperator> : ConnectorBase
+    public abstract class Base<TValue, TOperator> : ConnectorBase
         where TOperator : Enum
     {
-        [SerializeField] private TValue value = default;
+        [SerializeField] private TValue expect = default;
         [SerializeField] private TOperator @operator = default;
 
         [UsedImplicitly] public TValue Value
         {
-            get => value;
-            set => this.value = value;
+            get => expect;
+            set => expect = value;
         }
         [UsedImplicitly] public TOperator Operator
         {
@@ -41,9 +41,9 @@ namespace UniFlow.Connector.ValueComparer
             Disposable.Dispose();
         }
 
-        public class Message : MessageBase<ComparerBase<TValue, TOperator>>
+        public class Message : MessageBase<Base<TValue, TOperator>>
         {
-            public static Message Create(ComparerBase<TValue, TOperator> sender)
+            public static Message Create(Base<TValue, TOperator> sender)
             {
                 return Create<Message>(ConnectorType.ValueComparerEnum, sender);
             }

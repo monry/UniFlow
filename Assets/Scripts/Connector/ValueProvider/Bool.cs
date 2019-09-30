@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Bool", (int) ConnectorType.ValueProviderBool)]
-    public class Bool : ValueProviderBase<bool>
+    public class Bool : Base<bool>
     {
         [SerializeField] private bool value = default;
         private bool Value => value;

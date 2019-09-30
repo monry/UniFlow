@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector3", (int) ConnectorType.ValueProviderVector3)]
-    public class Vector3 : ValueProviderBase<UnityEngine.Vector3>
+    public class Vector3 : Base<UnityEngine.Vector3>
     {
         [SerializeField] private UnityEngine.Vector3 value = default;
         private UnityEngine.Vector3 Value => value;

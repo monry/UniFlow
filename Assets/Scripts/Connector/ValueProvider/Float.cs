@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Float", (int) ConnectorType.ValueProviderFloat)]
-    public class Float : ValueProviderBase<float>
+    public class Float : Base<float>
     {
         [SerializeField] private float value = default;
         private float Value => value;

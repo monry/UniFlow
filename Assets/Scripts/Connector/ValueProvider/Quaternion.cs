@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Quaternion", (int) ConnectorType.ValueProviderQuaternion)]
-    public class Quaternion : ValueProviderBase<UnityEngine.Quaternion>
+    public class Quaternion : Base<UnityEngine.Quaternion>
     {
         [SerializeField] private UnityEngine.Quaternion value = default;
         private UnityEngine.Quaternion Value => value;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Object", (int) ConnectorType.ValueProviderObject)]
-    public class Object : ValueProviderBase<UnityEngine.Object>
+    public class Object : Base<UnityEngine.Object>
     {
         [SerializeField] private UnityEngine.Object value = default;
         private UnityEngine.Object Value => value;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector2Int", (int) ConnectorType.ValueProviderVector2Int)]
-    public class Vector2Int : ValueProviderBase<UnityEngine.Vector2Int>
+    public class Vector2Int : Base<UnityEngine.Vector2Int>
     {
         [SerializeField] private UnityEngine.Vector2Int value = default;
         private UnityEngine.Vector2Int Value => value;
