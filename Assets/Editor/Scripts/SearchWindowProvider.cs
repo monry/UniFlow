@@ -99,7 +99,9 @@ namespace UniFlow.Editor
 
             if (FlowPort != default)
             {
-                FlowGraphView.AddEdge(FlowPort, (FlowPort) node.InputPort);
+                var edge = FlowGraphView.AddEdge(FlowPort, (FlowPort) node.InputPort);
+                FlowGraphView.AddElement(edge);
+                FlowGraphView.SetupActAsTrigger();
                 if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectorInfo.Connector is ConnectorBase targetConnector)
                 {
                     targetConnector.TargetComponents = new List<ConnectorBase> {node.ConnectorInfo.Connector as ConnectorBase};

@@ -17,6 +17,7 @@ namespace UniFlow.Editor
         private IDictionary<FlowNode, Vector2Int> NormalizedPositionDictionary { get; } = new Dictionary<FlowNode, Vector2Int>();
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
+        private ValueInjectionConnectorListener ValueInjectionConnectorListener { get; set; }
 
         private const float NodeWidth = 300.0f;
         private static Vector2 NodesOffset { get; } = new Vector2(50.0f, 50.0f);
@@ -41,6 +42,7 @@ namespace UniFlow.Editor
             SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             SearchWindowProvider.Initialize(this);
             EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
+            ValueInjectionConnectorListener = new ValueInjectionConnectorListener(this);
 
             viewTransformChanged += graphView =>
             {
@@ -285,7 +287,8 @@ namespace UniFlow.Editor
                         continue;
                     }
 
-                    AddElement(AddEdge((FlowPort) RenderedNodes[connectable].OutputPort, (FlowPort) RenderedNodes[targetConnectable].InputPort));
+                    var edge = AddEdge((FlowPort) RenderedNodes[connectable].OutputPort, (FlowPort) RenderedNodes[targetConnectable].InputPort);
+                    AddElement(edge);
                 }
             }
         }
@@ -294,14 +297,14 @@ namespace UniFlow.Editor
         {
             var connectableInfo = ConnectorInfo.Create(connectableType, connectableInstance);
             FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
-            var node = new FlowNode(connectableInfo, EdgeConnectorListener);
+            var node = new FlowNode(connectableInfo, EdgeConnectorListener, ValueInjectionConnectorListener);
             node.Initialize();
             node.SetPosition(new Rect(position.x, position.y, 0, 0));
             AddElement(node);
             return node;
         }
 
-        public FlowEdge AddEdge(FlowPort outputPort, FlowPort inputPort)
+        public static FlowEdge AddEdge(Port outputPort, Port inputPort)
         {
             var edge = new FlowEdge
             {
@@ -310,16 +313,42 @@ namespace UniFlow.Editor
             };
             edge.output.Connect(edge);
             edge.input.Connect(edge);
-            AddElement(edge);
-            SetupActAsTrigger();
             return edge;
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
+            if (startPort is FlowValuePublishPort startFlowValuePublishPort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowValueReceivePort flowValueReceivePort
+                            && startFlowValuePublishPort.ValuePublisherInfo.Type == flowValueReceivePort.ValueReceiverInfo.Type
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
+            if (startPort is FlowValueReceivePort startFlowValueReceivePort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowValuePublishPort flowValuePublishPort
+                            && startFlowValueReceivePort.ValueReceiverInfo.Type == flowValuePublishPort.ValuePublisherInfo.Type
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
             return ports
                 .ToList()
-                .Where(x => x.direction != startPort.direction && x.node != startPort.node)
+                .Where(x => x is FlowPort && x.direction != startPort.direction && x.node != startPort.node)
                 .ToList();
         }
     }

@@ -87,14 +87,14 @@ namespace UniFlow.Editor
                 instance,
                 type,
                 type.Name,
-                CollectFields(type)
+                type.GetFieldsRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<HideInInspector>() == null)
                     .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
-                CollectProperties(type)
+                type.GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
                     .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null)
                     .Select(x => ValuePublisherInfo.Create(x, instance)),
-                CollectProperties(type)
+                type.GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
                     .Select(x => ValueReceiverInfo.Create(x, instance))
             );
@@ -104,28 +104,6 @@ namespace UniFlow.Editor
         public static ConnectorInfo Create(GameObject gameObject, IConnector instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers)
         {
             return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers);
-        }
-
-        private static IEnumerable<FieldInfo> CollectFields(Type type)
-        {
-            var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (typeof(IConnector).IsAssignableFrom(type.BaseType))
-            {
-                fields = fields.Concat(CollectFields(type.BaseType)).ToArray();
-            }
-
-            return fields;
-        }
-
-        private static IEnumerable<PropertyInfo> CollectProperties(Type type)
-        {
-            var fields = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (typeof(IConnector).IsAssignableFrom(type.BaseType))
-            {
-                fields = fields.Concat(CollectProperties(type.BaseType)).ToArray();
-            }
-
-            return fields;
         }
 
         [Serializable]
@@ -159,14 +137,14 @@ namespace UniFlow.Editor
             private ValuePublisherInfo(PropertyInfo propertyInfo, object instance)
             {
                 var attribute = propertyInfo.GetCustomAttribute<ValuePublisherAttribute>();
-                Name = attribute.Name;
-                Type = attribute.Type;
+                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
+                Type = propertyInfo.PropertyType.BaseType?.GetGenericArguments().First();
                 Instance = instance;
                 PropertyInfo = propertyInfo;
             }
 
             public string Name { get; }
-            public ValueInjectionType Type { get; }
+            public Type Type { get; }
             public object Instance { get; }
             public PropertyInfo PropertyInfo { get; }
 
@@ -181,14 +159,14 @@ namespace UniFlow.Editor
             private ValueReceiverInfo(PropertyInfo propertyInfo, object instance)
             {
                 var attribute = propertyInfo.GetCustomAttribute<ValueReceiverAttribute>();
-                Name = attribute.Name;
-                Type = attribute.Type;
+                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
+                Type = propertyInfo.PropertyType;
                 Instance = instance;
                 PropertyInfo = propertyInfo;
             }
 
             public string Name { get; }
-            public ValueInjectionType Type { get; }
+            public Type Type { get; }
             public object Instance { get; }
             public PropertyInfo PropertyInfo { get; }
 
