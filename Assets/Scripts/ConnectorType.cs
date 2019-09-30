@@ -19,7 +19,7 @@ namespace UniFlow
         PhysicsTrigger2DEvent,
 
         ActivationController      = 300,
-        CreateInstance,
+        InstantiateObject,
         DestroyInstance,
         SimpleAnimationController,
         SimpleAnimationEvent,
