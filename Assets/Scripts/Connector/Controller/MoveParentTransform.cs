@@ -16,7 +16,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private bool worldPositionStays = true;
 
         [UsedImplicitly]
-        [ValueReceiver("Target Transform", ValueInjectionType.Transform)]
+        [ValueReceiver]
         public Transform TargetTransform
         {
             get => targetTransform != default
@@ -25,7 +25,7 @@ namespace UniFlow.Connector.Controller
             set => targetTransform = value;
         }
         [UsedImplicitly]
-        [ValueReceiver("Parent Transform", ValueInjectionType.Transform)]
+        [ValueReceiver]
         public Transform ParentTransform
         {
             get => parentTransform;

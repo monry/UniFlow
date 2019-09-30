@@ -10,7 +10,7 @@ namespace UniFlow.Connector.ValueProvider
         private bool Value => value;
 
         [SerializeField] private PublishBoolEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Bool)] private PublishBoolEvent Publisher => publisher ?? (publisher = new PublishBoolEvent());
+        [ValuePublisher("Value")] private PublishBoolEvent Publisher => publisher ?? (publisher = new PublishBoolEvent());
 
         protected override bool Provide()
         {

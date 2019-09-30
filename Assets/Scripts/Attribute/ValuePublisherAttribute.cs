@@ -5,13 +5,11 @@ namespace UniFlow.Attribute
     [AttributeUsage(AttributeTargets.Property)]
     public class ValuePublisherAttribute : System.Attribute
     {
-        public ValuePublisherAttribute(string name, ValueInjectionType type)
+        public ValuePublisherAttribute(string name = "")
         {
             Name = name;
-            Type = type;
         }
 
         public string Name { get; }
-        public ValueInjectionType Type { get; }
     }
 }

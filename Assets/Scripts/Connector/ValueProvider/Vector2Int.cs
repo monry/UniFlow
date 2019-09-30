@@ -9,15 +9,13 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private UnityEngine.Vector2Int value = default;
         private UnityEngine.Vector2Int Value => value;
 
-        [SerializeField] private PublishObjectEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Vector2Int)]
-        private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
+        [SerializeField] private PublishVector2IntEvent publisher = default;
+        [ValuePublisher("Value")]
+        private PublishVector2IntEvent Publisher => publisher ?? (publisher = new PublishVector2IntEvent());
 
         protected override UnityEngine.Vector2Int Provide()
         {
-            var publishValue = ScriptableObject.CreateInstance<Vector2IntObject>();
-            publishValue.Value = Value;
-            Publisher.Invoke(publishValue);
+            Publisher.Invoke(Value);
             return Value;
         }
     }

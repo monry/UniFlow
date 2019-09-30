@@ -9,15 +9,13 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private UnityEngine.Quaternion value = default;
         private UnityEngine.Quaternion Value => value;
 
-        [SerializeField] private PublishObjectEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Quaternion)]
-        private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
+        [SerializeField] private PublishQuaternionEvent publisher = default;
+        [ValuePublisher("Value")]
+        private PublishQuaternionEvent Publisher => publisher ?? (publisher = new PublishQuaternionEvent());
 
         protected override UnityEngine.Quaternion Provide()
         {
-            var publishValue = ScriptableObject.CreateInstance<QuaternionObject>();
-            publishValue.Value = Value;
-            Publisher.Invoke(publishValue);
+            Publisher.Invoke(Value);
             return Value;
         }
     }

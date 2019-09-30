@@ -10,7 +10,7 @@ namespace UniFlow.Connector.ValueProvider
         private int Value => value;
 
         [SerializeField] private PublishIntEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Int)]
+        [ValuePublisher("Value")]
         private PublishIntEvent Publisher => publisher ?? (publisher = new PublishIntEvent());
 
         protected override int Provide()

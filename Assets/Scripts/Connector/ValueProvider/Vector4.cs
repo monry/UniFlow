@@ -9,15 +9,13 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private UnityEngine.Vector4 value = default;
         private UnityEngine.Vector4 Value => value;
 
-        [SerializeField] private PublishObjectEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Vector4)]
-        private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
+        [SerializeField] private PublishVector4Event publisher = default;
+        [ValuePublisher("Value")]
+        private PublishVector4Event Publisher => publisher ?? (publisher = new PublishVector4Event());
 
         protected override UnityEngine.Vector4 Provide()
         {
-            var publishValue = ScriptableObject.CreateInstance<Vector4Object>();
-            publishValue.Value = Value;
-            Publisher.Invoke(publishValue);
+            Publisher.Invoke(Value);
             return Value;
         }
     }

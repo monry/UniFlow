@@ -10,7 +10,7 @@ namespace UniFlow.Connector.ValueProvider
         private UnityEngine.Object Value => value;
 
         [SerializeField] private PublishObjectEvent publisher = default;
-        [ValuePublisher("Value", ValueInjectionType.Object)]
+        [ValuePublisher("Value")]
         private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
 
         protected override UnityEngine.Object Provide()
