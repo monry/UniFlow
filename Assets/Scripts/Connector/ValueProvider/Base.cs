@@ -19,14 +19,12 @@ namespace UniFlow.Connector.ValueProvider
             Disposable.Dispose();
         }
 
-        public class Message : MessageBase<Base<TValue>, TValue>, IValueHolder<TValue>
+        public class Message : MessageBase<Base<TValue>, TValue>
         {
             public static Message Create(Base<TValue> sender, TValue value)
             {
                 return Create<Message>(ConnectorType.ValueProvider, sender, value);
             }
-
-            public TValue Value => Data;
         }
     }
 }

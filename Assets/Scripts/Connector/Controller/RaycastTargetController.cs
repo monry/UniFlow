@@ -98,10 +98,8 @@ namespace UniFlow.Connector.Controller
             Disposable.Dispose();
         }
 
-        public class Message : MessageBase<RaycastTargetController, int>, IValueHolder<int>
+        public class Message : MessageBase<RaycastTargetController, int>
         {
-            int IValueHolder<int>.Value => Data;
-
             public static Message Create(RaycastTargetController sender, int count)
             {
                 return Create<Message>(ConnectorType.RaycastTargetController, sender, count);

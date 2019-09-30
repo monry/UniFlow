@@ -26,12 +26,7 @@ namespace UniFlow.Connector.ValueComparer
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            if (latestMessage.Is<IValueHolder<TValue>>() && Compare(latestMessage.As<IValueHolder<TValue>>().Value))
-            {
-                return Observable.Return(Message.Create(this));
-            }
-
-            return Observable.Empty<IMessage>();
+            return Observable.Return(Message.Create(this));
         }
 
         protected abstract bool Compare(TValue compareValue);

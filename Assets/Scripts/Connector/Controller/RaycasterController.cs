@@ -50,14 +50,12 @@ namespace UniFlow.Connector.Controller
             return count;
         }
 
-        public class Message : MessageBase<RaycasterController, int>, IValueHolder<int>
+        public class Message : MessageBase<RaycasterController, int>
         {
             public static Message Create(RaycasterController sender, int count)
             {
                 return Create<Message>(ConnectorType.RaycasterController, sender, count);
             }
-
-            public int Value => Data;
         }
     }
 

@@ -51,24 +51,12 @@ namespace UniFlow.Connector.Event
             Subject.OnNext((default, default, default, objectReferenceParameter));
         }
 
-        public class Message : MessageBase<TimelineSignal, (int intParameter, float floatParameter, string stringParameter, Object objectParameter)>,
-            IValueHolder<int>,
-            IValueHolder<float>,
-            IValueHolder<string>,
-            IValueHolder<Object>
+        public class Message : MessageBase<TimelineSignal, (int intParameter, float floatParameter, string stringParameter, Object objectParameter)>
         {
             public static Message Create(TimelineSignal sender, (int, float, string, Object) data)
             {
                 return Create<Message>(ConnectorType.TimelineSignal, sender, data);
             }
-
-            int IValueHolder<int>.Value => Data.intParameter;
-
-            float IValueHolder<float>.Value => Data.floatParameter;
-
-            string IValueHolder<string>.Value => Data.stringParameter;
-
-            Object IValueHolder<Object>.Value => Data.objectParameter;
         }
     }
 }
