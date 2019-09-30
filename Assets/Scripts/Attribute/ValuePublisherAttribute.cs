@@ -2,7 +2,7 @@ using System;
 
 namespace UniFlow.Attribute
 {
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class ValuePublisherAttribute : System.Attribute
     {
         public ValuePublisherAttribute(string name, ValueInjectionType type)

@@ -9,7 +9,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private float value = default;
         private float Value => value;
 
-        [SerializeField] [ValuePublisher("Value", ValueInjectionType.Float)] private PublishFloatEvent publisher = default;
+        [SerializeField] private PublishFloatEvent publisher = default;
+        [ValuePublisher("Value", ValueInjectionType.Float)]
         private PublishFloatEvent Publisher => publisher ?? (publisher = new PublishFloatEvent());
 
         protected override float Provide()

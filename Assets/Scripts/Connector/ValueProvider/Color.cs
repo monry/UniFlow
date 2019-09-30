@@ -9,7 +9,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private UnityEngine.Color value = default;
         private UnityEngine.Color Value => value;
 
-        [SerializeField] [ValuePublisher("Value", ValueInjectionType.Color)] private PublishObjectEvent publisher = default;
+        [SerializeField] private PublishObjectEvent publisher = default;
+        [ValuePublisher("Value", ValueInjectionType.Color)]
         private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
 
         protected override UnityEngine.Color Provide()

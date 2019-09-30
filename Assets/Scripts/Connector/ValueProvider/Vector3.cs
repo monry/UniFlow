@@ -9,7 +9,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private UnityEngine.Vector3 value = default;
         private UnityEngine.Vector3 Value => value;
 
-        [SerializeField] [ValuePublisher("Value", ValueInjectionType.Vector3)] private PublishObjectEvent publisher = default;
+        [SerializeField] private PublishObjectEvent publisher = default;
+        [ValuePublisher("Value", ValueInjectionType.Vector3)]
         private PublishObjectEvent Publisher => publisher ?? (publisher = new PublishObjectEvent());
 
         protected override UnityEngine.Vector3 Provide()

@@ -2,7 +2,7 @@ using System;
 
 namespace UniFlow.Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class ValueReceiverAttribute : System.Attribute
     {
         public ValueReceiverAttribute(string name, ValueInjectionType type)

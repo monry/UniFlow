@@ -14,13 +14,16 @@ namespace UniFlow.Connector.Controller
 
         [SerializeField] private Transform parent = default;
 
-        [SerializeField] [ValuePublisher("Instantiated", ValueInjectionType.Object)] private PublishObjectEvent publishInstantiatedGameObject = default;
+        [SerializeField] private PublishObjectEvent publishInstantiatedGameObject = default;
+        [ValuePublisher("Instantiated", ValueInjectionType.GameObject)]
         private PublishObjectEvent PublishInstantiatedGameObject => publishInstantiatedGameObject ?? (publishInstantiatedGameObject = new PublishObjectEvent());
 
-        [SerializeField] [ValuePublisher("Vecror2", ValueInjectionType.Vector2)] private PublishObjectEvent publishVector2 = default;
+        [SerializeField] private PublishObjectEvent publishVector2 = default;
+        [ValuePublisher("Vecror2", ValueInjectionType.Vector2)]
         private PublishObjectEvent PublishVector2 => publishVector2 ?? (publishVector2 = new PublishObjectEvent());
 
-        [SerializeField] [ValuePublisher("Int", ValueInjectionType.Int)] private PublishIntEvent publishInt = default;
+        [SerializeField] private PublishIntEvent publishInt = default;
+        [ValuePublisher("Int", ValueInjectionType.Int)]
         private PublishIntEvent PublishInt => publishInt ?? (publishInt = new PublishIntEvent());
 
         [UsedImplicitly] public Object Source

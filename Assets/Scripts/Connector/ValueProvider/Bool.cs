@@ -9,8 +9,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private bool value = default;
         private bool Value => value;
 
-        [SerializeField] [ValuePublisher("Value", ValueInjectionType.Bool)] private PublishBoolEvent publisher = default;
-        private PublishBoolEvent Publisher => publisher ?? (publisher = new PublishBoolEvent());
+        [SerializeField] private PublishBoolEvent publisher = default;
+        [ValuePublisher("Value", ValueInjectionType.Bool)] private PublishBoolEvent Publisher => publisher ?? (publisher = new PublishBoolEvent());
 
         protected override bool Provide()
         {

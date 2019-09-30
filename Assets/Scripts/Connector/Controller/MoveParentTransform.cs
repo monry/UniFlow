@@ -15,14 +15,18 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
 
-        [UsedImplicitly] public Transform TargetTransform
+        [UsedImplicitly]
+        [ValueReceiver("Target Transform", ValueInjectionType.Transform)]
+        public Transform TargetTransform
         {
             get => targetTransform != default
                 ? targetTransform
                 : targetTransform = transform;
             set => targetTransform = value;
         }
-        [UsedImplicitly] public Transform ParentTransform
+        [UsedImplicitly]
+        [ValueReceiver("Parent Transform", ValueInjectionType.Transform)]
+        public Transform ParentTransform
         {
             get => parentTransform;
             set => parentTransform = value;
@@ -41,13 +45,12 @@ namespace UniFlow.Connector.Controller
             return Observable.Return(Message.Create(this, TargetTransform));
         }
 
-        [ValueReceiver("Target Transform", ValueInjectionType.Transform)]
         public void ReceiveTargetTransform(Object target)
         {
             TargetTransform = target as Transform;
         }
 
-        [ValueReceiver("Parent Transform", ValueInjectionType.Transform)]
+
         public void ReceiveParentTransform(Object parent)
         {
             ParentTransform = parent as Transform;
