@@ -19,8 +19,15 @@ FlowNode #parameters #items > #divider {
 }
 
 FlowNode #parameters #items > VisualElement .unity-label {
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+FlowNode #parameters #items > VisualElement #unity-x-input .unity-label,
+FlowNode #parameters #items > VisualElement #unity-y-input .unity-label,
+FlowNode #parameters #items > VisualElement #unity-z-input .unity-label {
+    min-width: 20px;
+    max-width: 20px;
 }
 
 FlowNode #messaged-border {
@@ -39,8 +46,4 @@ FlowNode #messaged-border {
     border-bottom: 3px;
     border-left: 3px;
     border-right: 3px;
-}
-
-.unity-label {
-    min-width: 100px;
 }
