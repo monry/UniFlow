@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateObject)]
-    public class InstantiateObject : ConnectorBase, IValueProvider<Object>
+    public class InstantiateObject : ConnectorBase
     {
         [SerializeField] private Object source = default;
 
@@ -39,11 +39,6 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            if (latestMessage.IsValueHolder<Object>())
-            {
-                Source = latestMessage.GetHeldValue<Object>();
-            }
-
             var go = Instantiate(Source, Parent);
             PublishInstantiatedGameObject.Invoke(go as GameObject);
             ObjectSubject.OnNext(go);
@@ -55,15 +50,8 @@ namespace UniFlow.Connector.Controller
             Disposable.Dispose();
         }
 
-        IObservable<Object> IValueProvider<Object>.OnProvideAsObservable()
+        public class Message : MessageBase<InstantiateObject, Object>
         {
-            return ObjectSubject;
-        }
-
-        public class Message : MessageBase<InstantiateObject, Object>, IValueHolder<Object>
-        {
-            Object IValueHolder<Object>.Value => Data;
-
             public static Message Create(InstantiateObject connectable, Object obj)
             {
                 return Create<Message>(ConnectorType.InstantiateObject, connectable, obj);
