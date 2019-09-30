@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace UniFlow.Connector.Controller
 {
@@ -14,10 +15,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
 
-        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase targetGameObjectProvider = default;
-        [SerializeField][SuppliableType(typeof(GameObject))] private ConnectorBase parentGameObjectProvider = default;
-
-        [UsedImplicitly] public Transform Transform
+        [UsedImplicitly] public Transform TargetTransform
         {
             get => targetTransform != default
                 ? targetTransform
@@ -34,30 +32,25 @@ namespace UniFlow.Connector.Controller
             get => worldPositionStays;
             set => worldPositionStays = value;
         }
-        [UsedImplicitly] public IValueProvider<GameObject> TargetGameObjectProvider => targetGameObjectProvider as IValueProvider<GameObject>;
-        [UsedImplicitly] public IValueProvider<GameObject> ParentGameObjectProvider => parentGameObjectProvider as IValueProvider<GameObject>;
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        protected override void CollectSuppliedValues()
-        {
-            TargetGameObjectProvider?.OnProvideAsObservable().Subscribe(x => Transform = x.transform);
-            ParentGameObjectProvider?.OnProvideAsObservable().Subscribe(x => ParentTransform = x.transform);
-        }
-
         public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
         {
-            Transform.SetParent(ParentTransform, WorldPositionStays);
-            return Observable.Return(Message.Create(this, Transform));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        Transform.SetParent(ParentTransform, WorldPositionStays);
-//                        observer.OnNext(Message.Create(this, Transform));
-//                        return Disposable;
-//                    }
-//                );
+            TargetTransform.SetParent(ParentTransform, WorldPositionStays);
+            return Observable.Return(Message.Create(this, TargetTransform));
+        }
+
+        [ValueReceiver("Target Transform", ValueInjectionType.Transform)]
+        public void ReceiveTargetTransform(Object target)
+        {
+            TargetTransform = target as Transform;
+        }
+
+        [ValueReceiver("Parent Transform", ValueInjectionType.Transform)]
+        public void ReceiveParentTransform(Object parent)
+        {
+            ParentTransform = parent as Transform;
         }
 
         private void OnDestroy()
