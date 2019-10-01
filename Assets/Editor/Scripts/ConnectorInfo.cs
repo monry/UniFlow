@@ -90,11 +90,11 @@ namespace UniFlow.Editor
                 type.GetFieldsRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<HideInInspector>() == null)
                     .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
-                type.GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
                     .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null)
                     .Select(x => ValuePublisherInfo.Create(x, instance)),
-                type.GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
                     .Select(x => ValueReceiverInfo.Create(x, instance))
             );
@@ -138,7 +138,7 @@ namespace UniFlow.Editor
             {
                 var attribute = propertyInfo.GetCustomAttribute<ValuePublisherAttribute>();
                 Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
-                Type = propertyInfo.PropertyType.BaseType?.GetGenericArguments().First();
+                Type = GetGenericType(propertyInfo.PropertyType);
                 Instance = instance;
                 PropertyInfo = propertyInfo;
             }
@@ -151,6 +151,24 @@ namespace UniFlow.Editor
             public static ValuePublisherInfo Create(PropertyInfo propertyInfo, object instance)
             {
                 return new ValuePublisherInfo(propertyInfo, instance);
+            }
+
+            private static Type GetGenericType(Type type)
+            {
+                while (true)
+                {
+                    if (type == default)
+                    {
+                        return default;
+                    }
+
+                    if (type.IsGenericType)
+                    {
+                        return type.GetGenericArguments().First();
+                    }
+
+                    type = type.BaseType;
+                }
             }
         }
 

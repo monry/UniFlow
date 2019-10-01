@@ -39,19 +39,10 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             InvokePlayableDirectorMethod();
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        InvokePlayableDirectorMethod();
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
 
         private void InvokePlayableDirectorMethod()
@@ -83,14 +74,6 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<PlayableController>
-        {
-            public static Message Create(PlayableController sender)
-            {
-                return Create<Message>(ConnectorType.PlayableController, sender);
-            }
         }
     }
 

@@ -25,6 +25,8 @@ namespace UniFlow.Editor
             "Event",
             "ValueProvider",
             "ValueComparer",
+            "ValueExtractor",
+            "ValueCombiner",
             "Logic",
             "Receiver",
             "Misc",

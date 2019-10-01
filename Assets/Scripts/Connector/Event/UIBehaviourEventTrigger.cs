@@ -39,7 +39,7 @@ namespace UniFlow.Connector.Event
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return Observable
                 .ReturnUnit()
@@ -62,7 +62,7 @@ namespace UniFlow.Connector.Event
                         }
                     }
                 )
-                .Select(x => Message.Create(this, x));
+                .AsUnitObservable();
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -111,14 +111,6 @@ namespace UniFlow.Connector.Event
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<UIBehaviourEventTrigger, BaseEventData>
-        {
-            public static Message Create(UIBehaviourEventTrigger sender, BaseEventData baseEventData)
-            {
-                return Create<Message>(ConnectorType.UIBehaviourEventTrigger, sender, baseEventData);
-            }
         }
     }
 }

@@ -4,16 +4,16 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueComparer
 {
     [AddComponentMenu("UniFlow/ValueComparer/String", (int) ConnectorType.ValueComparerString)]
-    public class String : Base<string, String.OperatorType>
+    public class StringComparer : ComparerBase<string, StringComparer.OperatorType>
     {
         protected override bool Compare(string compareValue)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Value;
+                    return compareValue == Expect;
                 case OperatorType.NotEqual:
-                    return compareValue != Value;
+                    return compareValue != Expect;
                 case OperatorType.NullOrEmpty:
                     return string.IsNullOrEmpty(compareValue);
                 case OperatorType.NotNullOrEmpty:

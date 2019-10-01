@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Logic;
 using UnityEngine;
@@ -20,16 +22,16 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertInterval(Messages messages)
+        private void AssertInterval(IEnumerable<IConnector> sentConnectors)
         {
+            var connectors = sentConnectors.ToList();
             Assert.AreEqual(2, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
-            Assert.AreEqual(1, messages.Count);
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.AreEqual(ConnectorType.Interval, messages[0].ConnectorType);
-            var message = messages[0].As<Interval.Message>();
-            Assert.IsInstanceOf<Interval>(message.Sender);
-            Assert.IsInstanceOf<float>(message.Sender.Seconds);
-            Assert.AreEqual(1.0f, message.Sender.Seconds);
+            var connector = connectors[0] as Interval;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<float>(connector.Seconds);
+            Assert.AreEqual(1.0f, connector.Seconds);
 
             HasAssert = true;
         }

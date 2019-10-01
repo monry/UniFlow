@@ -39,22 +39,13 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            var count = HandleActivation();
-            return Observable.Return(Message.Create(this, count));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        var count = HandleActivation();
-//                        observer.OnNext(Message.Create(this, count));
-//                        return Disposable;
-//                    }
-//                );
+            HandleActivation();
+            return Observable.ReturnUnit();
         }
 
-        private int HandleActivation()
+        private void HandleActivation()
         {
             var handleTargets = new Action[0]
                 .Concat(
@@ -88,22 +79,12 @@ namespace UniFlow.Connector.Controller
                         .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                 )
                 .ToList();
-            var count = handleTargets.Count;
             handleTargets.ForEach(x => x.Invoke());
-            return count;
         }
 
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<RaycastTargetController, int>
-        {
-            public static Message Create(RaycastTargetController sender, int count)
-            {
-                return Create<Message>(ConnectorType.RaycastTargetController, sender, count);
-            }
         }
     }
 

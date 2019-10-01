@@ -23,10 +23,9 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return OnEventAsObservable()
-                .Select(_ => Message.Create(this));
+            return OnEventAsObservable();
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -39,14 +38,6 @@ namespace UniFlow.Connector.Event
                     return Component.OnBecameInvisibleAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<CameraEvent>
-        {
-            public static Message Create(CameraEvent sender)
-            {
-                return Create<Message>(ConnectorType.CameraEvent, sender);
             }
         }
     }

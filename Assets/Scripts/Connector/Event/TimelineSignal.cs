@@ -13,12 +13,12 @@ namespace UniFlow.Connector.Event
     {
         private ISubject<(int intParameter, float floatParameter, string stringParameter, Object objectParameter)> Subject { get; } = new Subject<(int intParameter, float floatParameter, string stringParameter, Object objectParameter)>();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return Subject
                 // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
-                .Select(x => Message.Create(this, x));
+                .AsUnitObservable();
         }
 
         [UsedImplicitly]
@@ -49,14 +49,6 @@ namespace UniFlow.Connector.Event
         public void Dispatch(Object objectReferenceParameter)
         {
             Subject.OnNext((default, default, default, objectReferenceParameter));
-        }
-
-        public class Message : MessageBase<TimelineSignal, (int intParameter, float floatParameter, string stringParameter, Object objectParameter)>
-        {
-            public static Message Create(TimelineSignal sender, (int, float, string, Object) data)
-            {
-                return Create<Message>(ConnectorType.TimelineSignal, sender, data);
-            }
         }
     }
 }

@@ -28,32 +28,15 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             Animator.SetTrigger(TriggerId);
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        Animator.SetTrigger(TriggerId);
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
 
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<AnimatorTrigger>
-        {
-            public static Message Create(AnimatorTrigger sender)
-            {
-                return Create<Message>(ConnectorType.AnimatorTrigger, sender);
-            }
         }
     }
 }

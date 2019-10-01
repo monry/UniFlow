@@ -37,28 +37,18 @@ namespace UniFlow.Connector.Controller
             set => parent = value;
         }
 
-        private ISubject<Object> ObjectSubject { get; } = new Subject<Object>();
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             var go = Instantiate(Source, Parent);
             PublishInstantiatedGameObject.Invoke(go as GameObject);
-            ObjectSubject.OnNext(go);
-            return Observable.Return(Message.Create(this, go));
+            return Observable.ReturnUnit();
         }
 
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<InstantiateObject, Object>
-        {
-            public static Message Create(InstantiateObject connectable, Object obj)
-            {
-                return Create<Message>(ConnectorType.InstantiateObject, connectable, obj);
-            }
         }
     }
 }
