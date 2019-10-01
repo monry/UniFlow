@@ -325,7 +325,7 @@ namespace UniFlow.Editor
                     .Where(
                         x =>
                             x is FlowValueReceivePort flowValueReceivePort
-                            && startFlowValuePublishPort.ValuePublisherInfo.Type == flowValueReceivePort.ValueReceiverInfo.Type
+                            && flowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type)
                             && x.direction != startPort.direction
                             && x.node != startPort.node
                     )
@@ -339,7 +339,7 @@ namespace UniFlow.Editor
                     .Where(
                         x =>
                             x is FlowValuePublishPort flowValuePublishPort
-                            && startFlowValueReceivePort.ValueReceiverInfo.Type == flowValuePublishPort.ValuePublisherInfo.Type
+                            && startFlowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(flowValuePublishPort.ValuePublisherInfo.Type)
                             && x.direction != startPort.direction
                             && x.node != startPort.node
                     )
