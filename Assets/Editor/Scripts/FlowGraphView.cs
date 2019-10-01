@@ -318,7 +318,7 @@ namespace UniFlow.Editor
                         var publisherNode = RenderedNodes[connector];
                         var receiverNode = RenderedNodes[targetConnector];
                         var publisherPort = publisherNode.ValuePublishPorts.FirstOrDefault(x => x.ValuePublisherInfo.PropertyInfo == propertyInfo);
-                        var receiverPort = receiverNode.ValueReceivePorts.FirstOrDefault(x => x.ValueReceiverInfo.PropertyInfo.GetSetMethod().Name == methodName);
+                        var receiverPort = receiverNode.ValueReceivePorts.FirstOrDefault(x => x.ValueReceiverInfo.PropertyInfo.GetSetMethod(true).Name == methodName);
                         if (publisherPort != null && receiverPort != null)
                         {
                             AddEdge(publisherPort, receiverPort);
