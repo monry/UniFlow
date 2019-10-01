@@ -11,6 +11,11 @@ namespace UniFlow
     }
 
     [Serializable]
+    public class PublishByteEvent : UnityEvent<byte>
+    {
+    }
+
+    [Serializable]
     public class PublishIntEvent : UnityEvent<int>
     {
     }
