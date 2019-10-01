@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace UniFlow.Connector.Event
             get => cameraEventType;
             set => cameraEventType = value;
         }
-        [UsedImplicitly] public Component Component
+        [ValueReceiver] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;

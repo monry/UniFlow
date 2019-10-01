@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -19,12 +20,12 @@ namespace UniFlow.Connector.Controller
             get => playableControlMethod;
             set => playableControlMethod = value;
         }
-        [UsedImplicitly] public TimelineAsset TimelineAsset
+        [ValueReceiver] public TimelineAsset TimelineAsset
         {
             get => timelineAsset;
             set => timelineAsset = value;
         }
-        [UsedImplicitly] public PlayableDirector PlayableDirector
+        [ValueReceiver] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default
@@ -33,11 +34,8 @@ namespace UniFlow.Connector.Controller
                         GetComponent<PlayableDirector>() != default
                             ? GetComponent<PlayableDirector>()
                             : gameObject.AddComponent<PlayableDirector>();
-            [UsedImplicitly]
             set => playableDirector = value;
         }
-
-        private IDisposable Disposable { get; } = new CompositeDisposable();
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
@@ -69,11 +67,6 @@ namespace UniFlow.Connector.Controller
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
         }
     }
 

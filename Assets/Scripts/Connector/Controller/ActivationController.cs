@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -25,18 +26,16 @@ namespace UniFlow.Connector.Controller
             get => targetMonoBehaviours;
             set => targetMonoBehaviours = value.ToList();
         }
-        [UsedImplicitly] public bool ControlSelfInstance
+        [ValueReceiver] public bool ControlSelfInstance
         {
             get => controlSelfInstance;
             set => controlSelfInstance = value;
         }
-        [UsedImplicitly] public bool Activated
+        [ValueReceiver] public bool Activated
         {
             get => activated;
             set => activated = value;
         }
-
-        private IDisposable Disposable { get; } = new CompositeDisposable();
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
@@ -56,11 +55,6 @@ namespace UniFlow.Connector.Controller
             }
 
             return Observable.ReturnUnit();
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
         }
     }
 }

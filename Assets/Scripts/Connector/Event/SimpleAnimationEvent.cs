@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -21,12 +22,12 @@ namespace UniFlow.Connector.Event
             get => simpleAnimationEventType;
             set => simpleAnimationEventType = value;
         }
-        [UsedImplicitly] public AnimationClip AnimationClip
+        [ValuePublisher] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [UsedImplicitly] public Animator Animator
+        [ValuePublisher] public Animator Animator
         {
             get =>
                 animator != default
@@ -37,7 +38,7 @@ namespace UniFlow.Connector.Event
                             : gameObject.AddComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public SimpleAnimation SimpleAnimation
+        [ValuePublisher] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniFlow.Signal;
 using UniRx;
 using UnityEngine;
@@ -22,12 +23,12 @@ namespace UniFlow.Connector.Event
             get => timelineEventType;
             set => timelineEventType = value;
         }
-        [UsedImplicitly] public TimelineAsset TimelineAsset
+        [ValuePublisher] public TimelineAsset TimelineAsset
         {
             get => timelineAsset;
             set => timelineAsset = value;
         }
-        [UsedImplicitly] public PlayableDirector PlayableDirector
+        [ValuePublisher] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default

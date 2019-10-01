@@ -25,18 +25,11 @@ namespace UniFlow.Connector.Controller
             set => targetGameObjects = value.ToList();
         }
 
-        private IDisposable Disposable { get; } = new CompositeDisposable();
-
         public override IObservable<Unit> OnConnectAsObservable()
         {
             var targets = Components.Concat<Object>(GameObjects).ToList();
             targets.ToList().ForEach(Destroy);
             return Observable.ReturnUnit();
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
         }
     }
 }

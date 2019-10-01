@@ -24,22 +24,22 @@ namespace UniFlow.Connector.Controller
             get => simpleAnimationControlMethod;
             set => simpleAnimationControlMethod = value;
         }
-        [UsedImplicitly] public AnimationClip AnimationClip
+        [ValueReceiver] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [UsedImplicitly] public AnimatorCullingMode CullingMode
+        [ValueReceiver] public AnimatorCullingMode CullingMode
         {
             get => cullingMode;
             set => cullingMode = value;
         }
-        [UsedImplicitly] public AnimatorUpdateMode UpdateMode
+        [ValueReceiver] public AnimatorUpdateMode UpdateMode
         {
             get => updateMode;
             set => updateMode = value;
         }
-        [UsedImplicitly] public Animator Animator
+        [ValueReceiver] public Animator Animator
         {
             get =>
                 animator != default
@@ -50,7 +50,7 @@ namespace UniFlow.Connector.Controller
                             : BaseGameObject.AddComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public SimpleAnimation SimpleAnimation
+        [ValueReceiver] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
