@@ -1,5 +1,6 @@
 using System;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace UniFlow.Editor
@@ -21,6 +22,7 @@ namespace UniFlow.Editor
                 port.m_EdgeConnector = new EdgeConnector<FlowEdge>(edgeConnectorListener);
                 port.AddManipulator(port.m_EdgeConnector);
             }
+            port.portColor = Color.yellow;
 
             return port;
         }

@@ -50,7 +50,8 @@ namespace UniFlow.Editor
             {
                 return;
             }
-            var setMethodInfo = valueReceivePort.ValueReceiverInfo.PropertyInfo.GetSetMethod();
+
+            var setMethodInfo = valueReceivePort.ValueReceiverInfo.PropertyInfo.GetSetMethod(true);
             var unityEvent = ValuePublisherInfo.PropertyInfo.GetValue(publishConnectorInstance);
             var unityAction = Delegate
                 .CreateDelegate(

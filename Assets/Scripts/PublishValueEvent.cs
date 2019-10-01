@@ -60,6 +60,26 @@ namespace UniFlow
     #region assets
 
     [Serializable]
+    public class PublishTextureEvent : UnityEvent<Texture>
+    {
+    }
+
+    [Serializable]
+    public class PublishTexture2DEvent : UnityEvent<Texture2D>
+    {
+    }
+
+    [Serializable]
+    public class PublishTexture3DEvent : UnityEvent<Texture3D>
+    {
+    }
+
+    [Serializable]
+    public class PublishSpriteEvent : UnityEvent<Sprite>
+    {
+    }
+
+    [Serializable]
     public class PublishAnimationClipEvent : UnityEvent<AnimationClip>
     {
     }
