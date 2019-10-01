@@ -2,21 +2,20 @@ using System;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateObject)]
-    public class InstantiateObject : ConnectorBase
+    [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateGameObject)]
+    public class InstantiateGameObject : ConnectorBase
     {
-        [SerializeField] private Object source = default;
+        [SerializeField] private GameObject source = default;
 
         [SerializeField] private Transform parent = default;
 
-        [SerializeField] private PublishObjectEvent publisher = new PublishObjectEvent();
-        [ValuePublisher("Instantiated")] private PublishObjectEvent Publisher => publisher;
+        [SerializeField] private PublishGameObjectEvent publisher = new PublishGameObjectEvent();
+        [ValuePublisher("Instantiated")] private PublishGameObjectEvent Publisher => publisher;
 
-        [ValueReceiver] public Object Source
+        [ValueReceiver] public GameObject Source
         {
             get => source == default ? gameObject : source;
             set => source = value;
