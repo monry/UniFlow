@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -16,6 +16,7 @@ namespace UniFlow.Connector.Controller
         private AnimationClip animationClip = default;
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
 
@@ -24,33 +25,38 @@ namespace UniFlow.Connector.Controller
             get => simpleAnimationControlMethod;
             set => simpleAnimationControlMethod = value;
         }
-        [UsedImplicitly] public AnimationClip AnimationClip
+        [ValueReceiver] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [UsedImplicitly] public AnimatorCullingMode CullingMode
+        [ValueReceiver] public AnimatorCullingMode CullingMode
         {
             get => cullingMode;
             set => cullingMode = value;
         }
-        [UsedImplicitly] public AnimatorUpdateMode UpdateMode
+        [ValueReceiver] public AnimatorUpdateMode UpdateMode
         {
             get => updateMode;
             set => updateMode = value;
         }
-        [UsedImplicitly] public Animator Animator
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
+        [ValueReceiver] public Animator Animator
         {
             get =>
                 animator != default
                     ? animator
                     : animator =
-                        GetComponent<Animator>() != default
-                            ? GetComponent<Animator>()
-                            : gameObject.AddComponent<Animator>();
+                        BaseGameObject.GetComponent<Animator>() != default
+                            ? BaseGameObject.GetComponent<Animator>()
+                            : BaseGameObject.AddComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public SimpleAnimation SimpleAnimation
+        [ValueReceiver] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -65,41 +71,10 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-//            if (latestMessage is IValueHolder<SimpleAnimationControlMethod> simpleAnimationControlMethodHolder)
-//            {
-//                SimpleAnimationControlMethod = simpleAnimationControlMethodHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimationClip> animationClipHolder)
-//            {
-//                AnimationClip = animationClipHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimatorCullingMode> animatorCullingModeHolder)
-//            {
-//                CullingMode = animatorCullingModeHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimatorUpdateMode> animatorUpdateModeHolder)
-//            {
-//                UpdateMode = animatorUpdateModeHolder.Value;
-//            }
-
             InvokeSimpleAnimationMethod();
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        InvokeSimpleAnimationMethod();
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
 
         protected override void Awake()
@@ -150,14 +125,6 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<SimpleAnimationController>
-        {
-            public static Message Create(SimpleAnimationController sender)
-            {
-                return Create<Message>(ConnectorType.SimpleAnimationController, sender);
-            }
         }
     }
 

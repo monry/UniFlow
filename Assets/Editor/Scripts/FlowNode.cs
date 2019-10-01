@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UniRx;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -13,10 +17,11 @@ namespace UniFlow.Editor
 {
     public class FlowNode : Node, IRemovableElement
     {
-        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener)
+        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener, ValueInjectionConnectorListener valueInjectionConnectorListener)
         {
             ConnectorInfo = connectorInfo;
             EdgeConnectorListener = edgeConnectorListener;
+            ValueInjectionConnectorListener = valueInjectionConnectorListener;
         }
 
         public void Initialize()
@@ -47,14 +52,29 @@ namespace UniFlow.Editor
             AddParameters();
             AddPorts();
             RegisterCallback((GeometryChangedEvent e) => ApplyPosition());
+            ConnectorInfo
+                .Connector?
+                .OnConnectSubject
+                .Subscribe(
+                    x =>
+                    {
+                        var messagedBorder = new VisualElement {name = "messaged-border"};
+                        Add(messagedBorder);
+                        Observable.Timer(TimeSpan.FromSeconds(1.0)).Subscribe(_ => Remove(messagedBorder));
+                    }
+                );
         }
 
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
 
+        public IList<FlowValueReceivePort> ValueReceivePorts { get; } = new List<FlowValueReceivePort>();
+        public IList<FlowValuePublishPort> ValuePublishPorts { get; } = new List<FlowValuePublishPort>();
+
         internal ConnectorInfo ConnectorInfo { get; }
 
         private IEdgeConnectorListener EdgeConnectorListener { get; }
+        private IEdgeConnectorListener ValueInjectionConnectorListener { get; }
 
         private const string DefaultTargetGameObjectName = "UniFlowController";
         private static IEnumerable<string> ParameterNamesHideInNode { get; } = new List<string>
@@ -72,6 +92,19 @@ namespace UniFlow.Editor
             {typeof(double), CreateBindableElement<double, DoubleField>},
             {typeof(bool), CreateBindableElement<bool, Toggle>},
             {typeof(Object), CreateBindableElement<Object, ObjectField>},
+        };
+
+        private static IList<Type> PropertyFieldRenderableTypes { get; } = new List<Type>
+        {
+            typeof(byte),
+            typeof(Vector2),
+            typeof(Vector3),
+            typeof(Vector4),
+            typeof(Quaternion),
+            typeof(Vector2Int),
+            typeof(Vector3Int),
+            typeof(Color),
+            typeof(Color32),
         };
 
         void IRemovableElement.RemoveFromGraphView()
@@ -121,6 +154,30 @@ namespace UniFlow.Editor
                 .Select(x => x.ConnectorInfo.Connector)
                 .OfType<ConnectorBase>();
             EditorUtility.SetDirty(connector);
+        }
+
+        public void ApplyValuePublishers()
+        {
+            foreach (var valuePublishPort in ValuePublishPorts)
+            {
+                if (!(valuePublishPort.ValuePublisherInfo.PropertyInfo.GetValue(ConnectorInfo.Connector) is UnityEventBase unityEvent))
+                {
+                    continue;
+                }
+                // Preserve count before remove item from list
+                var count = unityEvent.GetPersistentEventCount();
+                for (var i = 0; i < count; i++)
+                {
+                    // Rebuild index every time, so remove first element
+                    UnityEventTools.RemovePersistentListener(unityEvent, 0);
+                }
+                valuePublishPort
+                    .connections
+                    .Select(x => x.input as FlowValueReceivePort)
+                    .Where(x => x?.node != default)
+                    .ToList()
+                    .ForEach(valuePublishPort.AddPersistentListener);
+            }
         }
 
         private void AddParameters()
@@ -206,6 +263,7 @@ namespace UniFlow.Editor
                     typeof(List<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition())
                     || typeof(ExposedReference<>).IsAssignableFrom(parameter.Type.GetGenericTypeDefinition())
                 )
+                || PropertyFieldRenderableTypes.Contains(parameter.Type)
             )
             {
                 if (connectorInfo.GameObject == default || connectorInfo.Connector == default)
@@ -240,6 +298,11 @@ namespace UniFlow.Editor
             if (typeof(Object).IsAssignableFrom(parameter.Type))
             {
                 fieldType = typeof(Object);
+            }
+
+            if (!CreateFieldFunctions.ContainsKey(fieldType))
+            {
+                return null;
             }
 
             return CreateFieldFunctions[fieldType](connectorInfo, parameter);
@@ -298,28 +361,46 @@ namespace UniFlow.Editor
             return go;
         }
 
+        [SuppressMessage("ReSharper", "InvertIf")]
         private void AddPorts()
         {
-            if (typeof(IConnector).IsAssignableFrom(ConnectorInfo.Type))
-            {
-                OutputPort = FlowPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, EdgeConnectorListener);
-                OutputPort.portName = "Out";
-                outputContainer.Add(OutputPort);
-            }
-            else
-            {
-                outputContainer.RemoveFromHierarchy();
-            }
+            OutputPort = FlowPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, EdgeConnectorListener);
+            OutputPort.portName = "Out";
+            outputContainer.Add(OutputPort);
 
+            // Prevent grab port for input
             InputPort = FlowPort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
 
-            foreach (var suppliableParameter in ConnectorInfo.SuppliableParameterList)
+            if (ConnectorInfo.ValuePublishers.Any())
             {
-                var suppliedPort = FlowPort.Create(Orientation.Vertical, Direction.Input, Port.Capacity.Multi);
-                suppliedPort.portName = suppliableParameter.Name;
-                inputContainer.Add(suppliedPort);
+                var divider = new VisualElement {name = "divider"};
+                divider.AddToClassList("horizontal");
+                outputContainer.Add(divider);
+
+                foreach (var publisher in ConnectorInfo.ValuePublishers)
+                {
+                    var port = FlowValuePublishPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, publisher, ValueInjectionConnectorListener);
+                    port.portName = publisher.Name;
+                    outputContainer.Add(port);
+                    ValuePublishPorts.Add(port as FlowValuePublishPort);
+                }
+            }
+
+            if (ConnectorInfo.ValueReceivers.Any())
+            {
+                var divider = new VisualElement {name = "divider"};
+                divider.AddToClassList("horizontal");
+                inputContainer.Add(divider);
+
+                foreach (var receiver in ConnectorInfo.ValueReceivers)
+                {
+                    var port = FlowValueReceivePort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, receiver, ValueInjectionConnectorListener);
+                    port.portName = receiver.Name;
+                    inputContainer.Add(port);
+                    ValueReceivePorts.Add(port as FlowValueReceivePort);
+                }
             }
         }
 

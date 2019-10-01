@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -21,12 +22,12 @@ namespace UniFlow.Connector.Event
             get => simpleAnimationEventType;
             set => simpleAnimationEventType = value;
         }
-        [UsedImplicitly] public AnimationClip AnimationClip
+        [ValuePublisher] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [UsedImplicitly] public Animator Animator
+        [ValuePublisher] public Animator Animator
         {
             get =>
                 animator != default
@@ -37,7 +38,7 @@ namespace UniFlow.Connector.Event
                             : gameObject.AddComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public SimpleAnimation SimpleAnimation
+        [ValuePublisher] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -59,11 +60,11 @@ namespace UniFlow.Connector.Event
             ObserveSimpleAnimation();
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .Select(_ => Message.Create(this));
+                .AsUnitObservable();
         }
 
         private void ObserveSimpleAnimation()
@@ -95,14 +96,6 @@ namespace UniFlow.Connector.Event
             {
                 PlayingStatuses[state] = false;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
-            }
-        }
-
-        public class Message : MessageBase<SimpleAnimationEvent>
-        {
-            public static Message Create(SimpleAnimationEvent sender)
-            {
-                return Create<Message>(ConnectorType.SimpleAnimationEvent, sender);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -17,16 +18,16 @@ namespace UniFlow.Connector.Event
             get => physicsTriggerEventType;
             set => physicsTriggerEventType = value;
         }
-        [UsedImplicitly] public Component Component
+        [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .Select(x => Message.Create(this, x));
+                .AsUnitObservable();
         }
 
         private IObservable<Collider> OnEventAsObservable()
@@ -41,14 +42,6 @@ namespace UniFlow.Connector.Event
                     return Component.OnTriggerStayAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<PhysicsTriggerEvent, Collider>
-        {
-            public static Message Create(PhysicsTriggerEvent sender, Collider collider)
-            {
-                return Create<Message>(ConnectorType.PhysicsTriggerEvent, sender, collider);
             }
         }
     }

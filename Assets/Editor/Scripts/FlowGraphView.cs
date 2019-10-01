@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using UniFlow.Attribute;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -11,12 +14,14 @@ namespace UniFlow.Editor
 {
     public class FlowGraphView : GraphView
     {
+        private IEnumerable<IConnector> Connectors { get; set; } = new List<IConnector>();
         private IDictionary<IConnector, IList<IConnector>> DestinationConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
         private IDictionary<IConnector, IList<IConnector>> SourceConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
         private IDictionary<IConnector, FlowNode> RenderedNodes { get; } = new Dictionary<IConnector, FlowNode>();
         private IDictionary<FlowNode, Vector2Int> NormalizedPositionDictionary { get; } = new Dictionary<FlowNode, Vector2Int>();
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
+        private ValueInjectionConnectorListener ValueInjectionConnectorListener { get; set; }
 
         private const float NodeWidth = 300.0f;
         private static Vector2 NodesOffset { get; } = new Vector2(50.0f, 50.0f);
@@ -41,6 +46,7 @@ namespace UniFlow.Editor
             SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             SearchWindowProvider.Initialize(this);
             EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
+            ValueInjectionConnectorListener = new ValueInjectionConnectorListener(this);
 
             viewTransformChanged += graphView =>
             {
@@ -91,6 +97,8 @@ namespace UniFlow.Editor
             CreateNodesFromInstance();
 
             CreateEdges();
+
+            CreateValueInjectionEdges();
 
             RegisterCallback(
                 (GeometryChangedEvent e) =>
@@ -177,7 +185,7 @@ namespace UniFlow.Editor
 
         private void CreateNodesFromInstance()
         {
-            var connectables = UniFlowSettings.instance.IsPrefabMode
+            Connectors = UniFlowSettings.instance.IsPrefabMode
                 ? UniFlowSettings.instance.SelectedGameObject
                     .GetComponentsInChildren<ConnectorBase>(true)
                     .ToArray()
@@ -187,40 +195,37 @@ namespace UniFlow.Editor
                     .ToArray();
 
 
-            foreach (var connectable in connectables)
+            foreach (var connector in Connectors)
             {
-                if (!DestinationConnectors.ContainsKey(connectable))
+                if (!DestinationConnectors.ContainsKey(connector))
                 {
-                    DestinationConnectors[connectable] = new List<IConnector>();
+                    DestinationConnectors[connector] = new List<IConnector>();
                 }
 
-                var connector = connectable;
-                if (connector == default || connector.TargetComponents == null)
+                if (connector is ConnectorBase connectorBase)
                 {
-                    continue;
-                }
-
-                foreach (var targetConnector in connector.TargetComponents)
-                {
-                    if (targetConnector == default)
+                    foreach (var targetConnector in connectorBase.TargetComponents)
                     {
-                        continue;
-                    }
+                        if (targetConnector == default)
+                        {
+                            continue;
+                        }
 
-                    if (!SourceConnectors.ContainsKey(targetConnector))
-                    {
-                        SourceConnectors[targetConnector] = new List<IConnector>();
-                    }
+                        if (!SourceConnectors.ContainsKey(targetConnector))
+                        {
+                            SourceConnectors[targetConnector] = new List<IConnector>();
+                        }
 
-                    DestinationConnectors[connectable].Add(targetConnector);
-                    SourceConnectors[targetConnector].Add(connectable);
+                        DestinationConnectors[connectorBase].Add(targetConnector);
+                        SourceConnectors[targetConnector].Add(connectorBase);
+                    }
                 }
             }
 
-            var rootConnectables = connectables.Where(x => !SourceConnectors.ContainsKey(x)).ToArray();
-            if (!rootConnectables.Any() && connectables.Any())
+            var rootConnectables = Connectors.Where(x => !SourceConnectors.ContainsKey(x)).ToArray();
+            if (!rootConnectables.Any() && Connectors.Any())
             {
-                rootConnectables = new[] {connectables.First()};
+                rootConnectables = new[] {Connectors.First()};
             }
 
             if (UniFlowSettings.instance.SelectedGameObject != default && !UniFlowSettings.instance.IsPrefabMode)
@@ -276,16 +281,49 @@ namespace UniFlow.Editor
 
         private void CreateEdges()
         {
-            foreach (var (connectable, targetConnectables) in DestinationConnectors.Select(x => (x.Key, x.Value)))
+            foreach (var (sourceConnector, targetConnectors) in DestinationConnectors.Select(x => (x.Key, x.Value)))
             {
-                foreach (var targetConnectable in targetConnectables)
+                foreach (var targetConnector in targetConnectors)
                 {
-                    if (!RenderedNodes.ContainsKey(connectable) || !RenderedNodes.ContainsKey(targetConnectable))
+                    if (!RenderedNodes.ContainsKey(sourceConnector) || !RenderedNodes.ContainsKey(targetConnector))
                     {
                         continue;
                     }
 
-                    AddElement(AddEdge((FlowPort) RenderedNodes[connectable].OutputPort, (FlowPort) RenderedNodes[targetConnectable].InputPort));
+                    AddEdge((FlowPort) RenderedNodes[sourceConnector].OutputPort, (FlowPort) RenderedNodes[targetConnector].InputPort);
+                }
+            }
+        }
+
+        private void CreateValueInjectionEdges()
+        {
+            foreach (var connector in Connectors)
+            {
+                var persistentEventsList = connector.GetType()
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
+                    .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null && typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
+                    .Select(x => (propertyInfo: x, unityEvent: x.GetValue(connector) as UnityEventBase))
+                    .Where(x => x.unityEvent != null)
+                    .Select(x => Enumerable.Range(0, x.unityEvent.GetPersistentEventCount()).Select(index => (x.propertyInfo, target: x.unityEvent.GetPersistentTarget(index), methodName: x.unityEvent.GetPersistentMethodName(index))))
+                    .ToArray();
+                foreach (var persistentEvents in persistentEventsList)
+                {
+                    foreach (var (propertyInfo, target, methodName) in persistentEvents)
+                    {
+                        if (!(target is IConnector targetConnector) || !RenderedNodes.ContainsKey(targetConnector) || !RenderedNodes.ContainsKey(connector))
+                        {
+                            continue;
+                        }
+
+                        var publisherNode = RenderedNodes[connector];
+                        var receiverNode = RenderedNodes[targetConnector];
+                        var publisherPort = publisherNode.ValuePublishPorts.FirstOrDefault(x => x.ValuePublisherInfo.PropertyInfo == propertyInfo);
+                        var receiverPort = receiverNode.ValueReceivePorts.FirstOrDefault(x => x.ValueReceiverInfo.PropertyInfo.GetSetMethod(true).Name == methodName);
+                        if (publisherPort != null && receiverPort != null)
+                        {
+                            AddEdge(publisherPort, receiverPort);
+                        }
+                    }
                 }
             }
         }
@@ -294,14 +332,14 @@ namespace UniFlow.Editor
         {
             var connectableInfo = ConnectorInfo.Create(connectableType, connectableInstance);
             FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
-            var node = new FlowNode(connectableInfo, EdgeConnectorListener);
+            var node = new FlowNode(connectableInfo, EdgeConnectorListener, ValueInjectionConnectorListener);
             node.Initialize();
             node.SetPosition(new Rect(position.x, position.y, 0, 0));
             AddElement(node);
             return node;
         }
 
-        public FlowEdge AddEdge(FlowPort outputPort, FlowPort inputPort)
+        public FlowEdge AddEdge(Port outputPort, Port inputPort)
         {
             var edge = new FlowEdge
             {
@@ -311,15 +349,42 @@ namespace UniFlow.Editor
             edge.output.Connect(edge);
             edge.input.Connect(edge);
             AddElement(edge);
-            SetupActAsTrigger();
             return edge;
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
+            if (startPort is FlowValuePublishPort startFlowValuePublishPort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowValueReceivePort flowValueReceivePort
+                            && flowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type)
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
+            if (startPort is FlowValueReceivePort startFlowValueReceivePort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowValuePublishPort flowValuePublishPort
+                            && startFlowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(flowValuePublishPort.ValuePublisherInfo.Type)
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
             return ports
                 .ToList()
-                .Where(x => x.direction != startPort.direction && x.node != startPort.node)
+                .Where(x => x is FlowPort && x.direction != startPort.direction && x.node != startPort.node)
                 .ToList();
         }
     }

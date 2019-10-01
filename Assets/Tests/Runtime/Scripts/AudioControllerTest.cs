@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Controller;
@@ -20,7 +21,6 @@ namespace UniFlow.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Play,
                         audioSource =>
                         {
                             Assert.True(audioSource.isPlaying);
@@ -48,7 +48,6 @@ namespace UniFlow.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Stop,
                         audioSource =>
                         {
                             Assert.False(audioSource.isPlaying);
@@ -78,7 +77,6 @@ namespace UniFlow.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Pause,
                         audioSource =>
                         {
                             Assert.False(audioSource.isPlaying);
@@ -108,7 +106,6 @@ namespace UniFlow.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.UnPause,
                         audioSource =>
                         {
                             Assert.True(audioSource.isPlaying);
@@ -131,19 +128,17 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAudioEvent(Messages messages, AudioControlMethod audioControlMethod, Action<AudioSource> callback)
+        private void AssertAudioEvent(IEnumerable<IConnector> sentConnectors, Action<AudioSource> callback)
         {
-            Assert.NotNull(messages);
-            Assert.AreEqual(2, messages.Count);
+            var connectors = sentConnectors.ToList();
 
-            Assert.True(messages[1].Is<AudioController.Message>());
-            var message = messages[1].As<AudioController.Message>();
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.NotNull(message.Data);
+            var connector = connectors[1] as AudioController;
+            Assert.NotNull(connector);
 
-            Assert.AreEqual(audioControlMethod, message.Sender.AudioControlMethod);
-
-            callback(message.Sender.AudioSource);
+            callback(connector.AudioSource);
 
             HasAssert = true;
         }

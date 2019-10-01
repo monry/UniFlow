@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0-preview.22] - 2019-10-02
+
+### Breaking Changes
+
+* Send `UniRx.Unit` into connecting flows instead of `Message` to omit data messaging
+
+### Implementations
+
+* Implement ValueExtractor
+* Implement ValueCombiner
+
+### Improvements
+
+* Display current flow progress in UniFlow Graph
+* Support connect ValueProviders in UniFlow Graph
+
 ## [0.1.0-preview.21] - 2019-09-20
 
 ### Implementations

@@ -11,24 +11,16 @@ namespace UniFlow.Connector.Misc
         [SerializeField] private List<GameObject> targets = default;
         private IEnumerable<GameObject> Targets => targets;
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             foreach (var target in Targets)
             {
                 if (target != default && target.activeSelf)
                 {
-                    (target.GetComponent<Receive>() as IConnector)?.Connect(Observable.Return(((IMessage) default, Messages.Create())));
+                    (target.GetComponent<Receive>() as IConnector)?.Connect(Observable.ReturnUnit());
                 }
             }
-            return Observable.Return(Message.Create(this));
-        }
-
-        public class Message : MessageBase<Toss>
-        {
-            public static Message Create(Toss sender)
-            {
-                return Create<Message>(ConnectorType.Toss, sender);
-            }
+            return Observable.ReturnUnit();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace UniFlow.Editor
@@ -12,6 +13,7 @@ namespace UniFlow.Editor
 
         public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, IEdgeConnectorListener edgeConnectorListener = default)
         {
+            // Should I use Port.Create<T>()?
             var port = new FlowPort(portOrientation, portDirection, portCapacity, typeof(FlowPort));
 
             // ReSharper disable once InvertIf
@@ -20,10 +22,9 @@ namespace UniFlow.Editor
                 port.m_EdgeConnector = new EdgeConnector<FlowEdge>(edgeConnectorListener);
                 port.AddManipulator(port.m_EdgeConnector);
             }
+            port.portColor = Color.yellow;
 
             return port;
         }
-
-
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace UniFlow.Connector.Event
 {
@@ -16,23 +18,24 @@ namespace UniFlow.Connector.Event
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
+        [SerializeField] private PublishAnimationEventEvent publisher = new PublishAnimationEventEvent();
 
-        [UsedImplicitly] public AnimationClip AnimationClip
+        [ValueReceiver] public AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [UsedImplicitly] public AnimatorCullingMode CullingMode
+        [ValueReceiver] public AnimatorCullingMode CullingMode
         {
             get => cullingMode;
             set => cullingMode = value;
         }
-        [UsedImplicitly] public AnimatorUpdateMode UpdateMode
+        [ValueReceiver] public AnimatorUpdateMode UpdateMode
         {
             get => updateMode;
             set => updateMode = value;
         }
-        [UsedImplicitly] public Animator Animator
+        [ValueReceiver] public Animator Animator
         {
             get =>
                 animator != default
@@ -43,7 +46,7 @@ namespace UniFlow.Connector.Event
                             : gameObject.AddComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public SimpleAnimation SimpleAnimation
+        [ValueReceiver] public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -56,9 +59,11 @@ namespace UniFlow.Connector.Event
             set => simpleAnimation = value;
         }
 
+        [ValuePublisher] public UnityEvent<UnityEngine.AnimationEvent> Publisher => publisher;
+
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             if (AnimationClip != default && GetComponent<Animator>() == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
             {
@@ -68,7 +73,7 @@ namespace UniFlow.Connector.Event
             return Subject
                 // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
-                .Select(x => Message.Create(this, x));
+                .AsUnitObservable();
         }
 
         /// <summary>
@@ -78,6 +83,7 @@ namespace UniFlow.Connector.Event
         [UsedImplicitly]
         public void Dispatch(UnityEngine.AnimationEvent animationEvent)
         {
+            Publisher.Invoke(animationEvent);
             Subject.OnNext(animationEvent);
         }
 
@@ -91,14 +97,6 @@ namespace UniFlow.Connector.Event
                 SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
                 SimpleAnimation.cullingMode = CullingMode;
                 Animator.updateMode = UpdateMode;
-            }
-        }
-
-        public class Message : MessageBase<AnimationEvent, UnityEngine.AnimationEvent>
-        {
-            public static Message Create(AnimationEvent sender, UnityEngine.AnimationEvent data)
-            {
-                return Create<Message>(ConnectorType.AnimationEvent, sender, data);
             }
         }
     }

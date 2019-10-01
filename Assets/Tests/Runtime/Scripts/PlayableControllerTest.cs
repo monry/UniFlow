@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Controller;
 using UniFlow.Connector.Event;
@@ -22,23 +24,20 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertPlayableController(Messages messages)
+        private void AssertPlayableController(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(2, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, connectors.Count);
 
             {
-                Assert.True(messages[0].Is<PlayableController.Message>());
-                var message = messages[0].As<PlayableController.Message>();
-                Assert.IsInstanceOf<PlayableDirector>(message.Sender.PlayableDirector);
+                var connector = connectors[0] as PlayableController;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<PlayableDirector>(connector.PlayableDirector);
             }
 
             {
-                Assert.True(messages[1].Is<TimelineSignal.Message>());
-                var message = messages[1].As<TimelineSignal.Message>();
-                Assert.IsInstanceOf<TimelineSignal>(message.Sender);
-                var timelineEvent = message.Data;
-                Assert.True(timelineEvent != default);
-                Assert.AreEqual("PlayableControllerTest", timelineEvent.stringParameter);
+                var connector = connectors[1] as TimelineSignal;
+                Assert.NotNull(connector);
             }
 
             HasAssert = true;

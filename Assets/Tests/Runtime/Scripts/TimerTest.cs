@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Logic;
 using UnityEngine.TestTools;
@@ -19,16 +21,15 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertTimer(Messages messages)
+        private void AssertTimer(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.True(messages[0].Is<Timer.Message>());
-            var message = messages[0].As<Timer.Message>();
-            Assert.AreEqual(ConnectorType.Timer, message.ConnectorType);
-            Assert.IsInstanceOf<Timer>(message.Sender);
-            Assert.IsInstanceOf<float>(message.Sender.Seconds);
-            Assert.AreEqual(1.0f, message.Sender.Seconds);
+            var connector = connectors[0] as Timer;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<float>(connector.Seconds);
+            Assert.AreEqual(1.0f, connector.Seconds);
 
             HasAssert = true;
         }

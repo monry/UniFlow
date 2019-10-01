@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniFlow.Signal;
 using UniRx;
 using UnityEngine;
@@ -22,12 +23,12 @@ namespace UniFlow.Connector.Event
             get => timelineEventType;
             set => timelineEventType = value;
         }
-        [UsedImplicitly] public TimelineAsset TimelineAsset
+        [ValuePublisher] public TimelineAsset TimelineAsset
         {
             get => timelineAsset;
             set => timelineAsset = value;
         }
-        [UsedImplicitly] public PlayableDirector PlayableDirector
+        [ValuePublisher] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default
@@ -90,9 +91,10 @@ namespace UniFlow.Connector.Event
             }
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return SignalEmittedSubject.Select(_ => Message.Create(this));
+            return SignalEmittedSubject
+                .AsUnitObservable();
         }
 
         private void RegisterSignal()
@@ -140,14 +142,6 @@ namespace UniFlow.Connector.Event
         private void DispatchEnd()
         {
             SignalEmittedSubject.OnNext(TimelineEventType.Stop);
-        }
-
-        public class Message : MessageBase<TimelineEvent>
-        {
-            public static Message Create(TimelineEvent sender)
-            {
-                return Create<Message>(ConnectorType.TimelineEvent, sender);
-            }
         }
     }
 

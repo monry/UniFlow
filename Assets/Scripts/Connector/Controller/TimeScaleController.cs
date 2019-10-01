@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -12,17 +12,17 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private float duration = default;
         [SerializeField] private ObservableTween.EaseType easeType = default;
 
-        [UsedImplicitly] private float TimeScale
+        [ValueReceiver] private float TimeScale
         {
             get => timeScale;
             set => timeScale = value;
         }
-        [UsedImplicitly] private float Duration
+        [ValueReceiver] private float Duration
         {
             get => duration;
             set => duration = value;
         }
-        [UsedImplicitly] private ObservableTween.EaseType EaseType
+        [ValueReceiver] private ObservableTween.EaseType EaseType
         {
             get => easeType;
             set => easeType = value;
@@ -30,10 +30,10 @@ namespace UniFlow.Connector.Controller
 
         private ISubject<Unit> OnCompleteTweenSubject { get; } = new Subject<Unit>();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             ChangeTimeScale();
-            return OnCompleteTweenSubject.Select(_ => Message.Create(this));
+            return OnCompleteTweenSubject;
         }
 
         private void ChangeTimeScale()
@@ -55,15 +55,8 @@ namespace UniFlow.Connector.Controller
                     () => OnCompleteTweenSubject.OnNext(Unit.Default),
                     true
                 )
-                .Subscribe(x => Time.timeScale = x);
-        }
-
-        public class Message : MessageBase<TimeScaleController>
-        {
-            public static Message Create(TimeScaleController sender)
-            {
-                return Create<Message>(ConnectorType.TimeScaleController, sender);
-            }
+                .Subscribe(x => Time.timeScale = x)
+                .AddTo(this);
         }
     }
 }

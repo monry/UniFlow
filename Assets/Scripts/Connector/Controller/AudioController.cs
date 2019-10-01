@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private AudioSource audioSource = default;
 
         [UsedImplicitly] public AudioControlMethod AudioControlMethod
@@ -19,38 +21,32 @@ namespace UniFlow.Connector.Controller
             get => audioControlMethod;
             set => audioControlMethod = value;
         }
-        [UsedImplicitly] public AudioClip AudioClip
+        [ValueReceiver] public AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
-        [UsedImplicitly] public AudioSource AudioSource
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
+        [ValueReceiver] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
                     ? audioSource
                     : audioSource =
-                        GetComponent<AudioSource>() != default
-                            ? GetComponent<AudioSource>()
-                            : gameObject.AddComponent<AudioSource>();
+                        BaseGameObject.GetComponent<AudioSource>() != default
+                            ? BaseGameObject.GetComponent<AudioSource>()
+                            : BaseGameObject.AddComponent<AudioSource>();
             set => audioSource = value;
         }
 
-        private IDisposable Disposable { get; } = new CompositeDisposable();
-
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             InvokeAudioSourceMethod();
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        InvokeAudioSourceMethod();
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
 
         private void InvokeAudioSourceMethod()
@@ -76,19 +72,6 @@ namespace UniFlow.Connector.Controller
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<AudioController>
-        {
-            public static Message Create(AudioController sender)
-            {
-                return Create<Message>(ConnectorType.AudioController, sender);
             }
         }
     }

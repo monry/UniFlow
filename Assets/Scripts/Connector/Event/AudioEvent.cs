@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -19,12 +20,12 @@ namespace UniFlow.Connector.Event
             get => audioEventType;
             set => audioEventType = value;
         }
-        [UsedImplicitly] public AudioClip AudioClip
+        [ValueReceiver] public AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
-        [UsedImplicitly] public AudioSource AudioSource
+        [ValueReceiver] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
@@ -38,10 +39,10 @@ namespace UniFlow.Connector.Event
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return OnAudioEventAsObservable()
-                .Select(x => Message.Create(this));
+                .AsUnitObservable();
         }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
@@ -99,14 +100,6 @@ namespace UniFlow.Connector.Event
             }
 
             return (AudioEventType) -1;
-        }
-
-        public class Message : MessageBase<AudioEvent>
-        {
-            public static Message Create(AudioEvent sender)
-            {
-                return Create<Message>(ConnectorType.AudioEvent, sender);
-            }
         }
     }
 

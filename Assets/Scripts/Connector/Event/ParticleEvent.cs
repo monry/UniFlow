@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -17,16 +18,16 @@ namespace UniFlow.Connector.Event
             get => particleEventType;
             set => particleEventType = value;
         }
-        [UsedImplicitly] public Component Component
+        [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .Select(x => Message.Create(this));
+                .AsUnitObservable();
         }
 
         private IObservable<GameObject> OnEventAsObservable()
@@ -42,14 +43,6 @@ namespace UniFlow.Connector.Event
 //                    return Component.OnParticleSystemStoppedAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<ParticleEvent>
-        {
-            public static Message Create(ParticleEvent sender)
-            {
-                return Create<Message>(ConnectorType.ParticleEvent, sender);
             }
         }
     }

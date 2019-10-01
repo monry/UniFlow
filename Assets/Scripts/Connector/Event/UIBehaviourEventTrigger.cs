@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -21,17 +22,17 @@ namespace UniFlow.Connector.Event
             get => eventTriggerType;
             set => eventTriggerType = value;
         }
-        [UsedImplicitly] public UIBehaviour UIBehaviour
+        [ValuePublisher] public UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
-        [UsedImplicitly] public bool ActivateBeforeConnect
+        [ValuePublisher] public bool ActivateBeforeConnect
         {
             get => activateBeforeConnect;
             set => activateBeforeConnect = value;
         }
-        [UsedImplicitly] public bool DeactivateAfterConnect
+        [ValuePublisher] public bool DeactivateAfterConnect
         {
             get => deactivateAfterConnect;
             set => deactivateAfterConnect = value;
@@ -39,7 +40,7 @@ namespace UniFlow.Connector.Event
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return Observable
                 .ReturnUnit()
@@ -62,7 +63,7 @@ namespace UniFlow.Connector.Event
                         }
                     }
                 )
-                .Select(x => Message.Create(this, x));
+                .AsUnitObservable();
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -111,14 +112,6 @@ namespace UniFlow.Connector.Event
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<UIBehaviourEventTrigger, BaseEventData>
-        {
-            public static Message Create(UIBehaviourEventTrigger sender, BaseEventData baseEventData)
-            {
-                return Create<Message>(ConnectorType.UIBehaviourEventTrigger, sender, baseEventData);
-            }
         }
     }
 }
