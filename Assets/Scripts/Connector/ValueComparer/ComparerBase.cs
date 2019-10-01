@@ -8,13 +8,13 @@ namespace UniFlow.Connector.ValueComparer
     public abstract class ComparerBase<TValue, TOperator> : ConnectorBase
         where TOperator : Enum
     {
-        [SerializeField] private TValue value = default;
+        [SerializeField] private TValue expect = default;
         [SerializeField] private TOperator @operator = default;
 
-        [UsedImplicitly] public TValue Value
+        [UsedImplicitly] public TValue Expect
         {
-            get => value;
-            set => this.value = value;
+            get => expect;
+            set => expect = value;
         }
         [UsedImplicitly] public TOperator Operator
         {
@@ -24,14 +24,9 @@ namespace UniFlow.Connector.ValueComparer
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            if (latestMessage.Is<IValueHolder<TValue>>() && Compare(latestMessage.As<IValueHolder<TValue>>().Value))
-            {
-                return Observable.Return(Message.Create(this));
-            }
-
-            return Observable.Empty<IMessage>();
+            return Observable.ReturnUnit();
         }
 
         protected abstract bool Compare(TValue compareValue);
@@ -39,14 +34,6 @@ namespace UniFlow.Connector.ValueComparer
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<ComparerBase<TValue, TOperator>>
-        {
-            public static Message Create(ComparerBase<TValue, TOperator> sender)
-            {
-                return Create<Message>(ConnectorType.ValueComparerEnum, sender);
-            }
         }
     }
 }

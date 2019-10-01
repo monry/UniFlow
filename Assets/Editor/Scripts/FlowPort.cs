@@ -12,6 +12,7 @@ namespace UniFlow.Editor
 
         public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, IEdgeConnectorListener edgeConnectorListener = default)
         {
+            // Should I use Port.Create<T>()?
             var port = new FlowPort(portOrientation, portDirection, portCapacity, typeof(FlowPort));
 
             // ReSharper disable once InvertIf
@@ -23,7 +24,5 @@ namespace UniFlow.Editor
 
             return port;
         }
-
-
     }
 }

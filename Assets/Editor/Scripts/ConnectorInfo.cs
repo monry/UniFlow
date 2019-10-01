@@ -5,20 +5,22 @@ using System.Reflection;
 using JetBrains.Annotations;
 using UniFlow.Attribute;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace UniFlow.Editor
 {
     [Serializable]
     public class ConnectorInfo
     {
-        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
+        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers)
         {
             GameObject = gameObject;
             Connector = connector;
             Type = type;
             Name = name;
             parameterList = parameters.ToList();
-            suppliableParameterList = suppliableParameters.ToList();
+            ValuePublishers = valuePublishers;
+            ValueReceivers = valueReceivers;
         }
 
         public GameObject GameObject { get; set; }
@@ -27,8 +29,8 @@ namespace UniFlow.Editor
         public string Name { get; }
         [SerializeField] private List<Parameter> parameterList = default;
         public IEnumerable<Parameter> ParameterList => parameterList;
-        [SerializeField] private List<SuppliableParameter> suppliableParameterList = default;
-        public IEnumerable<SuppliableParameter> SuppliableParameterList => suppliableParameterList;
+        public IEnumerable<ValuePublisherInfo> ValuePublishers { get; }
+        public IEnumerable<ValueReceiverInfo> ValueReceivers { get; }
 
         public void ApplyParameter(Parameter parameter)
         {
@@ -78,37 +80,30 @@ namespace UniFlow.Editor
         }
 
         [PublicAPI]
-        public static ConnectorInfo Create(Type type, IConnector instance = default)
+        public static ConnectorInfo Create(Type type, IConnector instance)
         {
             return Create(
                 ((Component) instance)?.gameObject,
                 instance,
                 type,
                 type.Name,
-                CollectFields(type)
-                    .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<SuppliableTypeAttribute>() == null && x.GetCustomAttribute<HideInInspector>() == null)
+                type.GetFieldsRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<HideInInspector>() == null)
                     .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
-                CollectFields(type)
-                    .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<SuppliableTypeAttribute>() != null && x.GetCustomAttribute<HideInInspector>() == null)
-                    .Select(x => SuppliableParameter.Create(x.Name, x.GetCustomAttribute<SuppliableTypeAttribute>().Types.ToArray()))
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x => typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
+                    .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null)
+                    .Select(x => ValuePublisherInfo.Create(x, instance)),
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
+                    .Select(x => ValueReceiverInfo.Create(x, instance))
             );
         }
 
-        private static IEnumerable<FieldInfo> CollectFields(Type type)
-        {
-            var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (typeof(IConnector).IsAssignableFrom(type.BaseType))
-            {
-                fields = fields.Concat(CollectFields(type.BaseType)).ToArray();
-            }
-
-            return fields;
-        }
-
         [PublicAPI]
-        public static ConnectorInfo Create(GameObject gameObject, IConnector instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<SuppliableParameter> suppliableParameters)
+        public static ConnectorInfo Create(GameObject gameObject, IConnector instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers)
         {
-            return new ConnectorInfo(gameObject, instance, type, name, parameters, suppliableParameters);
+            return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers);
         }
 
         [Serializable]
@@ -137,20 +132,65 @@ namespace UniFlow.Editor
             }
         }
 
-        public class SuppliableParameter
+        public class ValuePublisherInfo
         {
-            public SuppliableParameter(string name, IEnumerable<Type> types)
+            private ValuePublisherInfo(PropertyInfo propertyInfo, object instance)
             {
-                Name = name;
-                Types = types;
+                var attribute = propertyInfo.GetCustomAttribute<ValuePublisherAttribute>();
+                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
+                Type = GetGenericType(propertyInfo.PropertyType);
+                Instance = instance;
+                PropertyInfo = propertyInfo;
             }
 
             public string Name { get; }
-            public IEnumerable<Type> Types { get; }
+            public Type Type { get; }
+            public object Instance { get; }
+            public PropertyInfo PropertyInfo { get; }
 
-            public static SuppliableParameter Create(string name, params Type[] types)
+            public static ValuePublisherInfo Create(PropertyInfo propertyInfo, object instance)
             {
-                return new SuppliableParameter(name, types);
+                return new ValuePublisherInfo(propertyInfo, instance);
+            }
+
+            private static Type GetGenericType(Type type)
+            {
+                while (true)
+                {
+                    if (type == default)
+                    {
+                        return default;
+                    }
+
+                    if (type.IsGenericType)
+                    {
+                        return type.GetGenericArguments().First();
+                    }
+
+                    type = type.BaseType;
+                }
+            }
+        }
+
+        public class ValueReceiverInfo
+        {
+            private ValueReceiverInfo(PropertyInfo propertyInfo, object instance)
+            {
+                var attribute = propertyInfo.GetCustomAttribute<ValueReceiverAttribute>();
+                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
+                Type = propertyInfo.PropertyType;
+                Instance = instance;
+                PropertyInfo = propertyInfo;
+            }
+
+            public string Name { get; }
+            public Type Type { get; }
+            public object Instance { get; }
+            public PropertyInfo PropertyInfo { get; }
+
+            public static ValueReceiverInfo Create(PropertyInfo propertyInfo, object instance)
+            {
+                return new ValueReceiverInfo(propertyInfo, instance);
             }
         }
     }

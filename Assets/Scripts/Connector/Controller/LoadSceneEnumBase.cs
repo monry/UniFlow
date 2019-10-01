@@ -27,18 +27,5 @@ namespace UniFlow.Connector.Controller
                 )
                 .ToList();
         }
-
-        protected override IMessage CreateMessage()
-        {
-            return Message.Create(this);
-        }
-
-        public class Message : MessageBase<LoadSceneEnumBase<TSceneName>>
-        {
-            public static Message Create(LoadSceneEnumBase<TSceneName> sender)
-            {
-                return Create<Message>(ConnectorType.LoadScene_Enum, sender);
-            }
-        }
     }
 }

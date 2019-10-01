@@ -38,19 +38,10 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             InvokeAudioSourceMethod();
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        InvokeAudioSourceMethod();
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
 
         private void InvokeAudioSourceMethod()
@@ -82,14 +73,6 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<AudioController>
-        {
-            public static Message Create(AudioController sender)
-            {
-                return Create<Message>(ConnectorType.AudioController, sender);
-            }
         }
     }
 

@@ -14,9 +14,9 @@ namespace UniFlow.Connector.Event
         private KeyEventType KeyEventType => keyEventType;
         private KeyCode KeyCode => keyCode;
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return KeyEventAsObservable().Select(_ => Message.Create(this));
+            return KeyEventAsObservable();
         }
 
         private IObservable<Unit> KeyEventAsObservable()
@@ -40,14 +40,6 @@ namespace UniFlow.Connector.Event
                         .AsUnitObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<KeyEvent>
-        {
-            public static Message Create(KeyEvent sender)
-            {
-                return Create<Message>(ConnectorType.KeyEvent, sender);
             }
         }
     }

@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UniRx.Triggers;
@@ -25,14 +27,14 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertUIBehaviourEventTrigger(Messages messages)
+        private void AssertUIBehaviourEventTrigger(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.True(messages[0].Is<UIBehaviourEventTrigger.Message>());
-            var message = messages[0].As<UIBehaviourEventTrigger.Message>();
-            Assert.IsInstanceOf<Image>(message.Sender.UIBehaviour);
-            Assert.IsInstanceOf<PointerEventData>(message.Data);
+            var connector = connectors[0] as UIBehaviourEventTrigger;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<Image>(connector.UIBehaviour);
             HasAssert = true;
         }
     }

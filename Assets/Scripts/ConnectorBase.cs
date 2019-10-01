@@ -19,8 +19,6 @@ namespace UniFlow
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
         protected bool actAsTrigger = false;
 
-        protected Messages Messages { get; private set; }
-
         protected virtual IEnumerable<IConnector> TargetConnectors =>
             new List<IConnector>()
                 .Concat(targetComponents ?? new List<ConnectorBase>())
@@ -50,7 +48,7 @@ namespace UniFlow
             set => flowGraphNodePosition = value;
         }
 
-        public ISubject<IMessage> OnConnectSubject { get; } = new Subject<IMessage>();
+        public ISubject<Unit> OnConnectSubject { get; } = new Subject<Unit>();
 #endif
 
         [UsedImplicitly] public virtual bool ActAsTrigger
@@ -63,27 +61,28 @@ namespace UniFlow
 
         protected virtual void Awake()
         {
-            CollectSuppliedValues();
             if (ActAsTrigger)
             {
-                ((IConnector) this).Connect(Observable.Return<(IMessage, Messages)>(default));
+                ((IConnector) this).Connect(Observable.ReturnUnit());
             }
         }
 
-        void IConnector.Connect(IObservable<(IMessage latestMessage, Messages massages)> source)
+        void IConnector.Connect(IObservable<Unit> source)
         {
+            if (Logger.IsEnabled)
+            {
+                OnConnectSubject.Subscribe(_ => Logger.Log(this));
+            }
             var observable = source
                 .SelectMany(
-                    eventMessages =>
+                    _ =>
                     {
-                        var (latestMessage, massages) = eventMessages;
-                        Messages = massages;
                         return (this as IConnector)
-                            .OnConnectAsObservable(latestMessage)
+                            .OnConnectAsObservable()
 #if UNITY_EDITOR
                             .Do(OnConnectSubject.OnNext)
 #endif
-                            .Select(x => (latestMessage: x, messages: (massages ?? Messages.Create()).Append(x)));
+                            ;
                     }
                 );
             if (TargetConnectors.Count() > 1)
@@ -100,12 +99,7 @@ namespace UniFlow
             }
         }
 
-        protected virtual void CollectSuppliedValues()
-        {
-            // Do nothing
-        }
-
-        public abstract IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage);
+        public abstract IObservable<Unit> OnConnectAsObservable();
 
         [PublicAPI]
         public void AddConnector(ConnectorBase connectable)

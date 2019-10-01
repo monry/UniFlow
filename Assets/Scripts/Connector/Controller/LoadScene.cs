@@ -15,18 +15,5 @@ namespace UniFlow.Connector.Controller
             get => sceneNames;
             set => sceneNames = value.ToList();
         }
-
-        protected override IMessage CreateMessage()
-        {
-            return Message.Create(this);
-        }
-
-        public class Message : MessageBase<LoadScene>
-        {
-            public static Message Create(LoadScene sender)
-            {
-                return Create<Message>(ConnectorType.LoadScene, sender);
-            }
-        }
     }
 }

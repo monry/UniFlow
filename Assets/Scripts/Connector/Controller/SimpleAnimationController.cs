@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -45,9 +45,9 @@ namespace UniFlow.Connector.Controller
                 animator != default
                     ? animator
                     : animator =
-                        GetComponent<Animator>() != default
-                            ? GetComponent<Animator>()
-                            : gameObject.AddComponent<Animator>();
+                        BaseGameObject.GetComponent<Animator>() != default
+                            ? BaseGameObject.GetComponent<Animator>()
+                            : BaseGameObject.AddComponent<Animator>();
             set => animator = value;
         }
         [UsedImplicitly] public SimpleAnimation SimpleAnimation
@@ -63,44 +63,26 @@ namespace UniFlow.Connector.Controller
             set => simpleAnimation = value;
         }
 
+        private GameObject baseGameObject;
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
+
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-//            if (latestMessage is IValueHolder<SimpleAnimationControlMethod> simpleAnimationControlMethodHolder)
-//            {
-//                SimpleAnimationControlMethod = simpleAnimationControlMethodHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimationClip> animationClipHolder)
-//            {
-//                AnimationClip = animationClipHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimatorCullingMode> animatorCullingModeHolder)
-//            {
-//                CullingMode = animatorCullingModeHolder.Value;
-//            }
-//
-//            if (latestMessage is IValueHolder<AnimatorUpdateMode> animatorUpdateModeHolder)
-//            {
-//                UpdateMode = animatorUpdateModeHolder.Value;
-//            }
-
             InvokeSimpleAnimationMethod();
-            return Observable.Return(Message.Create(this));
-//            return Observable
-//                .Create<IMessage>(
-//                    observer =>
-//                    {
-//                        InvokeSimpleAnimationMethod();
-//                        observer.OnNext(Message.Create(this));
-//                        return Disposable;
-//                    }
-//                );
+            return Observable.ReturnUnit();
         }
+
+        [ValueReceiver] public GameObject Piyo { get; set; }
+
+        [ValueReceiver] public Vector2 Hoge { get; set; }
+
+        [ValueReceiver] public int Fuga { get; set; }
 
         protected override void Awake()
         {
@@ -150,14 +132,6 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<SimpleAnimationController>
-        {
-            public static Message Create(SimpleAnimationController sender)
-            {
-                return Create<Message>(ConnectorType.SimpleAnimationController, sender);
-            }
         }
     }
 

@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
 using UnityEngine.TestTools;
@@ -19,16 +21,13 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertTimelineSignal(Messages messages)
+        private void AssertTimelineSignal(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.True(messages[0].Is<TimelineSignal.Message>());
-            var message = messages[0].As<TimelineSignal.Message>();
-            Assert.IsInstanceOf<TimelineSignal>(message.Sender);
-            var timelineEvent = message.Data;
-            Assert.NotNull(timelineEvent);
-            Assert.AreEqual("TimelineSignalTest", timelineEvent.stringParameter);
+            var connector = connectors[0] as TimelineSignal;
+            Assert.NotNull(connector);
             HasAssert = true;
         }
     }
