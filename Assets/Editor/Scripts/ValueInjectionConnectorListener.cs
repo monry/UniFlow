@@ -71,10 +71,6 @@ namespace UniFlow.Editor
             {
                 AddPersistentListenerCallbackMap[publishPort.ValuePublisherInfo.Type].Invoke(unityEvent, unityAction);
             }
-            else if (publishPort.ValuePublisherInfo.Type.IsEnum)
-            {
-                AddPersistentListenerCallbackMap[typeof(int)].Invoke(unityEvent, unityAction);
-            }
             else
             {
                 // unityEvent.AddPersistentListener()

@@ -1,10 +1,16 @@
 using System;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using Object = UnityEngine.Object;
 
 namespace UniFlow
 {
+    #region primitives
+
     [Serializable]
     public class PublishBoolEvent : UnityEvent<bool>
     {
@@ -30,6 +36,10 @@ namespace UniFlow
     {
     }
 
+    #endregion
+
+    #region UnityEngine.Object
+
     [Serializable]
     public class PublishObjectEvent : UnityEvent<Object>
     {
@@ -37,6 +47,49 @@ namespace UniFlow
 
     [Serializable]
     public class PublishGameObjectEvent : UnityEvent<GameObject>
+    {
+    }
+
+    [Serializable]
+    public class PublishScriptableObjectEvent : UnityEvent<ScriptableObject>
+    {
+    }
+
+    #endregion
+
+    #region assets
+
+    [Serializable]
+    public class PublishAnimationClipEvent : UnityEvent<AnimationClip>
+    {
+    }
+
+    [Serializable]
+    public class PublishAudioClipEvent : UnityEvent<AudioClip>
+    {
+    }
+
+    [Serializable]
+    public class PublishTimelineAssetEvent : UnityEvent<TimelineAsset>
+    {
+    }
+
+    #endregion
+
+    #region components
+
+    [Serializable]
+    public class PublishComponentEvent : UnityEvent<Component>
+    {
+    }
+
+    [Serializable]
+    public class PublishMonoBehaviourEvent : UnityEvent<MonoBehaviour>
+    {
+    }
+
+    [Serializable]
+    public class PublishUIBehaviourEvent : UnityEvent<UIBehaviour>
     {
     }
 
@@ -49,6 +102,30 @@ namespace UniFlow
     public class PublishRectTransformEvent : UnityEvent<RectTransform>
     {
     }
+
+    [Serializable]
+    public class PublishAnimatorEvent : UnityEvent<Animator>
+    {
+    }
+
+    [Serializable]
+    public class PublishSimpleAnimationEvent : UnityEvent<SimpleAnimation>
+    {
+    }
+
+    [Serializable]
+    public class PublishAudioSourceEvent : UnityEvent<AudioSource>
+    {
+    }
+
+    [Serializable]
+    public class PublishPlayableDirectorEvent : UnityEvent<PlayableDirector>
+    {
+    }
+
+    #endregion
+
+    #region structs
 
     [Serializable]
     public class PublishVector2Event : UnityEvent<Vector2>
@@ -89,4 +166,35 @@ namespace UniFlow
     public class PublishColor32Event : UnityEvent<Color32>
     {
     }
+
+    #endregion
+
+    #region classes
+
+    [Serializable]
+    public class PublishAnimationEventEvent : UnityEvent<AnimationEvent>
+    {
+    }
+
+    #endregion
+
+    #region enums
+    // If you can register a method that casts from int to enum, this region is unnecessary.
+
+    [Serializable]
+    public class PublishAnimatorCullingModeEvent : UnityEvent<AnimatorCullingMode>
+    {
+    }
+
+    [Serializable]
+    public class PublishAnimatorUpdateModeEvent : UnityEvent<AnimatorUpdateMode>
+    {
+    }
+
+    [Serializable]
+    public class PublishObservableTweenEaseTypeEvent : UnityEvent<ObservableTween.EaseType>
+    {
+    }
+
+    #endregion
 }

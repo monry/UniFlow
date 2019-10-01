@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -13,12 +13,12 @@ namespace UniFlow.Connector.Controller
         private Animator animator = default;
         [SerializeField] private string triggerName = default;
 
-        [UsedImplicitly] public Animator Animator
+        [ValueReceiver] public Animator Animator
         {
             get => animator ? animator : animator = GetComponent<Animator>();
             set => animator = value;
         }
-        [UsedImplicitly] public string TriggerName
+        [ValueReceiver] public string TriggerName
         {
             get => triggerName;
             set => triggerName = value;
@@ -26,17 +26,10 @@ namespace UniFlow.Connector.Controller
 
         private int TriggerId => Animator.StringToHash(TriggerName);
 
-        private IDisposable Disposable { get; } = new CompositeDisposable();
-
         public override IObservable<Unit> OnConnectAsObservable()
         {
             Animator.SetTrigger(TriggerId);
             return Observable.ReturnUnit();
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
         }
     }
 }

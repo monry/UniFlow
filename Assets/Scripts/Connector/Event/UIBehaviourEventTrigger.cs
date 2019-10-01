@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -21,17 +22,17 @@ namespace UniFlow.Connector.Event
             get => eventTriggerType;
             set => eventTriggerType = value;
         }
-        [UsedImplicitly] public UIBehaviour UIBehaviour
+        [ValuePublisher] public UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
-        [UsedImplicitly] public bool ActivateBeforeConnect
+        [ValuePublisher] public bool ActivateBeforeConnect
         {
             get => activateBeforeConnect;
             set => activateBeforeConnect = value;
         }
-        [UsedImplicitly] public bool DeactivateAfterConnect
+        [ValuePublisher] public bool DeactivateAfterConnect
         {
             get => deactivateAfterConnect;
             set => deactivateAfterConnect = value;

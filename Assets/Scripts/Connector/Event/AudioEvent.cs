@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -19,12 +20,12 @@ namespace UniFlow.Connector.Event
             get => audioEventType;
             set => audioEventType = value;
         }
-        [UsedImplicitly] public AudioClip AudioClip
+        [ValueReceiver] public AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
-        [UsedImplicitly] public AudioSource AudioSource
+        [ValueReceiver] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
