@@ -93,10 +93,10 @@ namespace UniFlow.Editor
                 type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
                     .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null)
-                    .Select(x => ValuePublisherInfo.Create(x, instance)),
+                    .Select(ValuePublisherInfo.Create),
                 type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
-                    .Select(x => ValueReceiverInfo.Create(x, instance))
+                    .Select(ValueReceiverInfo.Create)
             );
         }
 
@@ -134,23 +134,21 @@ namespace UniFlow.Editor
 
         public class ValuePublisherInfo
         {
-            private ValuePublisherInfo(PropertyInfo propertyInfo, object instance)
+            private ValuePublisherInfo(PropertyInfo propertyInfo)
             {
                 var attribute = propertyInfo.GetCustomAttribute<ValuePublisherAttribute>();
                 Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
                 Type = GetGenericType(propertyInfo.PropertyType);
-                Instance = instance;
                 PropertyInfo = propertyInfo;
             }
 
             public string Name { get; }
             public Type Type { get; }
-            public object Instance { get; }
             public PropertyInfo PropertyInfo { get; }
 
-            public static ValuePublisherInfo Create(PropertyInfo propertyInfo, object instance)
+            public static ValuePublisherInfo Create(PropertyInfo propertyInfo)
             {
-                return new ValuePublisherInfo(propertyInfo, instance);
+                return new ValuePublisherInfo(propertyInfo);
             }
 
             private static Type GetGenericType(Type type)
@@ -174,23 +172,21 @@ namespace UniFlow.Editor
 
         public class ValueReceiverInfo
         {
-            private ValueReceiverInfo(PropertyInfo propertyInfo, object instance)
+            private ValueReceiverInfo(PropertyInfo propertyInfo)
             {
                 var attribute = propertyInfo.GetCustomAttribute<ValueReceiverAttribute>();
                 Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
                 Type = propertyInfo.PropertyType;
-                Instance = instance;
                 PropertyInfo = propertyInfo;
             }
 
             public string Name { get; }
             public Type Type { get; }
-            public object Instance { get; }
             public PropertyInfo PropertyInfo { get; }
 
-            public static ValueReceiverInfo Create(PropertyInfo propertyInfo, object instance)
+            public static ValueReceiverInfo Create(PropertyInfo propertyInfo)
             {
-                return new ValueReceiverInfo(propertyInfo, instance);
+                return new ValueReceiverInfo(propertyInfo);
             }
         }
     }

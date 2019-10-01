@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UniRx;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -65,6 +67,9 @@ namespace UniFlow.Editor
 
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
+
+        public IList<FlowValueReceivePort> ValueReceivePorts { get; } = new List<FlowValueReceivePort>();
+        public IList<FlowValuePublishPort> ValuePublishPorts { get; } = new List<FlowValuePublishPort>();
 
         internal ConnectorInfo ConnectorInfo { get; }
 
@@ -149,6 +154,30 @@ namespace UniFlow.Editor
                 .Select(x => x.ConnectorInfo.Connector)
                 .OfType<ConnectorBase>();
             EditorUtility.SetDirty(connector);
+        }
+
+        public void ApplyValuePublishers()
+        {
+            foreach (var valuePublishPort in ValuePublishPorts)
+            {
+                if (!(valuePublishPort.ValuePublisherInfo.PropertyInfo.GetValue(ConnectorInfo.Connector) is UnityEventBase unityEvent))
+                {
+                    continue;
+                }
+                // Preserve count before remove item from list
+                var count = unityEvent.GetPersistentEventCount();
+                for (var i = 0; i < count; i++)
+                {
+                    // Rebuild index every time, so remove first element
+                    UnityEventTools.RemovePersistentListener(unityEvent, 0);
+                }
+                valuePublishPort
+                    .connections
+                    .Select(x => x.input as FlowValueReceivePort)
+                    .Where(x => x?.node != default)
+                    .ToList()
+                    .ForEach(valuePublishPort.AddPersistentListener);
+            }
         }
 
         private void AddParameters()
@@ -355,6 +384,7 @@ namespace UniFlow.Editor
                     var port = FlowValuePublishPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, publisher, ValueInjectionConnectorListener);
                     port.portName = publisher.Name;
                     outputContainer.Add(port);
+                    ValuePublishPorts.Add(port as FlowValuePublishPort);
                 }
             }
 
@@ -369,10 +399,9 @@ namespace UniFlow.Editor
                     var port = FlowValueReceivePort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, receiver, ValueInjectionConnectorListener);
                     port.portName = receiver.Name;
                     inputContainer.Add(port);
+                    ValueReceivePorts.Add(port as FlowValueReceivePort);
                 }
             }
-
-//            UnityEditor.Events.UnityEventTools.AddPersistentListener(new PublishGameObjectEvent(), new UnityAction<GameObject>());
         }
 
         private static string ToDisplayName(string original)
