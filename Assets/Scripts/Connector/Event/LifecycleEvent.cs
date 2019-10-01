@@ -26,10 +26,9 @@ namespace UniFlow.Connector.Event
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return OnEventAsObservable()
-                .Select(_ => Message.Create(this));
+            return OnEventAsObservable();
         }
 
         protected override void Awake()
@@ -74,14 +73,6 @@ namespace UniFlow.Connector.Event
                     return OnEnableProperty.Where(x => !x).AsUnitObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<LifecycleEvent>
-        {
-            public static Message Create(LifecycleEvent sender)
-            {
-                return Create<Message>(ConnectorType.LifecycleEvent, sender);
             }
         }
     }

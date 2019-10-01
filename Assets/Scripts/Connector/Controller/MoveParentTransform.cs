@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UniFlow.Connector.Controller
 {
@@ -39,34 +38,15 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             TargetTransform.SetParent(ParentTransform, WorldPositionStays);
-            return Observable.Return(Message.Create(this, TargetTransform));
-        }
-
-        public void ReceiveTargetTransform(Object target)
-        {
-            TargetTransform = target as Transform;
-        }
-
-
-        public void ReceiveParentTransform(Object parent)
-        {
-            ParentTransform = parent as Transform;
+            return Observable.ReturnUnit();
         }
 
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<MoveParentTransform, Transform>
-        {
-            public static Message Create(MoveParentTransform sender, Transform movedTransform)
-            {
-                return Create<Message>(ConnectorType.MoveParentTransform, sender, movedTransform);
-            }
         }
     }
 }

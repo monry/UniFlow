@@ -23,9 +23,11 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage) =>
-            OnEventAsObservable()
-                .Select(x => Message.Create(this, x));
+        public override IObservable<Unit> OnConnectAsObservable()
+        {
+            return OnEventAsObservable()
+                .AsUnitObservable();
+        }
 
         private IObservable<Collision> OnEventAsObservable()
         {
@@ -39,14 +41,6 @@ namespace UniFlow.Connector.Event
                     return Component.OnCollisionStayAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<PhysicsCollisionEvent, Collision>
-        {
-            public static Message Create(PhysicsCollisionEvent sender, Collision collision)
-            {
-                return Create<Message>(ConnectorType.PhysicsCollisionEvent, sender, collision);
             }
         }
     }

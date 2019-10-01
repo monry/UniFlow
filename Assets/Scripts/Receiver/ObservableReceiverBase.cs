@@ -5,16 +5,16 @@ namespace UniFlow.Receiver
 {
     public abstract class ObservableReceiverBase : ReceiverBase, IObservableReceiver
     {
-        private ISubject<Messages> OnReceiveSubject { get; } = new Subject<Messages>();
+        private ISubject<Unit> OnReceiveSubject { get; } = new Subject<Unit>();
 
-        IObservable<Messages> IObservableReceiver.OnReceiveAsObservable()
+        IObservable<Unit> IObservableReceiver.OnReceiveAsObservable()
         {
             return OnReceiveSubject;
         }
 
-        public override void OnReceive(Messages messages)
+        public override void OnReceive()
         {
-            OnReceiveSubject.OnNext(messages);
+            OnReceiveSubject.OnNext(Unit.Default);
         }
     }
 }

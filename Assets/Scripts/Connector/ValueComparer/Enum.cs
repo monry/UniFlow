@@ -9,11 +9,11 @@ namespace UniFlow.Connector.ValueComparer
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return Equals(compareValue, Value);
+                    return Equals(compareValue, Expect);
                 case OperatorType.NotEqual:
-                    return !Equals(compareValue, Value);
+                    return !Equals(compareValue, Expect);
                 case OperatorType.HasFlag:
-                    return Value.HasFlag(compareValue);
+                    return Expect.HasFlag(compareValue);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

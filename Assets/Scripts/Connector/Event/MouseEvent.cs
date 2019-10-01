@@ -23,10 +23,9 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return OnEventAsObservable()
-                .Select(_ => Message.Create(this));
+            return OnEventAsObservable();
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -54,14 +53,6 @@ namespace UniFlow.Connector.Event
 #else
             throw new PlatformNotSupportedException("MouseEvent does not support mobile platform");
 #endif
-        }
-
-        public class Message : MessageBase<MouseEvent>
-        {
-            public static Message Create(MouseEvent sender)
-            {
-                return Create<Message>(ConnectorType.MouseEvent, sender);
-            }
         }
     }
 

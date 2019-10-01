@@ -59,11 +59,11 @@ namespace UniFlow.Connector.Event
             ObserveSimpleAnimation();
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .Select(_ => Message.Create(this));
+                .AsUnitObservable();
         }
 
         private void ObserveSimpleAnimation()
@@ -95,14 +95,6 @@ namespace UniFlow.Connector.Event
             {
                 PlayingStatuses[state] = false;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
-            }
-        }
-
-        public class Message : MessageBase<SimpleAnimationEvent>
-        {
-            public static Message Create(SimpleAnimationEvent sender)
-            {
-                return Create<Message>(ConnectorType.SimpleAnimationEvent, sender);
             }
         }
     }

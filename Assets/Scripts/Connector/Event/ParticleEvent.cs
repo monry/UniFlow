@@ -23,10 +23,10 @@ namespace UniFlow.Connector.Event
             set => component = value;
         }
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .Select(x => Message.Create(this));
+                .AsUnitObservable();
         }
 
         private IObservable<GameObject> OnEventAsObservable()
@@ -42,14 +42,6 @@ namespace UniFlow.Connector.Event
 //                    return Component.OnParticleSystemStoppedAsObservable();
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public class Message : MessageBase<ParticleEvent>
-        {
-            public static Message Create(ParticleEvent sender)
-            {
-                return Create<Message>(ConnectorType.ParticleEvent, sender);
             }
         }
     }

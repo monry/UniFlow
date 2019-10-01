@@ -1,11 +1,9 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UniFlow.Connector.Controller
 {
@@ -66,9 +64,7 @@ namespace UniFlow.Connector.Controller
         }
 
         private GameObject baseGameObject;
-        [UsedImplicitly]
-        [ValueReceiver]
-        public GameObject BaseGameObject
+        [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
@@ -76,22 +72,17 @@ namespace UniFlow.Connector.Controller
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
             InvokeSimpleAnimationMethod();
-            return Observable.Return(Message.Create(this));
+            return Observable.ReturnUnit();
         }
 
-        [ValueReceiver]
-        public GameObject Piyo { get; set; }
+        [ValueReceiver] public GameObject Piyo { get; set; }
 
-        [ValueReceiver]
-        public Vector2 Hoge { get; set; }
+        [ValueReceiver] public Vector2 Hoge { get; set; }
 
-        [ValueReceiver]
-        public int Fuga { get; set; }
+        [ValueReceiver] public int Fuga { get; set; }
 
         protected override void Awake()
         {
@@ -141,14 +132,6 @@ namespace UniFlow.Connector.Controller
         private void OnDestroy()
         {
             Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<SimpleAnimationController>
-        {
-            public static Message Create(SimpleAnimationController sender)
-            {
-                return Create<Message>(ConnectorType.SimpleAnimationController, sender);
-            }
         }
     }
 

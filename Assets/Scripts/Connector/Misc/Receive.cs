@@ -16,24 +16,9 @@ namespace UniFlow.Connector.Misc
             }
         }
 
-        private IDisposable Disposable { get; } = new CompositeDisposable();
-
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            return Observable.Return(Message.Create(this));
-        }
-
-        private void OnDestroy()
-        {
-            Disposable.Dispose();
-        }
-
-        public class Message : MessageBase<Receive>
-        {
-            public static Message Create(Receive sender)
-            {
-                return Create<Message>(ConnectorType.Receive, sender);
-            }
+            return Observable.ReturnUnit();
         }
     }
 }

@@ -11,17 +11,17 @@ namespace UniFlow.Connector.ValueComparer
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Value;
+                    return compareValue == Expect;
                 case OperatorType.NotEqual:
-                    return compareValue != Value;
+                    return compareValue != Expect;
                 case OperatorType.Greater:
-                    return compareValue > Value;
+                    return compareValue > Expect;
                 case OperatorType.GreaterOrEqual:
-                    return compareValue >= Value;
+                    return compareValue >= Expect;
                 case OperatorType.Less:
-                    return compareValue < Value;
+                    return compareValue < Expect;
                 case OperatorType.LessOrEqual:
-                    return compareValue <= Value;
+                    return compareValue <= Expect;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

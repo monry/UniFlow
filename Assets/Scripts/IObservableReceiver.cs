@@ -1,9 +1,10 @@
 using System;
+using UniRx;
 
 namespace UniFlow
 {
     public interface IObservableReceiver : IReceiver
     {
-        IObservable<Messages> OnReceiveAsObservable();
+        IObservable<Unit> OnReceiveAsObservable();
     }
 }

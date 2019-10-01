@@ -5,10 +5,10 @@ namespace UniFlow
 {
     public interface IConnector
     {
-        IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage);
-        void Connect(IObservable<(IMessage latestMessage, Messages massages)> source);
+        IObservable<Unit> OnConnectAsObservable();
+        void Connect(IObservable<Unit> source);
 #if UNITY_EDITOR
-        ISubject<IMessage> OnConnectSubject { get; }
+        ISubject<Unit> OnConnectSubject { get; }
 #endif
     }
 }

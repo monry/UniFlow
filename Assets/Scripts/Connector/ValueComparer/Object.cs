@@ -11,9 +11,9 @@ namespace UniFlow.Connector.ValueComparer
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Value;
+                    return compareValue == Expect;
                 case OperatorType.NotEqual:
-                    return compareValue != Value;
+                    return compareValue != Expect;
                 case OperatorType.Null:
                     return compareValue == default;
                 case OperatorType.NotNull:

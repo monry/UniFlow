@@ -8,20 +8,12 @@ namespace UniFlow
     {
         protected override IEnumerable<IConnector> TargetConnectors { get; } = new List<IConnector>();
 
-        public override IObservable<IMessage> OnConnectAsObservable(IMessage latestMessage)
+        public override IObservable<Unit> OnConnectAsObservable()
         {
-            OnReceive(Messages);
-            return Observable.Return(Message.Create(this));
+            OnReceive();
+            return Observable.ReturnUnit();
         }
 
-        public abstract void OnReceive(Messages messages);
-
-        public class Message : MessageBase<ReceiverBase>
-        {
-            public static Message Create(ReceiverBase sender)
-            {
-                return Create<Message>(ConnectorType.Receiver, sender);
-            }
-        }
+        public abstract void OnReceive();
     }
 }
