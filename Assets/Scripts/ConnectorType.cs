@@ -39,8 +39,7 @@ namespace UniFlow
         UnloadScene,
         UnloadScene_Enum,
 
-        ValueProvider             = 1000,
-        ValueProviderBool,
+        ValueProviderBool         = 1000,
         ValueProviderByte,
         ValueProviderInt,
         ValueProviderFloat,
@@ -59,6 +58,7 @@ namespace UniFlow
         ValueProviderVector3Int,
         ValueProviderColor,
         ValueProviderColor32,
+        CustomValueProvider,
 
         ValueComparerBool         = 2000,
         ValueComparerByte,
@@ -79,6 +79,7 @@ namespace UniFlow
         ValueComparerVector3Int,
         ValueComparerColor,
         ValueComparerColor32,
+        CustomValueComparer,
 
         ValueExtractorVector2     = 3000,
         ValueExtractorVector3,
@@ -89,6 +90,7 @@ namespace UniFlow
         ValueExtractorVector3Int,
         ValueExtractorColor,
         ValueExtractorColor32,
+        CustomValueExtractor,
 
         ValueCombinerVector2      = 4000,
         ValueCombinerVector3,
@@ -99,6 +101,7 @@ namespace UniFlow
         ValueCombinerVector3Int,
         ValueCombinerColor,
         ValueCombinerColor32,
+        CustomValueCombiner,
 
         Timer                     = 9000,
         Interval,
