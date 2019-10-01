@@ -5,9 +5,14 @@ namespace UniFlow.Attribute
 {
     [AttributeUsage(AttributeTargets.Property)]
     [MeansImplicitUse]
+    [PublicAPI]
     public class ValueReceiverAttribute : System.Attribute
     {
-        public ValueReceiverAttribute(string name = "")
+        public ValueReceiverAttribute() : this("")
+        {
+        }
+
+        public ValueReceiverAttribute(string name)
         {
             Name = name;
         }

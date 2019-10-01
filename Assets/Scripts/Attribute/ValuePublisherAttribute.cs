@@ -5,9 +5,14 @@ namespace UniFlow.Attribute
 {
     [AttributeUsage(AttributeTargets.Property)]
     [MeansImplicitUse]
+    [PublicAPI]
     public class ValuePublisherAttribute : System.Attribute
     {
-        public ValuePublisherAttribute(string name = "")
+        public ValuePublisherAttribute() : this("")
+        {
+        }
+
+        public ValuePublisherAttribute(string name)
         {
             Name = name;
         }
