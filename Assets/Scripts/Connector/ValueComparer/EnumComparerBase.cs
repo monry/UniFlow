@@ -2,7 +2,7 @@ using System;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    public abstract class Enum<TEnum> : Base<TEnum, Enum<TEnum>.OperatorType> where TEnum : Enum
+    public abstract class EnumComparerBase<TEnum> : ComparerBase<TEnum, EnumComparerBase<TEnum>.OperatorType> where TEnum : Enum
     {
         protected override bool Compare(TEnum compareValue)
         {

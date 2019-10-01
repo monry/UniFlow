@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    public abstract class Base<TValue, TOperator> : ConnectorBase
+    public abstract class ComparerBase<TValue, TOperator> : ConnectorBase
         where TOperator : Enum
     {
         [SerializeField] private TValue expect = default;

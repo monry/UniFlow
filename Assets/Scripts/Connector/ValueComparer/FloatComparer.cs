@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    [AddComponentMenu("UniFlow/ValueComparer/Int", (int) ConnectorType.ValueComparerInt)]
-    public class Int : Base<int, Int.OperatorType>
+    [AddComponentMenu("UniFlow/ValueComparer/Float", (int) ConnectorType.ValueComparerFloat)]
+    public class FloatComparer : ComparerBase<float, FloatComparer.OperatorType>
     {
-        protected override bool Compare(int compareValue)
+        protected override bool Compare(float compareValue)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Expect;
+                    return Mathf.Approximately(Expect, compareValue);
                 case OperatorType.NotEqual:
-                    return compareValue != Expect;
+                    return !Mathf.Approximately(Expect, compareValue);
                 case OperatorType.Greater:
                     return compareValue > Expect;
                 case OperatorType.GreaterOrEqual:

@@ -3,13 +3,11 @@ using UniRx;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class Base<TValue> : ConnectorBase
+    public class ChoiceInt : ConnectorBase
     {
         public override IObservable<Unit> OnConnectAsObservable()
         {
-            return Observable.ReturnUnit();
+            throw new NotImplementedException();
         }
-
-        protected abstract TValue Provide();
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueComparer
 {
     [AddComponentMenu("UniFlow/ValueComparer/Bool", (int) ConnectorType.ValueComparerBool)]
-    public class Bool : Base<bool, Bool.OperatorType>
+    public class BoolComparer : ComparerBase<bool, BoolComparer.OperatorType>
     {
         protected override bool Compare(bool compareValue)
         {
