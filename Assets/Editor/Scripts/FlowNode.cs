@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UniRx;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -152,6 +154,30 @@ namespace UniFlow.Editor
                 .Select(x => x.ConnectorInfo.Connector)
                 .OfType<ConnectorBase>();
             EditorUtility.SetDirty(connector);
+        }
+
+        public void ApplyValuePublishers()
+        {
+            foreach (var valuePublishPort in ValuePublishPorts)
+            {
+                if (!(valuePublishPort.ValuePublisherInfo.PropertyInfo.GetValue(ConnectorInfo.Connector) is UnityEventBase unityEvent))
+                {
+                    continue;
+                }
+                // Preserve count before remove item from list
+                var count = unityEvent.GetPersistentEventCount();
+                for (var i = 0; i < count; i++)
+                {
+                    // Rebuild index every time, so remove first element
+                    UnityEventTools.RemovePersistentListener(unityEvent, 0);
+                }
+                valuePublishPort
+                    .connections
+                    .Select(x => x.input as FlowValueReceivePort)
+                    .Where(x => x?.node != default)
+                    .ToList()
+                    .ForEach(valuePublishPort.AddPersistentListener);
+            }
         }
 
         private void AddParameters()

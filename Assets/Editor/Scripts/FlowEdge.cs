@@ -7,7 +7,22 @@ namespace UniFlow.Editor
         void IRemovableElement.RemoveFromGraphView()
         {
             output.Disconnect(this);
-            (output?.node as FlowNode)?.ApplyTargetConnectors();
+            input.Disconnect(this);
+
+            if (!(output?.node is FlowNode outputNode))
+            {
+                return;
+            }
+
+            switch (output)
+            {
+                case FlowPort _:
+                    outputNode.ApplyTargetConnectors();
+                    break;
+                case FlowValuePublishPort _:
+                    outputNode.ApplyValuePublishers();
+                    break;
+            }
         }
     }
 }

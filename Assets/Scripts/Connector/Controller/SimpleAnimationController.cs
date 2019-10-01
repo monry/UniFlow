@@ -78,12 +78,6 @@ namespace UniFlow.Connector.Controller
             return Observable.ReturnUnit();
         }
 
-        [ValueReceiver] public GameObject Piyo { get; set; }
-
-        [ValueReceiver] public Vector2 Hoge { get; set; }
-
-        [ValueReceiver] public int Fuga { get; set; }
-
         protected override void Awake()
         {
             base.Awake();
