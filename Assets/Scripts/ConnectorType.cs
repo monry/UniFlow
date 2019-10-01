@@ -41,6 +41,7 @@ namespace UniFlow
 
         ValueProvider             = 1000,
         ValueProviderBool,
+        ValueProviderByte,
         ValueProviderInt,
         ValueProviderFloat,
         ValueProviderString,
@@ -59,6 +60,7 @@ namespace UniFlow
         ValueProviderColor32,
 
         ValueComparerBool         = 2000,
+        ValueComparerByte,
         ValueComparerInt,
         ValueComparerFloat,
         ValueComparerString,

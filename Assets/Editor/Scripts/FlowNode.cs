@@ -89,6 +89,19 @@ namespace UniFlow.Editor
             {typeof(Object), CreateBindableElement<Object, ObjectField>},
         };
 
+        private static IList<Type> PropertyFieldRenderableTypes { get; } = new List<Type>
+        {
+            typeof(byte),
+            typeof(Vector2),
+            typeof(Vector3),
+            typeof(Vector4),
+            typeof(Quaternion),
+            typeof(Vector2Int),
+            typeof(Vector3Int),
+            typeof(Color),
+            typeof(Color32),
+        };
+
         void IRemovableElement.RemoveFromGraphView()
         {
             if (ConnectorInfo.Connector == default || !(ConnectorInfo.Connector is Component component))
@@ -265,18 +278,6 @@ namespace UniFlow.Editor
 
             return CreateFieldFunctions[fieldType](connectorInfo, parameter);
         }
-
-        private static IList<Type> PropertyFieldRenderableTypes { get; } = new List<Type>
-        {
-            typeof(Vector2),
-            typeof(Vector3),
-            typeof(Vector4),
-            typeof(Quaternion),
-            typeof(Vector2Int),
-            typeof(Vector3Int),
-            typeof(Color),
-            typeof(Color32),
-        };
 
         private static BindableElement CreateBindableElement<TValue, TResult>(ConnectorInfo connectorInfo, ConnectorInfo.Parameter parameter) where TResult : BaseField<TValue>, new()
         {
