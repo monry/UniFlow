@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
@@ -95,16 +96,15 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertLifecycleEvent(Messages messages)
+        private void AssertLifecycleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(messages);
-            Assert.GreaterOrEqual(messages.Count, 1);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.GreaterOrEqual(connectors.Count, 1);
 
-            Assert.True(messages[0].Is<LifecycleEvent.Message>());
-            var message = messages[0].As<LifecycleEvent.Message>();
-            Assert.IsInstanceOf<LifecycleEvent>(message.Sender);
-
-            Assert.AreEqual(CurrentLifecycleEventType, message.Sender.LifecycleEventType);
+            var connector = connectors[0] as LifecycleEvent;
+            Assert.NotNull(connector);
+            Assert.AreEqual(CurrentLifecycleEventType, connector.LifecycleEventType);
 
             HasAssert = true;
         }

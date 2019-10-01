@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Event;
@@ -54,30 +55,30 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertCameraBecomeVisibleEvent(Messages messages)
+        private void AssertCameraBecomeVisibleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(messages);
-            Assert.AreEqual(1, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.True(messages[0].Is<CameraEvent.Message>());
-            var message = messages[0].As<CameraEvent.Message>();
-            Assert.IsInstanceOf<CameraEvent>(message.Sender);
+            var connector = connectors[0] as CameraEvent;
+            Assert.NotNull(connector);
 
-            Assert.AreEqual(CameraEventType.BecomeVisible, message.Sender.CameraEventType);
+            Assert.AreEqual(CameraEventType.BecomeVisible, connector.CameraEventType);
 
             HasAssert = true;
         }
 
-        private void AssertCameraBecomeInvisibleEvent(Messages messages)
+        private void AssertCameraBecomeInvisibleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(messages);
-            Assert.AreEqual(1, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.AreEqual(1, connectors.Count);
 
-            Assert.True(messages[0].Is<CameraEvent.Message>());
-            var message = messages[0].As<CameraEvent.Message>();
-            Assert.IsInstanceOf<CameraEvent>(message.Sender);
+            var connector = connectors[0] as CameraEvent;
+            Assert.NotNull(connector);
 
-            Assert.AreEqual(CameraEventType.BecomeInvisible, message.Sender.CameraEventType);
+            Assert.AreEqual(CameraEventType.BecomeInvisible, connector.CameraEventType);
 
             HasAssert = true;
         }

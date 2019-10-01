@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Controller;
 using UniFlow.Connector.Event;
@@ -45,49 +47,38 @@ namespace UniFlow.Tests.Runtime
                 );
         }
 
-        private void AssertAll(Messages messages)
+        private void AssertAll(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(5, messages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(5, connectors.Count);
 
             {
-                Assert.True(messages[0].Is<UIBehaviourEventTrigger.Message>());
-                var message = messages[0].As<UIBehaviourEventTrigger.Message>();
-                Assert.AreEqual(message.ConnectorType, ConnectorType.UIBehaviourEventTrigger);
-                Assert.IsInstanceOf<Image>(message.Sender.UIBehaviour);
-                Assert.IsInstanceOf<PointerEventData>(message.Data);
+                var connector = connectors[0] as UIBehaviourEventTrigger;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<Image>(connector.UIBehaviour);
             }
 
             {
-                Assert.True(messages[1].Is<AnimatorTrigger.Message>());
-                var message = messages[1].As<AnimatorTrigger.Message>();
-                Assert.IsInstanceOf<Animator>(message.Sender.Animator);
+                var connector = connectors[1] as AnimatorTrigger;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<Animator>(connector.Animator);
             }
 
             {
-                Assert.True(messages[2].Is<AnimationEvent.Message>());
-                var message = messages[2].As<AnimationEvent.Message>();
-                Assert.IsInstanceOf<Animator>(message.Sender.Animator);
-                Assert.IsInstanceOf<UnityEngine.AnimationEvent>(message.Data);
-                var animationEvent = message.Data;
-                Assert.NotNull(animationEvent);
-                Assert.AreEqual(222.2f, animationEvent.floatParameter);
-                Assert.AreEqual(333, animationEvent.intParameter);
-                Assert.AreEqual("444", animationEvent.stringParameter);
-                Assert.IsInstanceOf<Material>(animationEvent.objectReferenceParameter);
-                Assert.AreEqual("All", animationEvent.objectReferenceParameter.name);
+                var connector = connectors[2] as AnimationEvent;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<Animator>(connector.Animator);
             }
 
             {
-                Assert.True(messages[3].Is<PlayableController.Message>());
-                var message = messages[3].As<PlayableController.Message>();
-                Assert.IsInstanceOf<PlayableDirector>(message.Sender.PlayableDirector);
+                var connector = connectors[3] as PlayableController;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<PlayableDirector>(connector.PlayableDirector);
             }
 
             {
-                Assert.True(messages[4].Is<TimelineSignal.Message>());
-                var message = messages[4].As<TimelineSignal.Message>();
-                var timelineEvent = message.Data;
-                Assert.AreEqual(999, timelineEvent.intParameter);
+                var connector = connectors[4] as TimelineSignal;
+                Assert.NotNull(connector);
             }
 
             HasAssert = true;

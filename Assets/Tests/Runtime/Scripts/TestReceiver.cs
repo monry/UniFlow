@@ -1,13 +1,21 @@
+using System.Collections.Generic;
+using UniRx;
+
 namespace UniFlow.Tests.Runtime
 {
     public class TestReceiver : ReceiverBase
     {
-        public Messages SentMessages { get; private set; }
+        public IList<IConnector> SentConnectors { get; private set; } = new List<IConnector>();
         public int ReceiveCount { get; private set; }
-
-        public override void OnReceive(Messages messages)
+        
+        protected override void Awake()
         {
-            SentMessages = messages;
+            Logger.Activate();
+            Logger.OnMessageAsObservable().Subscribe(SentConnectors.Add);
+        }
+
+        public override void OnReceive()
+        {
             ReceiveCount++;
         }
     }
