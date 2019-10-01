@@ -16,6 +16,7 @@ namespace UniFlow.Connector.Controller
         private AnimationClip animationClip = default;
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
 
@@ -39,6 +40,11 @@ namespace UniFlow.Connector.Controller
             get => updateMode;
             set => updateMode = value;
         }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValueReceiver] public Animator Animator
         {
             get =>
@@ -61,13 +67,6 @@ namespace UniFlow.Connector.Controller
                             : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
-        }
-
-        private GameObject baseGameObject;
-        [ValueReceiver] public GameObject BaseGameObject
-        {
-            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();

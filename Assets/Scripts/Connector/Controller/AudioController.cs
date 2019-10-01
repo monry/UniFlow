@@ -13,6 +13,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private AudioSource audioSource = default;
 
         [UsedImplicitly] public AudioControlMethod AudioControlMethod
@@ -25,15 +26,20 @@ namespace UniFlow.Connector.Controller
             get => audioClip;
             set => audioClip = value;
         }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValueReceiver] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
                     ? audioSource
                     : audioSource =
-                        GetComponent<AudioSource>() != default
-                            ? GetComponent<AudioSource>()
-                            : gameObject.AddComponent<AudioSource>();
+                        BaseGameObject.GetComponent<AudioSource>() != default
+                            ? BaseGameObject.GetComponent<AudioSource>()
+                            : BaseGameObject.AddComponent<AudioSource>();
             set => audioSource = value;
         }
 

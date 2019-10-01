@@ -108,6 +108,11 @@ namespace UniFlow.Editor
                     .GetType()
                     .GetFieldRecursive("m_ObjectArgumentAssemblyTypeName", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .SetValue(argumentCache, setMethodInfo.GetParameters().First().ParameterType.AssemblyQualifiedName);
+                // unityEvent.m_PersistentCalls.GetListener(unityEvent.GetPersistentEventCount() - 1).m_Mode = PersistentListenerMode.EventDefined
+                persistentCall
+                    .GetType()
+                    .GetFieldRecursive("m_Mode", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .SetValue(persistentCall, PersistentListenerMode.EventDefined);
             }
         }
     }
