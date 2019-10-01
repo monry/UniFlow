@@ -66,6 +66,9 @@ namespace UniFlow.Editor
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
 
+        public IList<FlowValueReceivePort> ValueReceivePorts { get; } = new List<FlowValueReceivePort>();
+        public IList<FlowValuePublishPort> ValuePublishPorts { get; } = new List<FlowValuePublishPort>();
+
         internal ConnectorInfo ConnectorInfo { get; }
 
         private IEdgeConnectorListener EdgeConnectorListener { get; }
@@ -355,6 +358,7 @@ namespace UniFlow.Editor
                     var port = FlowValuePublishPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, publisher, ValueInjectionConnectorListener);
                     port.portName = publisher.Name;
                     outputContainer.Add(port);
+                    ValuePublishPorts.Add(port as FlowValuePublishPort);
                 }
             }
 
@@ -369,10 +373,9 @@ namespace UniFlow.Editor
                     var port = FlowValueReceivePort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, receiver, ValueInjectionConnectorListener);
                     port.portName = receiver.Name;
                     inputContainer.Add(port);
+                    ValueReceivePorts.Add(port as FlowValueReceivePort);
                 }
             }
-
-//            UnityEditor.Events.UnityEventTools.AddPersistentListener(new PublishGameObjectEvent(), new UnityAction<GameObject>());
         }
 
         private static string ToDisplayName(string original)

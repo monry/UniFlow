@@ -49,20 +49,23 @@ namespace UniFlow.Editor
                 return;
             }
 
-            FlowGraphView.AddElement(registeredEdge);
-
             if (!(registeredEdge.output is FlowValuePublishPort publishPort) || !(registeredEdge.input is FlowValueReceivePort receivePort))
             {
                 return;
             }
 
-            var targetInstance = receivePort.ValueReceiverInfo.Instance;
+            var publishConnectorInstance = (publishPort.node as FlowNode)?.ConnectorInfo.Connector;
+            var receivConnectorInstance = (receivePort.node as FlowNode)?.ConnectorInfo.Connector;
+            if (publishConnectorInstance == null || receivConnectorInstance == null)
+            {
+                return;
+            }
             var setMethodInfo = receivePort.ValueReceiverInfo.PropertyInfo.GetSetMethod();
-            var unityEvent = publishPort.ValuePublisherInfo.PropertyInfo.GetValue(publishPort.ValuePublisherInfo.Instance);
+            var unityEvent = publishPort.ValuePublisherInfo.PropertyInfo.GetValue(publishConnectorInstance);
             var unityAction = Delegate
                 .CreateDelegate(
                     typeof(UnityAction<>).MakeGenericType(setMethodInfo.GetParameters().First().ParameterType),
-                    targetInstance,
+                    receivConnectorInstance,
                     setMethodInfo.Name,
                     false
                 );
@@ -91,10 +94,10 @@ namespace UniFlow.Editor
                     .GetMethodRecursive("RegisterObjectPersistentListener", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Invoke(
                         persistentCalls,
-                        new[]
+                        new object[]
                         {
                             (unityEvent as UnityEventBase)?.GetPersistentEventCount() - 1,
-                            targetInstance,
+                            receivConnectorInstance,
                             null,
                             setMethodInfo.Name
                         }

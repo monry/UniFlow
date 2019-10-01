@@ -28,7 +28,6 @@ namespace UniFlow.Editor
         {
             FlowGraphView.AddEdge((FlowPort) edge.output, (FlowPort) edge.input);
             (edge.output.node as FlowNode)?.ApplyTargetConnectors();
-            FlowGraphView.AddElement(edge);
             FlowGraphView.SetupActAsTrigger();
         }
     }
