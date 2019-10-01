@@ -13,6 +13,7 @@ namespace UniFlow.Connector.Controller
     {
         [SerializeField] private PlayableControlMethod playableControlMethod = PlayableControlMethod.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private PlayableDirector playableDirector = default;
 
         [UsedImplicitly] public PlayableControlMethod PlayableControlMethod
@@ -25,15 +26,20 @@ namespace UniFlow.Connector.Controller
             get => timelineAsset;
             set => timelineAsset = value;
         }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValueReceiver] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default
                     ? playableDirector
                     : playableDirector =
-                        GetComponent<PlayableDirector>() != default
-                            ? GetComponent<PlayableDirector>()
-                            : gameObject.AddComponent<PlayableDirector>();
+                        BaseGameObject.GetComponent<PlayableDirector>() != default
+                            ? BaseGameObject.GetComponent<PlayableDirector>()
+                            : BaseGameObject.AddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
 
