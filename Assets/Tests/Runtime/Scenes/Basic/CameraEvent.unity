@@ -156,23 +156,15 @@ MonoBehaviour:
   OnPreInstall:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   OnPostInstall:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   OnPreResolve:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   OnPostResolve:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   _parentNewObjectsUnderSceneContext: 0
   _contractNames: []
   _parentContractNames: []
@@ -390,6 +382,7 @@ MonoBehaviour:
   targetComponents: []
   targetIds: []
   actAsTrigger: 0
+  flowGraphNodePosition: {x: 400, y: 50}
 --- !u!114 &923815578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +399,7 @@ MonoBehaviour:
   - {fileID: 923815577}
   targetIds: []
   actAsTrigger: 1
+  flowGraphNodePosition: {x: 50, y: 50}
   cameraEventType: 0
   component: {fileID: 0}
 --- !u!1 &1761951864
@@ -444,6 +438,7 @@ MonoBehaviour:
   targetComponents: []
   targetIds: []
   actAsTrigger: 0
+  flowGraphNodePosition: {x: 400, y: 206}
 --- !u!114 &1761951866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,6 +455,7 @@ MonoBehaviour:
   - {fileID: 1761951865}
   targetIds: []
   actAsTrigger: 1
+  flowGraphNodePosition: {x: 50, y: 280}
   cameraEventType: 1
   component: {fileID: 0}
 --- !u!65 &1761951868
