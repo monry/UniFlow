@@ -9,7 +9,7 @@ namespace UniFlow.Connector.ValueProvider
     public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase where TPublishEvent : UnityEvent<TValue>, new()
     {
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
-        [ValuePublisher("Value")] private TPublishEvent Publisher => publisher;
+        [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
 
         protected abstract TValue Provide();
 

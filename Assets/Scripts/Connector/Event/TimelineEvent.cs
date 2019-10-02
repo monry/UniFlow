@@ -16,6 +16,7 @@ namespace UniFlow.Connector.Event
     {
         [SerializeField] private TimelineEventType timelineEventType = TimelineEventType.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private PlayableDirector playableDirector = default;
 
         [UsedImplicitly] public TimelineEventType TimelineEventType
@@ -28,15 +29,20 @@ namespace UniFlow.Connector.Event
             get => timelineAsset;
             set => timelineAsset = value;
         }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValuePublisher] public PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default
                     ? playableDirector
                     : playableDirector =
-                        GetComponent<PlayableDirector>() != default
-                            ? GetComponent<PlayableDirector>()
-                            : gameObject.AddComponent<PlayableDirector>();
+                        BaseGameObject.GetComponent<PlayableDirector>() != default
+                            ? BaseGameObject.GetComponent<PlayableDirector>()
+                            : BaseGameObject.AddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
 
@@ -80,7 +86,7 @@ namespace UniFlow.Connector.Event
 
         private void OnDestroy()
         {
-            if (!(PlayableDirector.playableAsset is TimelineAsset timeline))
+            if (baseGameObject == null || playableDirector == null || !(PlayableDirector.playableAsset is TimelineAsset timeline))
             {
                 return;
             }
@@ -110,8 +116,10 @@ namespace UniFlow.Connector.Event
                 .markerTrack
                 .GetMarkers()
                 .FirstOrDefault(
-                    x => Math.Abs(x.time - time) < double.Epsilon
-                        && x is SignalEmitter signalEmitter
+                    x => x is SignalEmitter signalEmitter
+                        && signalEmitter != default
+                        && Math.Abs(signalEmitter.time - time) < double.Epsilon
+                        && signalEmitter.asset != default
                         && signalEmitter.asset.GetType() == signal.GetType()
                 ) as SignalEmitter;
             if (emitter == default)

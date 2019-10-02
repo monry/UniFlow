@@ -43,6 +43,14 @@ namespace UniFlow.Connector.Controller
             set => playableDirector = value;
         }
 
+        private void Awake()
+        {
+            if (PlayableDirector != default && TimelineAsset != default)
+            {
+                PlayableDirector.playableAsset = TimelineAsset;
+            }
+        }
+
         public override IObservable<Unit> OnConnectAsObservable()
         {
             InvokePlayableDirectorMethod();
@@ -51,10 +59,6 @@ namespace UniFlow.Connector.Controller
 
         private void InvokePlayableDirectorMethod()
         {
-            if (TimelineAsset != default)
-            {
-                PlayableDirector.playableAsset = TimelineAsset;
-            }
 
             switch (PlayableControlMethod)
             {
