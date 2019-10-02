@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-preview.23] - 2019-10-
+
+### Breaking Changes
+
+* Revert timing of preparing to `Start()` instead of `Awake()`
+    * Avoid running in non-active components
+
 ## [0.1.0-preview.22] - 2019-10-02
 
 ### Breaking Changes
