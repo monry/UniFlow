@@ -6,22 +6,22 @@ namespace UniFlow.Connector.ValueComparer
     [AddComponentMenu("UniFlow/ValueComparer/String", (int) ConnectorType.ValueComparerString)]
     public class StringComparer : ComparerBase<string, StringComparer.OperatorType>
     {
-        protected override bool Compare(string compareValue)
+        protected override bool Compare(string actual)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Expect;
+                    return actual == Expect;
                 case OperatorType.NotEqual:
-                    return compareValue != Expect;
+                    return actual != Expect;
                 case OperatorType.NullOrEmpty:
-                    return string.IsNullOrEmpty(compareValue);
+                    return string.IsNullOrEmpty(actual);
                 case OperatorType.NotNullOrEmpty:
-                    return !string.IsNullOrEmpty(compareValue);
+                    return !string.IsNullOrEmpty(actual);
                 case OperatorType.NullOrWhitespace:
-                    return string.IsNullOrWhiteSpace(compareValue);
+                    return string.IsNullOrWhiteSpace(actual);
                 case OperatorType.NotNullOrWhitespace:
-                    return !string.IsNullOrWhiteSpace(compareValue);
+                    return !string.IsNullOrWhiteSpace(actual);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

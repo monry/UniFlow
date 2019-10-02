@@ -4,16 +4,16 @@ namespace UniFlow.Connector.ValueComparer
 {
     public abstract class EnumComparerBase<TEnum> : ComparerBase<TEnum, EnumComparerBase<TEnum>.OperatorType> where TEnum : Enum
     {
-        protected override bool Compare(TEnum compareValue)
+        protected override bool Compare(TEnum actual)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return Equals(compareValue, Expect);
+                    return Equals(actual, Expect);
                 case OperatorType.NotEqual:
-                    return !Equals(compareValue, Expect);
+                    return !Equals(actual, Expect);
                 case OperatorType.HasFlag:
-                    return Expect.HasFlag(compareValue);
+                    return Expect.HasFlag(actual);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
