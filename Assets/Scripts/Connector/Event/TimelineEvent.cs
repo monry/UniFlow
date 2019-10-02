@@ -74,8 +74,8 @@ namespace UniFlow.Connector.Event
 
         protected override void Start()
         {
-            base.Start();
             RegisterSignal();
+            base.Start();
         }
 
         private void OnDestroy()

@@ -95,7 +95,6 @@ namespace UniFlow.Connector.Event
 
         protected override void Start()
         {
-            base.Start();
             // ReSharper disable once InvertIf
             // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
             if (AnimationClip != default && Animator == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
@@ -104,6 +103,7 @@ namespace UniFlow.Connector.Event
                 SimpleAnimation.cullingMode = CullingMode;
                 Animator.updateMode = UpdateMode;
             }
+            base.Start();
         }
     }
 }
