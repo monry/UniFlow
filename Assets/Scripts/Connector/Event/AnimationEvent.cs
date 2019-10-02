@@ -16,6 +16,7 @@ namespace UniFlow.Connector.Event
         private AnimationClip animationClip = default;
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField] private PublishAnimationEventEvent publisher = new PublishAnimationEventEvent();
@@ -34,6 +35,11 @@ namespace UniFlow.Connector.Event
         {
             get => updateMode;
             set => updateMode = value;
+        }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
         }
         [ValueReceiver] public Animator Animator
         {
