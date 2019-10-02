@@ -69,10 +69,12 @@ namespace UniFlow
 
         void IConnector.Connect(IObservable<Unit> source)
         {
+#if UNITY_EDITOR
             if (Logger.IsEnabled)
             {
                 OnConnectSubject.Subscribe(_ => Logger.Log(this));
             }
+#endif
             var observable = source
                 .SelectMany(
                     _ =>
