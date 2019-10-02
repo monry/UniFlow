@@ -106,7 +106,11 @@ namespace UniFlow.Editor
                 FlowGraphView.SetupActAsTrigger();
                 if (FlowPort.node is FlowNode targetFlowNode && targetFlowNode.ConnectorInfo.Connector is ConnectorBase targetConnector)
                 {
-                    targetConnector.TargetComponents = new List<ConnectorBase> {node.ConnectorInfo.Connector as ConnectorBase};
+                    if (targetConnector.TargetComponents == null)
+                    {
+                        targetConnector.TargetComponents = new List<ConnectorBase>();
+                    }
+                    targetConnector.TargetComponents = targetConnector.TargetComponents.Concat(new List<ConnectorBase> {node.ConnectorInfo.Connector as ConnectorBase});
                 }
             }
             FlowGraphView.SetupActAsTrigger();

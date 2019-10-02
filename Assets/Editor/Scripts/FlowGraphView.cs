@@ -14,7 +14,7 @@ namespace UniFlow.Editor
 {
     public class FlowGraphView : GraphView
     {
-        private IEnumerable<IConnector> Connectors { get; set; } = new List<IConnector>();
+        private IList<IConnector> Connectors { get; set; } = new List<IConnector>();
         private IDictionary<IConnector, IList<IConnector>> DestinationConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
         private IDictionary<IConnector, IList<IConnector>> SourceConnectors { get; } = new Dictionary<IConnector, IList<IConnector>>();
         private IDictionary<IConnector, FlowNode> RenderedNodes { get; } = new Dictionary<IConnector, FlowNode>();
@@ -188,11 +188,13 @@ namespace UniFlow.Editor
             Connectors = UniFlowSettings.instance.IsPrefabMode
                 ? UniFlowSettings.instance.SelectedGameObject
                     .GetComponentsInChildren<ConnectorBase>(true)
-                    .ToArray()
+                    .OfType<IConnector>()
+                    .ToList()
                 : (UniFlowSettings.instance.SelectedGameObject == default ? SceneManager.GetActiveScene() : UniFlowSettings.instance.SelectedGameObject.scene)
                     .GetRootGameObjects()
                     .SelectMany(x => x.GetComponentsInChildren<ConnectorBase>(true))
-                    .ToArray();
+                    .OfType<IConnector>()
+                    .ToList();
 
 
             foreach (var connector in Connectors)

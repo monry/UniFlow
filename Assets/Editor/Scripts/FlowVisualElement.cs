@@ -1,3 +1,4 @@
+using UniRx;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -62,7 +63,12 @@ namespace UniFlow.Editor
                     }
                     if (GUILayout.Button("Auto Layout", EditorStyles.toolbarButton))
                     {
-                        FlowGraphView.Relocation(true);
+                        if (Contains(Content))
+                        {
+                            Remove(Content);
+                        }
+                        Load();
+                        Observable.TimerFrame(1).Subscribe(_ => FlowGraphView.Relocation(true));
                     }
 
                     if (UniFlowSettings.instance.SelectedGameObject != default)
