@@ -6,18 +6,18 @@ namespace UniFlow.Connector.ValueComparer
     [AddComponentMenu("UniFlow/ValueComparer/Object", (int) ConnectorType.ValueComparerObject)]
     public class ObjectComparer : ComparerBase<UnityEngine.Object, ObjectComparer.OperatorType>
     {
-        protected override bool Compare(UnityEngine.Object compareValue)
+        protected override bool Compare(UnityEngine.Object actual)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return compareValue == Expect;
+                    return actual == Expect;
                 case OperatorType.NotEqual:
-                    return compareValue != Expect;
+                    return actual != Expect;
                 case OperatorType.Null:
-                    return compareValue == default;
+                    return actual == default;
                 case OperatorType.NotNull:
-                    return compareValue != default;
+                    return actual != default;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

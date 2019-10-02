@@ -133,7 +133,7 @@ namespace UniFlow.Tests.Runtime
             var connectors = sentConnectors.ToList();
 
             Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(3, connectors.Count);
 
             var connector = connectors[1] as AudioController;
             Assert.NotNull(connector);

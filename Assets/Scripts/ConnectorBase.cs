@@ -59,7 +59,7 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             if (ActAsTrigger)
             {
@@ -69,10 +69,12 @@ namespace UniFlow
 
         void IConnector.Connect(IObservable<Unit> source)
         {
+#if UNITY_EDITOR
             if (Logger.IsEnabled)
             {
-                OnConnectSubject.Subscribe(_ => Logger.Log(this));
+                OnConnectSubject.Subscribe(_ => Logger.Log(this)).AddTo(this);
             }
+#endif
             var observable = source
                 .SelectMany(
                     _ =>
@@ -89,13 +91,21 @@ namespace UniFlow
             {
                 observable = observable.Share();
             }
+#if UNITY_EDITOR
             TargetConnectors
+                .Select((connector, index) => (connector, index))
+                .Where(x => x.connector == default)
+                .ToList()
+                .ForEach(x => Debug.LogWarning($"{gameObject.name}.{GetType().Name} contains empty target connector at index: {x.index}"));
+#endif
+            TargetConnectors
+                .Where(x => x != default)
                 .ToList()
                 .ForEach(x => x.Connect(observable));
 
             if (!TargetConnectors.Any())
             {
-                observable.Subscribe();
+                observable.Subscribe().AddTo(this);
             }
         }
 

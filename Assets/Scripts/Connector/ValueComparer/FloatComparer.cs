@@ -6,22 +6,22 @@ namespace UniFlow.Connector.ValueComparer
     [AddComponentMenu("UniFlow/ValueComparer/Float", (int) ConnectorType.ValueComparerFloat)]
     public class FloatComparer : ComparerBase<float, FloatComparer.OperatorType>
     {
-        protected override bool Compare(float compareValue)
+        protected override bool Compare(float actual)
         {
             switch (Operator)
             {
                 case OperatorType.Equal:
-                    return Mathf.Approximately(Expect, compareValue);
+                    return Mathf.Approximately(Expect, actual);
                 case OperatorType.NotEqual:
-                    return !Mathf.Approximately(Expect, compareValue);
+                    return !Mathf.Approximately(Expect, actual);
                 case OperatorType.Greater:
-                    return compareValue > Expect;
+                    return actual > Expect;
                 case OperatorType.GreaterOrEqual:
-                    return compareValue >= Expect;
+                    return actual >= Expect;
                 case OperatorType.Less:
-                    return compareValue < Expect;
+                    return actual < Expect;
                 case OperatorType.LessOrEqual:
-                    return compareValue <= Expect;
+                    return actual <= Expect;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

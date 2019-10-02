@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UniFlow.Attribute;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 // ReSharper disable ConvertIfStatementToReturnStatement
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class SelectorBase<TKey, TValue> : ProviderBase<TValue>
+    public abstract class SelectorBase<TKey, TValue, TPublishEvent> : ProviderBase<TValue, TPublishEvent> where TPublishEvent : UnityEvent<TValue>, new()
     {
         [SerializeField] private List<TKey> keys = new List<TKey>();
         [SerializeField] private List<TValue> values = new List<TValue>();
@@ -29,13 +30,19 @@ namespace UniFlow.Connector.ValueProvider
         }
     }
 
-    public abstract class GameObjectSelectorBase<TKey> : SelectorBase<TKey, GameObject>
+    public abstract class GameObjectSelectorBase<TKey> : SelectorBase<TKey, GameObject, PublishGameObjectEvent>
     {
-        [SerializeField] private PublishGameObjectEvent publisher = new PublishGameObjectEvent();
-        [ValuePublisher("Value")] protected override UnityEvent<GameObject> Publisher => publisher;
     }
 
-    public abstract class EnumSelectorBase<TKey, TEnum> : SelectorBase<TKey, TEnum> where TEnum : Enum
+    public abstract class MonoBehaviourSelectorBase<TKey> : SelectorBase<TKey, MonoBehaviour, PublishMonoBehaviourEvent>
+    {
+    }
+
+    public abstract class UIBehaviourSelectorBase<TKey> : SelectorBase<TKey, UIBehaviour, PublishUIBehaviourEvent>
+    {
+    }
+
+    public abstract class EnumSelectorBase<TKey, TEnum, TPublishEvent> : SelectorBase<TKey, TEnum, TPublishEvent> where TEnum : Enum where TPublishEvent : UnityEvent<TEnum>, new()
     {
     }
 }

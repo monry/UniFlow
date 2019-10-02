@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -9,7 +10,13 @@ namespace UniFlow.Connector.Misc
     public class Toss : ConnectorBase
     {
         [SerializeField] private List<GameObject> targets = default;
-        private IEnumerable<GameObject> Targets => targets;
+        private IList<GameObject> Targets => targets;
+
+        [ValueReceiver] public GameObject TargetGameObject
+        {
+            get => null;
+            set => Targets.Add(value);
+        }
 
         public override IObservable<Unit> OnConnectAsObservable()
         {

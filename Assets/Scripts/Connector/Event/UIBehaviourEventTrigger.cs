@@ -22,17 +22,17 @@ namespace UniFlow.Connector.Event
             get => eventTriggerType;
             set => eventTriggerType = value;
         }
-        [ValuePublisher] public UIBehaviour UIBehaviour
+        [ValueReceiver] public UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
-        [ValuePublisher] public bool ActivateBeforeConnect
+        [ValueReceiver] public bool ActivateBeforeConnect
         {
             get => activateBeforeConnect;
             set => activateBeforeConnect = value;
         }
-        [ValuePublisher] public bool DeactivateAfterConnect
+        [ValueReceiver] public bool DeactivateAfterConnect
         {
             get => deactivateAfterConnect;
             set => deactivateAfterConnect = value;

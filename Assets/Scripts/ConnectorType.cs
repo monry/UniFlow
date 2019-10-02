@@ -21,6 +21,8 @@ namespace UniFlow
         ActivationController      = 300,
         InstantiateGameObject,
         DestroyInstance,
+        ImageController,
+        RawImageController,
         SimpleAnimationController,
         SimpleAnimationEvent,
         AnimatorTrigger,
@@ -33,6 +35,7 @@ namespace UniFlow
         RaycasterController,
         RaycastTargetController,
         MoveParentTransform,
+        DontDestroyOnLoad,
 
         LoadScene                 = 400,
         LoadScene_Enum,

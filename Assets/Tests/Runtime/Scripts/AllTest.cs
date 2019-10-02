@@ -50,7 +50,7 @@ namespace UniFlow.Tests.Runtime
         private void AssertAll(IEnumerable<IConnector> sentConnectors)
         {
             var connectors = sentConnectors.ToList();
-            Assert.AreEqual(5, connectors.Count);
+            Assert.AreEqual(6, connectors.Count);
 
             {
                 var connector = connectors[0] as UIBehaviourEventTrigger;

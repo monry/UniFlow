@@ -24,7 +24,7 @@ namespace UniFlow.Tests.Runtime
         private void AssertAnimationEvent(IEnumerable<IConnector> sentConnectors)
         {
             var connectors = sentConnectors.ToList();
-            Assert.AreEqual(1, connectors.Count);
+            Assert.AreEqual(2, connectors.Count);
 
             var connector = connectors[0] as AnimationEvent;
             Assert.NotNull(connector);
