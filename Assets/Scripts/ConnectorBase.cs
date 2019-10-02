@@ -72,7 +72,7 @@ namespace UniFlow
 #if UNITY_EDITOR
             if (Logger.IsEnabled)
             {
-                OnConnectSubject.Subscribe(_ => Logger.Log(this));
+                OnConnectSubject.Subscribe(_ => Logger.Log(this)).AddTo(this);
             }
 #endif
             var observable = source
@@ -97,7 +97,7 @@ namespace UniFlow
 
             if (!TargetConnectors.Any())
             {
-                observable.Subscribe();
+                observable.Subscribe().AddTo(this);
             }
         }
 
