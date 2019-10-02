@@ -26,7 +26,7 @@ namespace UniFlow.Tests.Runtime
         {
             var connectors = sentConnectors.ToList();
             Assert.AreEqual(2, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
-            Assert.AreEqual(1, connectors.Count);
+            Assert.AreEqual(4, connectors.Count);
 
             var connector = connectors[0] as Interval;
             Assert.NotNull(connector);

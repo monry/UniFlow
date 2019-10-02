@@ -182,7 +182,7 @@ namespace UniFlow.Tests.Runtime
                     {
                         var connectors = sentConnectors.ToList();
                         Assert.NotNull(sentConnectors);
-                        Assert.AreEqual(4, connectors.Count);
+                        Assert.AreEqual(5, connectors.Count);
                         Assert.AreEqual(AudioEventType.Play, (connectors[0] as AudioEvent)?.AudioEventType);
                         Assert.AreEqual(AudioEventType.Pause, (connectors[1] as AudioEvent)?.AudioEventType);
                         Assert.AreEqual(AudioEventType.UnPause, (connectors[2] as AudioEvent)?.AudioEventType);
@@ -211,7 +211,7 @@ namespace UniFlow.Tests.Runtime
             var connectors = sentConnectors.ToList();
 
             Assert.NotNull(connectors);
-            Assert.AreEqual(1, connectors.Count);
+            Assert.AreEqual(2 * receiveCount, connectors.Count);
             Assert.AreEqual(receiveCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
 
             var connector = connectors[0] as AudioEvent;

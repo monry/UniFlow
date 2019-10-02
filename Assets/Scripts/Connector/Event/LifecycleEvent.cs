@@ -32,14 +32,10 @@ namespace UniFlow.Connector.Event
             return OnEventAsObservable();
         }
 
-        protected override void Awake()
+        protected override void Start()
         {
-            base.Awake();
+            base.Start();
             OnEnableProperty.Value = enabled;
-        }
-
-        private void Start()
-        {
             StartProperty.Value = true;
         }
 

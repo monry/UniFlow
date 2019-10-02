@@ -5,13 +5,17 @@ namespace UniFlow.Tests.Runtime
 {
     public class TestReceiver : ReceiverBase
     {
-        public IList<IConnector> SentConnectors { get; private set; } = new List<IConnector>();
+        public IList<IConnector> SentConnectors { get; } = new List<IConnector>();
         public int ReceiveCount { get; private set; }
-        
-        protected override void Awake()
+
+        private void Awake()
         {
-            Logger.Activate();
-            Logger.OnMessageAsObservable().Subscribe(SentConnectors.Add);
+            Logger.OnMessageAsObservable().Where(x => x != default).Subscribe(SentConnectors.Add);
+        }
+
+        public void Reset()
+        {
+            SentConnectors.Clear();
         }
 
         public override void OnReceive()

@@ -59,7 +59,7 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             if (ActAsTrigger)
             {
@@ -69,10 +69,12 @@ namespace UniFlow
 
         void IConnector.Connect(IObservable<Unit> source)
         {
+#if UNITY_EDITOR
             if (Logger.IsEnabled)
             {
                 OnConnectSubject.Subscribe(_ => Logger.Log(this));
             }
+#endif
             var observable = source
                 .SelectMany(
                     _ =>
