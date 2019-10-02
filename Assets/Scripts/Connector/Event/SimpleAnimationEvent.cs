@@ -14,6 +14,7 @@ namespace UniFlow.Connector.Event
         [SerializeField]
         [Tooltip("If you do not specify it will not be filtered")]
         private AnimationClip animationClip = default;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
 
@@ -27,15 +28,20 @@ namespace UniFlow.Connector.Event
             get => animationClip;
             set => animationClip = value;
         }
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValuePublisher] public Animator Animator
         {
             get =>
                 animator != default
                     ? animator
                     : animator =
-                        GetComponent<Animator>() != default
-                            ? GetComponent<Animator>()
-                            : gameObject.AddComponent<Animator>();
+                        BaseGameObject.GetComponent<Animator>() != default
+                            ? BaseGameObject.GetComponent<Animator>()
+                            : BaseGameObject.AddComponent<Animator>();
             set => animator = value;
         }
         [ValuePublisher] public SimpleAnimation SimpleAnimation
