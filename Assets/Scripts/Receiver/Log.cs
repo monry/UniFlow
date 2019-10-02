@@ -10,9 +10,8 @@ namespace UniFlow.Receiver
     {
         private IList<IConnector> Connectors { get; } = new List<IConnector>();
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             Logger.Activate();
             Logger.OnMessageAsObservable().Subscribe(Connectors.Add);
         }

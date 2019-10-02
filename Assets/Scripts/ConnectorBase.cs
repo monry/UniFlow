@@ -59,7 +59,7 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             if (ActAsTrigger)
             {
