@@ -27,7 +27,7 @@ namespace UniFlow.Tests.Runtime
         private void AssertPlayableController(IEnumerable<IConnector> sentConnectors)
         {
             var connectors = sentConnectors.ToList();
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(3, connectors.Count);
 
             {
                 var connector = connectors[0] as PlayableController;

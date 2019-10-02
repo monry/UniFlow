@@ -18,6 +18,7 @@ namespace UniFlow.Tests.Runtime
         public void SetUp()
         {
             HasAssert = false;
+            Logger.Activate();
         }
 
         protected IEnumerator RunAssert(string sceneName, Action<IEnumerable<IConnector>> assertCallback, Action beforeAssertCallback, double waitBeforeAssert = 0, int invokeCount = 1)
@@ -33,6 +34,7 @@ namespace UniFlow.Tests.Runtime
                     yield return Observable.Timer(TimeSpan.FromSeconds(waitBeforeAssert)).StartAsCoroutine();
                 }
                 assertCallback(Object.FindObjectOfType<TestReceiver>().SentConnectors);
+                Object.FindObjectOfType<TestReceiver>().Reset();
             }
             Assert.GreaterOrEqual(Object.FindObjectOfType<TestReceiver>().ReceiveCount, invokeCount);
             Assert.True(HasAssert);

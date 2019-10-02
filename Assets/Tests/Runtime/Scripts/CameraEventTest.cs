@@ -59,7 +59,7 @@ namespace UniFlow.Tests.Runtime
         {
             var connectors = sentConnectors.ToList();
             Assert.NotNull(connectors);
-            Assert.AreEqual(1, connectors.Count);
+            Assert.AreEqual(2, connectors.Count);
 
             var connector = connectors[0] as CameraEvent;
             Assert.NotNull(connector);
@@ -73,7 +73,7 @@ namespace UniFlow.Tests.Runtime
         {
             var connectors = sentConnectors.ToList();
             Assert.NotNull(connectors);
-            Assert.AreEqual(1, connectors.Count);
+            Assert.AreEqual(2, connectors.Count);
 
             var connector = connectors[0] as CameraEvent;
             Assert.NotNull(connector);
