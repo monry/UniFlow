@@ -34,9 +34,9 @@ namespace UniFlow.Connector.Event
 
         protected override void Start()
         {
-            base.Start();
             OnEnableProperty.Value = enabled;
             StartProperty.Value = true;
+            base.Start();
         }
 
         private void OnEnable()

@@ -55,9 +55,10 @@ namespace UniFlow.Connector.Event
 
         private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
 
-        private void Awake()
+        protected override void Start()
         {
             ObserveSimpleAnimation();
+            base.Start();
         }
 
         public override IObservable<Unit> OnConnectAsObservable()
