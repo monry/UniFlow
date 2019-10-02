@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UniFlow.Attribute;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 // ReSharper disable ConvertIfStatementToReturnStatement
 
@@ -30,6 +31,14 @@ namespace UniFlow.Connector.ValueProvider
     }
 
     public abstract class GameObjectSelectorBase<TKey> : SelectorBase<TKey, GameObject, PublishGameObjectEvent>
+    {
+    }
+
+    public abstract class MonoBehaviourSelectorBase<TKey> : SelectorBase<TKey, MonoBehaviour, PublishMonoBehaviourEvent>
+    {
+    }
+
+    public abstract class UIBehaviourSelectorBase<TKey> : SelectorBase<TKey, UIBehaviour, PublishUIBehaviourEvent>
     {
     }
 
