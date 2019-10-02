@@ -91,7 +91,15 @@ namespace UniFlow
             {
                 observable = observable.Share();
             }
+#if UNITY_EDITOR
             TargetConnectors
+                .Select((connector, index) => (connector, index))
+                .Where(x => x.connector == default)
+                .ToList()
+                .ForEach(x => Debug.LogWarning($"{gameObject.name}.{GetType().Name} contains empty target connector at index: {x.index}"));
+#endif
+            TargetConnectors
+                .Where(x => x != default)
                 .ToList()
                 .ForEach(x => x.Connect(observable));
 
