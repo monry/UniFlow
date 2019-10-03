@@ -1,23 +1,16 @@
-using System;
 using UniFlow.Attribute;
-using UniRx;
+using UniFlow.Connector.ValueInjector;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/RawImageController", (int) ConnectorType.RawImageController)]
-    public class RawImageController : ConnectorBase
+    [AddComponentMenu("UniFlow/ValueInjector/RawImageInjector", (int) ConnectorType.ValueInjectorRawImage)]
+    public class RawImageController : InjectorBase
     {
-        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private RawImage rawImage = default;
+        [SerializeField] private Texture texture = default;
 
-        [ValueReceiver] public Texture Texture { get; set; }
-        [ValueReceiver] public GameObject BaseGameObject
-        {
-            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
-        }
         [ValueReceiver] public RawImage RawImage
         {
             get =>
@@ -29,11 +22,15 @@ namespace UniFlow.Connector.Controller
                             : BaseGameObject.AddComponent<RawImage>();
             set => rawImage = value;
         }
+        [ValueReceiver] public Texture Texture
+        {
+            get => texture;
+            set => texture = value;
+        }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        protected override void Inject()
         {
             RawImage.texture = Texture;
-            return Observable.ReturnUnit();
         }
     }
 }
