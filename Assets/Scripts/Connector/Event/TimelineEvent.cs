@@ -78,10 +78,9 @@ namespace UniFlow.Connector.Event
 
         private ISubject<TimelineEventType> SignalEmittedSubject { get; } = new Subject<TimelineEventType>();
 
-        protected override void Start()
+        private void Awake()
         {
             RegisterSignal();
-            base.Start();
         }
 
         private void OnDestroy()
