@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/ParticleEvent", (int) ConnectorType.ParticleEvent)]
     public class ParticleEvent : ConnectorBase
     {
-        [SerializeField] private ParticleEventType particleEventType = ParticleEventType.ParticleCollision;
         [SerializeField] private Component component = default;
+        [SerializeField] private ParticleEventType particleEventType = ParticleEventType.ParticleCollision;
 
-        [UsedImplicitly] public ParticleEventType ParticleEventType
-        {
-            get => particleEventType;
-            set => particleEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public ParticleEventType ParticleEventType
+        {
+            get => particleEventType;
+            set => particleEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

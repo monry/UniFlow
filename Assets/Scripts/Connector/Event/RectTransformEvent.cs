@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/RectTransformEvent", (int) ConnectorType.RectTransformEvent)]
     public class RectTransformEvent : ConnectorBase
     {
-        [SerializeField] private RectTransformEventType rectTransformEventType = RectTransformEventType.CanvasGroupChanged;
         [SerializeField] private Component component = default;
+        [SerializeField] private RectTransformEventType rectTransformEventType = RectTransformEventType.CanvasGroupChanged;
 
-        [UsedImplicitly] public RectTransformEventType RectTransformEventType
-        {
-            get => rectTransformEventType;
-            set => rectTransformEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public RectTransformEventType RectTransformEventType
+        {
+            get => rectTransformEventType;
+            set => rectTransformEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

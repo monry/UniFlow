@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/CameraEvent", (int) ConnectorType.CameraEvent)]
     public class CameraEvent : ConnectorBase
     {
-        [SerializeField] private CameraEventType cameraEventType = CameraEventType.BecomeVisible;
         [SerializeField] private Component component = default;
+        [SerializeField] private CameraEventType cameraEventType = CameraEventType.BecomeVisible;
 
-        [UsedImplicitly] public CameraEventType CameraEventType
-        {
-            get => cameraEventType;
-            set => cameraEventType = value;
-        }
         [ValueReceiver] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public CameraEventType CameraEventType
+        {
+            get => cameraEventType;
+            set => cameraEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

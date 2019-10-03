@@ -1,23 +1,16 @@
-using System;
 using UniFlow.Attribute;
-using UniRx;
+using UniFlow.Connector.ValueInjector;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/ImageController", (int) ConnectorType.ImageController)]
-    public class ImageController : ConnectorBase
+    [AddComponentMenu("UniFlow/Controller/ImageController", (int) ConnectorType.ValueInjectorImage)]
+    public class ImageController : InjectorBase
     {
-        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Image image = default;
+        [SerializeField] private Sprite sprite = default;
 
-        [ValueReceiver] public Sprite Sprite { get; set; }
-        [ValueReceiver] public GameObject BaseGameObject
-        {
-            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
-        }
         [ValueReceiver] public Image Image
         {
             get =>
@@ -29,11 +22,15 @@ namespace UniFlow.Connector.Controller
                             : BaseGameObject.AddComponent<Image>();
             set => image = value;
         }
+        [ValueReceiver] public Sprite Sprite
+        {
+            get => sprite;
+            set => sprite = value;
+        }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        protected override void Inject()
         {
             Image.sprite = Sprite;
-            return Observable.ReturnUnit();
         }
     }
 }

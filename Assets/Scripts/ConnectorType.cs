@@ -21,8 +21,6 @@ namespace UniFlow
         ActivationController      = 300,
         InstantiateGameObject,
         DestroyInstance,
-        ImageController,
-        RawImageController,
         SimpleAnimationController,
         SimpleAnimationEvent,
         AnimatorTrigger,
@@ -105,6 +103,12 @@ namespace UniFlow
         ValueCombinerColor,
         ValueCombinerColor32,
         CustomValueCombiner,
+
+        ValueInjectorImage        = 5000,
+        ValueInjectorRawImage,
+        ValueInjectorTimelineControlTrack,
+        ValueInjectorTimelineAudioTrack,
+        ValueInjectorTimelineAnimationTrack,
 
         Timer                     = 9000,
         Interval,

@@ -11,31 +11,16 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/AnimationEvent", (int) ConnectorType.AnimationEvent)]
     public class AnimationEvent : ConnectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private Animator animator = default;
+        [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
-        [SerializeField] private GameObject baseGameObject = default;
-        [SerializeField] private Animator animator = default;
-        [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField] private PublishAnimationEventEvent publisher = new PublishAnimationEventEvent();
 
-        [ValueReceiver] public AnimationClip AnimationClip
-        {
-            get => animationClip;
-            set => animationClip = value;
-        }
-        [ValueReceiver] public AnimatorCullingMode CullingMode
-        {
-            get => cullingMode;
-            set => cullingMode = value;
-        }
-        [ValueReceiver] public AnimatorUpdateMode UpdateMode
-        {
-            get => updateMode;
-            set => updateMode = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -63,6 +48,21 @@ namespace UniFlow.Connector.Event
                             : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
+        }
+        [ValueReceiver] public AnimationClip AnimationClip
+        {
+            get => animationClip;
+            set => animationClip = value;
+        }
+        [ValueReceiver] public AnimatorCullingMode CullingMode
+        {
+            get => cullingMode;
+            set => cullingMode = value;
+        }
+        [ValueReceiver] public AnimatorUpdateMode UpdateMode
+        {
+            get => updateMode;
+            set => updateMode = value;
         }
 
         [ValuePublisher] public UnityEvent<UnityEngine.AnimationEvent> Publisher => publisher;

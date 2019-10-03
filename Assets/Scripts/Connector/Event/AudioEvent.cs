@@ -9,12 +9,29 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
     public class AudioEvent : ConnectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioEventType audioEventType = AudioEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-        [SerializeField] private AudioSource audioSource = default;
 
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
+        [ValueReceiver] public AudioSource AudioSource
+        {
+            get =>
+                audioSource != default
+                    ? audioSource
+                    : audioSource =
+                        BaseGameObject.GetComponent<AudioSource>() != default
+                            ? BaseGameObject.GetComponent<AudioSource>()
+                            : BaseGameObject.AddComponent<AudioSource>();
+            set => audioSource = value;
+        }
         [UsedImplicitly] public AudioEventType AudioEventType
         {
             get => audioEventType;
@@ -24,17 +41,6 @@ namespace UniFlow.Connector.Event
         {
             get => audioClip;
             set => audioClip = value;
-        }
-        [ValueReceiver] public AudioSource AudioSource
-        {
-            get =>
-                audioSource != default
-                    ? audioSource
-                    : audioSource =
-                        GetComponent<AudioSource>() != default
-                            ? GetComponent<AudioSource>()
-                            : gameObject.AddComponent<AudioSource>();
-            set => audioSource = value;
         }
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }

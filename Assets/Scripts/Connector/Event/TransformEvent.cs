@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/TransformEvent", (int) ConnectorType.TransformEvent)]
     public class TransformEvent : ConnectorBase
     {
-        [SerializeField] private TransformEventType transformEventType = TransformEventType.TransformChildrenChanged;
         [SerializeField] private Component component = default;
+        [SerializeField] private TransformEventType transformEventType = TransformEventType.TransformChildrenChanged;
 
-        [UsedImplicitly] public TransformEventType TransformEventType
-        {
-            get => transformEventType;
-            set => transformEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public TransformEventType TransformEventType
+        {
+            get => transformEventType;
+            set => transformEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()
