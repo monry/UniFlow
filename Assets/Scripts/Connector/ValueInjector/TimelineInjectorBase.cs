@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Text.RegularExpressions;
-using UniFlow.Attribute;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
@@ -8,9 +7,9 @@ namespace UniFlow.Connector.ValueInjector
 {
     public abstract class TimelineInjectorBase<TPlayableAsset> : InjectorBase where TPlayableAsset : PlayableAsset
     {
-        [ValueReceiver] public abstract PlayableDirector PlayableDirector { get; set; }
-        [ValueReceiver] public abstract string TrackName { get; set; }
-        [ValueReceiver] public abstract string ClipName { get; set; }
+        public abstract PlayableDirector PlayableDirector { get; set; }
+        public abstract string TrackName { get; set; }
+        public abstract string ClipName { get; set; }
 
         protected override void Inject()
         {
