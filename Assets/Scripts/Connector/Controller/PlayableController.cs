@@ -11,21 +11,11 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/PlayableController", (int) ConnectorType.PlayableController)]
     public class PlayableController : ConnectorBase
     {
-        [SerializeField] private PlayableControlMethod playableControlMethod = PlayableControlMethod.Play;
-        [SerializeField] private TimelineAsset timelineAsset = default;
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private PlayableDirector playableDirector = default;
+        [SerializeField] private PlayableControlMethod playableControlMethod = PlayableControlMethod.Play;
+        [SerializeField] private TimelineAsset timelineAsset = default;
 
-        [UsedImplicitly] public PlayableControlMethod PlayableControlMethod
-        {
-            get => playableControlMethod;
-            set => playableControlMethod = value;
-        }
-        [ValueReceiver] public TimelineAsset TimelineAsset
-        {
-            get => timelineAsset;
-            set => timelineAsset = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -41,6 +31,16 @@ namespace UniFlow.Connector.Controller
                             ? BaseGameObject.GetComponent<PlayableDirector>()
                             : BaseGameObject.AddComponent<PlayableDirector>();
             set => playableDirector = value;
+        }
+        [UsedImplicitly] public PlayableControlMethod PlayableControlMethod
+        {
+            get => playableControlMethod;
+            set => playableControlMethod = value;
+        }
+        [ValueReceiver] public TimelineAsset TimelineAsset
+        {
+            get => timelineAsset;
+            set => timelineAsset = value;
         }
 
         private void Awake()

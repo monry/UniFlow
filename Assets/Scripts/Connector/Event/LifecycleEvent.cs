@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/LifecycleEvent", (int) ConnectorType.LifecycleEvent)]
     public class LifecycleEvent : ConnectorBase
     {
-        [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
         [SerializeField] private Component component = default;
+        [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
 
-        [UsedImplicitly] public LifecycleEventType LifecycleEventType
-        {
-            get => lifecycleEventType;
-            set => lifecycleEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public LifecycleEventType LifecycleEventType
+        {
+            get => lifecycleEventType;
+            set => lifecycleEventType = value;
         }
 
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);

@@ -9,23 +9,13 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/AudioController", (int) ConnectorType.AudioController)]
     public class AudioController : ConnectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioControlMethod audioControlMethod = AudioControlMethod.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-        [SerializeField] private GameObject baseGameObject = default;
-        [SerializeField] private AudioSource audioSource = default;
 
-        [UsedImplicitly] public AudioControlMethod AudioControlMethod
-        {
-            get => audioControlMethod;
-            set => audioControlMethod = value;
-        }
-        [ValueReceiver] public AudioClip AudioClip
-        {
-            get => audioClip;
-            set => audioClip = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -41,6 +31,16 @@ namespace UniFlow.Connector.Controller
                             ? BaseGameObject.GetComponent<AudioSource>()
                             : BaseGameObject.AddComponent<AudioSource>();
             set => audioSource = value;
+        }
+        [UsedImplicitly] public AudioControlMethod AudioControlMethod
+        {
+            get => audioControlMethod;
+            set => audioControlMethod = value;
+        }
+        [ValueReceiver] public AudioClip AudioClip
+        {
+            get => audioClip;
+            set => audioClip = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

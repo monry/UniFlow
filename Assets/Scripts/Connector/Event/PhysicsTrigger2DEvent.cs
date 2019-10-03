@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/PhysicsTrigger2DEvent", (int) ConnectorType.PhysicsTrigger2DEvent)]
     public class PhysicsTrigger2DEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = PhysicsTrigger2DEventType.TriggerEnter2D;
+        [ValuePublisher] public Component Component
+        {
+            get => component ? component : component = this;
+            set => component = value;
+        }
         [SerializeField] private Component component = default;
+        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = PhysicsTrigger2DEventType.TriggerEnter2D;
 
         [UsedImplicitly] public PhysicsTrigger2DEventType PhysicsTrigger2DEventType
         {
             get => physicsTrigger2DEventType;
             set => physicsTrigger2DEventType = value;
-        }
-        [ValuePublisher] public Component Component
-        {
-            get => component ? component : component = this;
-            set => component = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

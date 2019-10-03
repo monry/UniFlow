@@ -14,21 +14,11 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/TimelineEvent", (int) ConnectorType.TimelineEvent)]
     public class TimelineEvent : ConnectorBase
     {
-        [SerializeField] private TimelineEventType timelineEventType = TimelineEventType.Play;
-        [SerializeField] private TimelineAsset timelineAsset = default;
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private PlayableDirector playableDirector = default;
+        [SerializeField] private TimelineEventType timelineEventType = TimelineEventType.Play;
+        [SerializeField] private TimelineAsset timelineAsset = default;
 
-        [UsedImplicitly] public TimelineEventType TimelineEventType
-        {
-            get => timelineEventType;
-            set => timelineEventType = value;
-        }
-        [ValuePublisher] public TimelineAsset TimelineAsset
-        {
-            get => timelineAsset;
-            set => timelineAsset = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -44,6 +34,16 @@ namespace UniFlow.Connector.Event
                             ? BaseGameObject.GetComponent<PlayableDirector>()
                             : BaseGameObject.AddComponent<PlayableDirector>();
             set => playableDirector = value;
+        }
+        [UsedImplicitly] public TimelineEventType TimelineEventType
+        {
+            get => timelineEventType;
+            set => timelineEventType = value;
+        }
+        [ValuePublisher] public TimelineAsset TimelineAsset
+        {
+            get => timelineAsset;
+            set => timelineAsset = value;
         }
 
         private static Begin beginSignal = default;

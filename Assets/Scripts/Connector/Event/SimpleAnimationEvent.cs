@@ -10,24 +10,14 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
     public class SimpleAnimationEvent : ConnectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private Animator animator = default;
+        [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField] private SimpleAnimationEventType simpleAnimationEventType = SimpleAnimationEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will not be filtered")]
         private AnimationClip animationClip = default;
-        [SerializeField] private GameObject baseGameObject = default;
-        [SerializeField] private Animator animator = default;
-        [SerializeField] private SimpleAnimation simpleAnimation = default;
 
-        [UsedImplicitly] public SimpleAnimationEventType SimpleAnimationEventType
-        {
-            get => simpleAnimationEventType;
-            set => simpleAnimationEventType = value;
-        }
-        [ValuePublisher] public AnimationClip AnimationClip
-        {
-            get => animationClip;
-            set => animationClip = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -55,6 +45,16 @@ namespace UniFlow.Connector.Event
                             : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
+        }
+        [UsedImplicitly] public SimpleAnimationEventType SimpleAnimationEventType
+        {
+            get => simpleAnimationEventType;
+            set => simpleAnimationEventType = value;
+        }
+        [ValuePublisher] public AnimationClip AnimationClip
+        {
+            get => animationClip;
+            set => animationClip = value;
         }
 
         private ISubject<(SimpleAnimationEventType eventType, AnimationClip animationClip)> CurrentStateSubject { get; } = new Subject<(SimpleAnimationEventType, AnimationClip)>();
