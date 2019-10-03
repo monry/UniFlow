@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/ValueInjector/RawImageInjector", (int) ConnectorType.ValueInjectorRawImage)]
-    public class RawImageController : InjectorBase
+    public class RawImageInjector : InjectorBase
     {
         [SerializeField] private RawImage rawImage = default;
         [SerializeField] private Texture texture = default;

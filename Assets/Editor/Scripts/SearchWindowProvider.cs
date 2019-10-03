@@ -23,13 +23,14 @@ namespace UniFlow.Editor
         {
             "Controller",
             "Event",
+            "Logic",
+            "Receiver",
+            "Misc",
             "ValueProvider",
             "ValueComparer",
             "ValueExtractor",
             "ValueCombiner",
-            "Logic",
-            "Receiver",
-            "Misc",
+            "ValueInjector",
         };
 
         public void Initialize(FlowGraphView flowGraphView)

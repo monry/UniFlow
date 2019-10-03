@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/ImageController", (int) ConnectorType.ValueInjectorImage)]
-    public class ImageController : InjectorBase
+    [AddComponentMenu("UniFlow/ValueInjector/ImageInjector", (int) ConnectorType.ValueInjectorImage)]
+    public class ImageInjector : InjectorBase
     {
         [SerializeField] private Image image = default;
         [SerializeField] private Sprite sprite = default;
