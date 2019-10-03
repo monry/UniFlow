@@ -22,7 +22,7 @@ namespace UniFlow.Connector.ValueInjector
                 .GetOutputTracks()
                 .Where(x => x != default && (string.IsNullOrEmpty(TrackName) || Regex.IsMatch(x.name, TrackName)))
                 .SelectMany(x => x.GetClips())
-                .Where(x => x != default && (string.IsNullOrEmpty(ClipName) || Regex.IsMatch(x.displayName, TrackName)))
+                .Where(x => x != default && (string.IsNullOrEmpty(ClipName) || Regex.IsMatch(x.displayName, ClipName)))
                 .Select(x => x.asset)
                 .OfType<TPlayableAsset>()
                 .ToList()
