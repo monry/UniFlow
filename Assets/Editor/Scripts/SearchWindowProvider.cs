@@ -23,13 +23,14 @@ namespace UniFlow.Editor
         {
             "Controller",
             "Event",
+            "Logic",
+            "Receiver",
+            "Misc",
             "ValueProvider",
             "ValueComparer",
             "ValueExtractor",
             "ValueCombiner",
-            "Logic",
-            "Receiver",
-            "Misc",
+            "ValueInjector",
         };
 
         public void Initialize(FlowGraphView flowGraphView)
@@ -54,7 +55,7 @@ namespace UniFlow.Editor
                 .Select(x => (menu: x.GetCustomAttributes(typeof(AddComponentMenu), false).OfType<AddComponentMenu>().First(), type: x))
                 .Select(x => (x.menu, x.type, entries: x.menu.componentMenu.Split('/').Skip(1).ToArray()))
                 .Select(x => (x.menu, x.type, x.entries, directory: x.entries.Take(x.entries.Length - 1).Aggregate((a, b) => $"{a}/{b}")))
-                .Select(x => (x.menu, x.type, x.entries, x.directory, directoryOrder: DirectoryOrder.Contains(x.directory) ? DirectoryOrder.Select((directory, index) => (directory, index)).First(y => y.directory == x.directory).index : int.MaxValue))
+                .Select(x => (x.menu, x.type, x.entries, x.directory, directoryOrder: DirectoryOrder.Contains(x.entries.FirstOrDefault()) ? DirectoryOrder.Select((directory, index) => (directory, index)).First(y => y.directory == x.entries.FirstOrDefault()).index : int.MaxValue))
                 .OrderBy(x => x.directoryOrder)
                 .ThenBy(x => x.menu.componentOrder)
                 .ToList()

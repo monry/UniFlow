@@ -12,20 +12,26 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
     public class UIBehaviourEventTrigger : ConnectorBase
     {
-        [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private UIBehaviour uiBehaviour = default;
+        [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
         [SerializeField] private bool activateBeforeConnect = default;
         [SerializeField] private bool deactivateAfterConnect = default;
 
+        [ValueReceiver] public GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
+        [ValueReceiver] public UIBehaviour UIBehaviour
+        {
+            get => uiBehaviour ? uiBehaviour : uiBehaviour = BaseGameObject.GetComponent<UIBehaviour>();
+            set => uiBehaviour = value;
+        }
         [UsedImplicitly] public EventTriggerType EventTriggerType
         {
             get => eventTriggerType;
             set => eventTriggerType = value;
-        }
-        [ValueReceiver] public UIBehaviour UIBehaviour
-        {
-            get => uiBehaviour ? uiBehaviour : uiBehaviour = GetComponent<UIBehaviour>();
-            set => uiBehaviour = value;
         }
         [ValueReceiver] public bool ActivateBeforeConnect
         {

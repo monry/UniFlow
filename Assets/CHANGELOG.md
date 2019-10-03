@@ -1,6 +1,17 @@
 # Changelog
 
-## [0.1.0-preview.23] - 2019-10-
+## [0.1.0-preview.24] - 2019-10-04
+
+### Implementations
+
+* Add `ObservableReceiver` to receive as `IObservable<T>`
+
+### Fixes
+
+* Fixed an issue that sometimes caused timeline event preparation to fail
+* Corrected the field to be used
+
+## [0.1.0-preview.23] - 2019-10-03
 
 ### Breaking Changes
 

@@ -10,36 +10,16 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/SimpleAnimationController", (int) ConnectorType.SimpleAnimationController)]
     public class SimpleAnimationController : ConnectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private Animator animator = default;
+        [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = SimpleAnimationControlMethod.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be used SimpleAnimation setting")]
         private AnimationClip animationClip = default;
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
-        [SerializeField] private GameObject baseGameObject = default;
-        [SerializeField] private Animator animator = default;
-        [SerializeField] private SimpleAnimation simpleAnimation = default;
 
-        [UsedImplicitly] public SimpleAnimationControlMethod SimpleAnimationControlMethod
-        {
-            get => simpleAnimationControlMethod;
-            set => simpleAnimationControlMethod = value;
-        }
-        [ValueReceiver] public AnimationClip AnimationClip
-        {
-            get => animationClip;
-            set => animationClip = value;
-        }
-        [ValueReceiver] public AnimatorCullingMode CullingMode
-        {
-            get => cullingMode;
-            set => cullingMode = value;
-        }
-        [ValueReceiver] public AnimatorUpdateMode UpdateMode
-        {
-            get => updateMode;
-            set => updateMode = value;
-        }
         [ValueReceiver] public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
@@ -67,6 +47,26 @@ namespace UniFlow.Connector.Controller
                             : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
             set => simpleAnimation = value;
+        }
+        [UsedImplicitly] public SimpleAnimationControlMethod SimpleAnimationControlMethod
+        {
+            get => simpleAnimationControlMethod;
+            set => simpleAnimationControlMethod = value;
+        }
+        [ValueReceiver] public AnimationClip AnimationClip
+        {
+            get => animationClip;
+            set => animationClip = value;
+        }
+        [ValueReceiver] public AnimatorCullingMode CullingMode
+        {
+            get => cullingMode;
+            set => cullingMode = value;
+        }
+        [ValueReceiver] public AnimatorUpdateMode UpdateMode
+        {
+            get => updateMode;
+            set => updateMode = value;
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();

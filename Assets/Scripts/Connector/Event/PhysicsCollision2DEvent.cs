@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/PhysicsCollision2DEvent", (int) ConnectorType.PhysicsCollision2DEvent)]
     public class PhysicsCollision2DEvent : ConnectorBase
     {
-        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = PhysicsCollision2DEventType.CollisionEnter2D;
         [SerializeField] private Component component = default;
+        [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = PhysicsCollision2DEventType.CollisionEnter2D;
 
-        [UsedImplicitly] public PhysicsCollision2DEventType PhysicsCollision2DEventType
-        {
-            get => physicsCollision2DEventType;
-            set => physicsCollision2DEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public PhysicsCollision2DEventType PhysicsCollision2DEventType
+        {
+            get => physicsCollision2DEventType;
+            set => physicsCollision2DEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()

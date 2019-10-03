@@ -10,18 +10,18 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/MouseEvent", (int) ConnectorType.MouseEvent)]
     public class MouseEvent : ConnectorBase
     {
-        [SerializeField] private MouseEventType mouseEventType = MouseEventType.MouseDown;
         [SerializeField] private Component component = default;
+        [SerializeField] private MouseEventType mouseEventType = MouseEventType.MouseDown;
 
-        [UsedImplicitly] public MouseEventType MouseEventType
-        {
-            get => mouseEventType;
-            set => mouseEventType = value;
-        }
         [ValuePublisher] public Component Component
         {
             get => component ? component : component = this;
             set => component = value;
+        }
+        [UsedImplicitly] public MouseEventType MouseEventType
+        {
+            get => mouseEventType;
+            set => mouseEventType = value;
         }
 
         public override IObservable<Unit> OnConnectAsObservable()
