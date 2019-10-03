@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using UniFlow.Attribute;
-using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
@@ -9,31 +8,9 @@ namespace UniFlow.Connector.ValueInjector
 {
     public abstract class TimelineInjectorBase<TPlayableAsset> : InjectorBase where TPlayableAsset : PlayableAsset
     {
-        [SerializeField] private PlayableDirector playableDirector = default;
-        [SerializeField] private string trackName = default;
-        [SerializeField] private string clipName = default;
-
-        [ValueReceiver] public PlayableDirector PlayableDirector
-        {
-            get =>
-                playableDirector != default
-                    ? playableDirector
-                    : playableDirector =
-                        BaseGameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.AddComponent<PlayableDirector>();
-            set => playableDirector = value;
-        }
-        [ValueReceiver] public string TrackName
-        {
-            get => trackName;
-            set => trackName = value;
-        }
-        [ValueReceiver] public string ClipName
-        {
-            get => clipName;
-            set => clipName = value;
-        }
+        [ValueReceiver] public abstract PlayableDirector PlayableDirector { get; set; }
+        [ValueReceiver] public abstract string TrackName { get; set; }
+        [ValueReceiver] public abstract string ClipName { get; set; }
 
         protected override void Inject()
         {

@@ -7,13 +7,7 @@ namespace UniFlow.Connector.ValueInjector
 {
     public abstract class InjectorBase : ConnectorBase
     {
-        [SerializeField] private GameObject baseGameObject = default;
-
-        [ValueReceiver] public GameObject BaseGameObject
-        {
-            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
-        }
+        [ValueReceiver] public abstract GameObject BaseGameObject { get; set; }
 
         public override IObservable<Unit> OnConnectAsObservable()
         {

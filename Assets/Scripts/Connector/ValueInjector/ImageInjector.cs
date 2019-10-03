@@ -8,9 +8,15 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/ValueInjector/ImageInjector", (int) ConnectorType.ValueInjectorImage)]
     public class ImageInjector : InjectorBase
     {
+        [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private Image image = default;
         [SerializeField] private Sprite sprite = default;
 
+        [ValueReceiver] public override GameObject BaseGameObject
+        {
+            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
+            set => baseGameObject = value;
+        }
         [ValueReceiver] public Image Image
         {
             get =>
