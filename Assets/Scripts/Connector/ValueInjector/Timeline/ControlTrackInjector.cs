@@ -56,7 +56,7 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         {
             if (SourceGameObject != default)
             {
-                playableAsset.sourceGameObject.defaultValue = SourceGameObject;
+                PlayableDirector.SetReferenceValue(playableAsset.sourceGameObject.exposedName, SourceGameObject);
             }
             if (PrefabGameObject != default)
             {
