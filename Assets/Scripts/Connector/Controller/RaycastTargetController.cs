@@ -15,6 +15,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private List<Graphic> graphics = default;
         [SerializeField] private List<Collider> colliders = default;
         [SerializeField] private List<Collider2D> collider2Ds = default;
+        [SerializeField] private List<CanvasGroup> canvasGroups = default;
 
         [UsedImplicitly] private RaycastTargetControlMethod RaycastTargetControlMethod
         {
@@ -35,6 +36,11 @@ namespace UniFlow.Connector.Controller
         {
             get => collider2Ds;
             set => collider2Ds = value.ToList();
+        }
+        [UsedImplicitly] public IEnumerable<CanvasGroup> CanvasGroups
+        {
+            get => canvasGroups;
+            set => canvasGroups = value.ToList();
         }
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
@@ -64,6 +70,11 @@ namespace UniFlow.Connector.Controller
                         .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                 )
                 .Concat(
+                    CanvasGroups
+                        .Where(x => x.blocksRaycasts != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                        .Select(x => new Action(() => x.blocksRaycasts = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                )
+                .Concat(
                     GetComponents<Graphic>()
                         .Where(x => x.raycastTarget != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                         .Select(x => new Action(() => x.raycastTarget = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
@@ -77,6 +88,11 @@ namespace UniFlow.Connector.Controller
                     GetComponents<Collider2D>()
                         .Where(x => x.enabled != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                         .Select(x => new Action(() => x.enabled = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                )
+                .Concat(
+                    GetComponents<CanvasGroup>()
+                        .Where(x => x.blocksRaycasts != (RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
+                        .Select(x => new Action(() => x.blocksRaycasts = RaycastTargetControlMethod == RaycastTargetControlMethod.Activate))
                 )
                 .ToList();
             handleTargets.ForEach(x => x.Invoke());
