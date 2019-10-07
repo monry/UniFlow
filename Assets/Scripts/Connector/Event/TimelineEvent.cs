@@ -78,6 +78,8 @@ namespace UniFlow.Connector.Event
 
         private ISubject<TimelineEventType> SignalEmittedSubject { get; } = new Subject<TimelineEventType>();
 
+        private MarkerTrack MarkerTrack { get; set; }
+
         private void Awake()
         {
             RegisterSignal();
@@ -85,14 +87,14 @@ namespace UniFlow.Connector.Event
 
         private void OnDestroy()
         {
-            if (baseGameObject == null || playableDirector == null || !(PlayableDirector.playableAsset is TimelineAsset timeline))
+            if (MarkerTrack == default)
             {
                 return;
             }
 
-            foreach (var marker in timeline.markerTrack.GetMarkers().OfType<SignalEmitter>().Where(x => x.asset is SignalAssetBase signalAsset && signalAsset.IsTemporaryInstance))
+            foreach (var marker in MarkerTrack.GetMarkers().OfType<SignalEmitter>().Where(x => x.asset is SignalAssetBase signalAsset && signalAsset.IsTemporaryInstance))
             {
-                timeline.markerTrack.DeleteMarker(marker);
+                MarkerTrack.DeleteMarker(marker);
             }
         }
 
@@ -111,8 +113,8 @@ namespace UniFlow.Connector.Event
 
             var time = TimelineEventType == TimelineEventType.Play ? 0 : timeline.duration;
             var signal = TimelineEventType == TimelineEventType.Play ? (SignalAsset) BeginSignal : EndSignal;
-            var emitter = timeline
-                .markerTrack
+            MarkerTrack = timeline.markerTrack;
+            var emitter = MarkerTrack
                 .GetMarkers()
                 .FirstOrDefault(
                     x => x is SignalEmitter signalEmitter
@@ -123,7 +125,7 @@ namespace UniFlow.Connector.Event
                 ) as SignalEmitter;
             if (emitter == default)
             {
-                emitter = timeline.markerTrack.CreateMarker<SignalEmitter>(time);
+                emitter = MarkerTrack.CreateMarker<SignalEmitter>(time);
                 emitter.asset = signal;
             }
 
