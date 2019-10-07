@@ -89,7 +89,7 @@ namespace UniFlow
                 );
             if (TargetConnectors.Count() > 1)
             {
-                observable = observable.Share();
+                observable = observable.Replay().RefCount();
             }
 #if UNITY_EDITOR
             TargetConnectors
