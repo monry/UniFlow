@@ -12,7 +12,7 @@ namespace UniFlow.Connector.Controller
     public class ActivationController : ConnectorBase
     {
         [SerializeField] private List<GameObject> targetGameObjects = default;
-        [SerializeField] private List<MonoBehaviour> targetMonoBehaviours = default;
+        [SerializeField] private List<Behaviour> targetBehaviours = default;
         [SerializeField] private bool activated = default;
 
         [UsedImplicitly] public IList<GameObject> GameObjects
@@ -20,10 +20,10 @@ namespace UniFlow.Connector.Controller
             get => targetGameObjects;
             set => targetGameObjects = value.ToList();
         }
-        [UsedImplicitly] public IList<MonoBehaviour> MonoBehaviours
+        [UsedImplicitly] public IList<Behaviour> Behaviours
         {
-            get => targetMonoBehaviours;
-            set => targetMonoBehaviours = value.ToList();
+            get => targetBehaviours;
+            set => targetBehaviours = value.ToList();
         }
         [ValueReceiver] public bool Activated
         {
@@ -35,17 +35,17 @@ namespace UniFlow.Connector.Controller
             get => null;
             set => GameObjects.Add(value);
         }
-        [ValueReceiver] public MonoBehaviour TargetMonoBehaviour
+        [ValueReceiver] public Behaviour TargetBehaviour
         {
             get => null;
-            set => MonoBehaviours.Add(value);
+            set => Behaviours.Add(value);
         }
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
             var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
             gameObjects.ForEach(x => x.SetActive(Activated));
-            var monoBehaviours = MonoBehaviours.Where(x => x.enabled != Activated).ToList();
+            var monoBehaviours = Behaviours.Where(x => x.enabled != Activated).ToList();
             monoBehaviours.ForEach(x => x.enabled = Activated);
 
             return Observable.ReturnUnit();
