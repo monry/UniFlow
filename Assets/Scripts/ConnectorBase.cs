@@ -89,7 +89,7 @@ namespace UniFlow
                 );
             if (TargetConnectors.Count() > 1)
             {
-                observable = observable.Replay().RefCount();
+                observable = observable.Multicast(new EmptyBehaviorSubject<Unit>()).RefCount();
             }
 #if UNITY_EDITOR
             TargetConnectors
