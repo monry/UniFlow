@@ -39,6 +39,7 @@ namespace UniFlow
         LoadScene_Enum,
         UnloadScene,
         UnloadScene_Enum,
+        UnloadSceneEvent,
 
         ValueProviderBool         = 1000,
         ValueProviderByte,

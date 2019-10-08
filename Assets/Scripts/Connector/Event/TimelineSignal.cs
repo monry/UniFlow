@@ -15,10 +15,7 @@ namespace UniFlow.Connector.Event
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
-            return Subject
-                // Prevents the previous flow from being re-invoked when triggered multiple times
-                .Take(1)
-                .AsUnitObservable();
+            return Subject.AsUnitObservable();
         }
 
         [UsedImplicitly]
