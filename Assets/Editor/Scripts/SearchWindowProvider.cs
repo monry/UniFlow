@@ -31,6 +31,8 @@ namespace UniFlow.Editor
             "ValueExtractor",
             "ValueCombiner",
             "ValueInjector",
+            "SignalPublisher",
+            "SignalReceiver",
         };
 
         public void Initialize(FlowGraphView flowGraphView)
