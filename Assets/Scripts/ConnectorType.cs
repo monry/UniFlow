@@ -37,6 +37,7 @@ namespace UniFlow
 
         LoadScene                 = 400,
         LoadScene_Enum,
+        LoadSceneEvent,
         UnloadScene,
         UnloadScene_Enum,
         UnloadSceneEvent,
