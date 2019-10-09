@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using UniFlow.Attribute;
-using UniFlow.Signal;
+using UniFlow.TimelineSignal;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -129,10 +129,10 @@ namespace UniFlow.Connector.Event
                 emitter.asset = signal;
             }
 
-            var receiver = PlayableDirector.gameObject.GetComponent<SignalReceiver>();
+            var receiver = PlayableDirector.gameObject.GetComponent<UnityEngine.Timeline.SignalReceiver>();
             if (receiver == default)
             {
-                receiver = PlayableDirector.gameObject.AddComponent<SignalReceiver>();
+                receiver = PlayableDirector.gameObject.AddComponent<UnityEngine.Timeline.SignalReceiver>();
             }
 
             if (receiver.GetReaction(signal) == default)

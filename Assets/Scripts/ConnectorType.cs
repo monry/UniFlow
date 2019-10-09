@@ -112,6 +112,14 @@ namespace UniFlow
         ValueInjectorTimelineAudioTrack,
         ValueInjectorTimelineAnimationTrack,
 
+        SignalPublisher           = 6000,
+        StringSignalPublisher,
+        ScriptableObjectSignalPublisher,
+
+        SignalReceiver            = 6500,
+        StringSignalReceiver,
+        ScriptableObjectSignalReceiver,
+
         Timer                     = 9000,
         Interval,
         TimeScaleController,

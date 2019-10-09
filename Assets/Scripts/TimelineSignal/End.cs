@@ -1,4 +1,4 @@
-namespace UniFlow.Signal
+namespace UniFlow.TimelineSignal
 {
     public class End : SignalAssetBase
     {
