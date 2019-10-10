@@ -216,5 +216,10 @@ namespace UniFlow
     {
     }
 
+    [Serializable]
+    public class PublishRuntimePlatformEvent : UnityEvent<RuntimePlatform>
+    {
+    }
+
     #endregion
 }
