@@ -43,18 +43,19 @@ namespace UniFlow.Connector.Controller
             set => timelineAsset = value;
         }
 
-        private void Awake()
+        public override IObservable<Unit> OnConnectAsObservable()
+        {
+            PreparePlayableDirector();
+            InvokePlayableDirectorMethod();
+            return Observable.ReturnUnit();
+        }
+
+        private void PreparePlayableDirector()
         {
             if (PlayableDirector != default && TimelineAsset != default)
             {
                 PlayableDirector.playableAsset = TimelineAsset;
             }
-        }
-
-        public override IObservable<Unit> OnConnectAsObservable()
-        {
-            InvokePlayableDirectorMethod();
-            return Observable.ReturnUnit();
         }
 
         private void InvokePlayableDirectorMethod()

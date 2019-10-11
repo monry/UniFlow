@@ -61,14 +61,9 @@ namespace UniFlow.Connector.Event
 
         private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
 
-        protected override void Start()
-        {
-            ObserveSimpleAnimation();
-            base.Start();
-        }
-
         public override IObservable<Unit> OnConnectAsObservable()
         {
+            ObserveSimpleAnimation();
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
                 .AsUnitObservable();
@@ -89,7 +84,7 @@ namespace UniFlow.Connector.Event
 
         private void OnChangeAnimatorStateInfo(Pair<(bool isPlaying, float normalizedTime)> pair, SimpleAnimation.State state)
         {
-            if (!pair.Previous.isPlaying && pair.Current.isPlaying && !PlayingStatuses[state])
+            if (pair.Current.isPlaying && !PlayingStatuses[state])
             {
                 PlayingStatuses[state] = true;
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Play, state.clip));

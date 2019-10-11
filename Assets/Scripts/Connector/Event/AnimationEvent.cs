@@ -71,11 +71,7 @@ namespace UniFlow.Connector.Event
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
-            if (AnimationClip != default && GetComponent<Animator>() == default && SimpleAnimation.GetStates().All(x => x.clip != AnimationClip))
-            {
-                SimpleAnimation.AddClip(AnimationClip, AnimationClip.GetInstanceID().ToString());
-            }
-
+            PrepareAnimationEvent();
             return Subject
                 // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
@@ -93,7 +89,7 @@ namespace UniFlow.Connector.Event
             Subject.OnNext(animationEvent);
         }
 
-        protected override void Start()
+        private void PrepareAnimationEvent()
         {
             // ReSharper disable once InvertIf
             // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
@@ -103,7 +99,6 @@ namespace UniFlow.Connector.Event
                 SimpleAnimation.cullingMode = CullingMode;
                 Animator.updateMode = UpdateMode;
             }
-            base.Start();
         }
     }
 }
