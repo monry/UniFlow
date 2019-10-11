@@ -11,12 +11,40 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
         [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
 
-        protected abstract TValue Provide();
+        [SerializeField] private TValue value = default;
+        [ValueReceiver] public TValue Value
+        {
+            get => value;
+            set => this.value = value;
+        }
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
-            Publisher.Invoke(Provide());
-            return Observable.ReturnUnit();
+            var observable = Observable.ReturnUnit();
+
+            if (this is IValueProvider<TValue> valueProvider)
+            {
+                Value = valueProvider.Provide();
+            }
+
+            if (this is IValueCombiner<TValue> valueCombiner)
+            {
+                Value = valueCombiner.Combine();
+            }
+
+            if (this is IValueInjectable<TValue> valueInjectable)
+            {
+
+            }
+
+            if (this is IValueExtractor<TValue> valueExtractor)
+            {
+                valueExtractor.Extract(Value);
+            }
+
+            Publisher.Invoke(Value);
+
+            return observable;
         }
     }
 }
