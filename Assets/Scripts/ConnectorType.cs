@@ -32,6 +32,7 @@ namespace UniFlow
         TimelineSignal,
         RaycasterController,
         RaycastTargetController,
+        TransformSiblingController,
         MoveParentTransform,
         DontDestroyOnLoad,
 
