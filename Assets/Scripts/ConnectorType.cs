@@ -61,6 +61,7 @@ namespace UniFlow
         ValueProviderVector3Int,
         ValueProviderColor,
         ValueProviderColor32,
+        ValueProviderRuntimePlatform,
         CustomValueProvider,
 
         ValueComparerBool         = 2000,
@@ -82,6 +83,7 @@ namespace UniFlow
         ValueComparerVector3Int,
         ValueComparerColor,
         ValueComparerColor32,
+        ValueComparerRuntimePlatform,
         CustomValueComparer,
 
         ValueExtractorVector2     = 3000,
