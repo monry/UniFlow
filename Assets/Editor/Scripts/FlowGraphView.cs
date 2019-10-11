@@ -131,14 +131,21 @@ namespace UniFlow.Editor
 
             var groupId = Undo.GetCurrentGroup();
 
+            if (!NormalizedPositionDictionary.Any())
+            {
+                return;
+            }
+
+            var maxX = NormalizedPositionDictionary.Max(x => x.Value.x);
+            for (var i = 0; i <= maxX; i++)
+            {
+                nextYList.Add(0.0f);
+            }
+
             foreach (var pair in NormalizedPositionDictionary)
             {
                 var node = pair.Key;
                 var normalizedPosition = pair.Value;
-                if (nextYList.Count <= normalizedPosition.x)
-                {
-                    nextYList.Add(0.0f);
-                }
 
                 if (!forceReset && node.GetRecordedPosition().magnitude > 0.0f)
                 {
