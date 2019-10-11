@@ -10,16 +10,21 @@ namespace UniFlow.Connector.ValueComparer
     {
         [SerializeField] private TValue expect = default;
 
-        [UsedImplicitly] public TValue Expect
+        [ValueReceiver] public TValue Expect
         {
             get => expect;
             set => expect = value;
         }
         [ValueReceiver] public TValue Actual { get; set; }
 
+        [SerializeField] private PublishBoolEvent publishResult = new PublishBoolEvent();
+        [ValuePublisher("Result")] public PublishBoolEvent PublishResult => publishResult;
+
         public override IObservable<Unit> OnConnectAsObservable()
         {
-            return Compare(Actual) ? Observable.ReturnUnit() : Observable.Empty<Unit>();
+            var result = Compare(Actual);
+            PublishResult.Invoke(result);
+            return result ? Observable.ReturnUnit() : Observable.Empty<Unit>();
         }
 
         protected abstract bool Compare(TValue actual);
