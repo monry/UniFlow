@@ -122,6 +122,11 @@ namespace UniFlow
         StringSignalReceiver,
         ScriptableObjectSignalReceiver,
 
+        And                       = 8000,
+        Or,
+        Xor,
+        Not,
+
         Timer                     = 9000,
         Interval,
         TimeScaleController,
