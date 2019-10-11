@@ -24,6 +24,7 @@ namespace UniFlow.Editor
             "Controller",
             "Event",
             "Logic",
+            "Expression",
             "Receiver",
             "Misc",
             "ValueProvider",

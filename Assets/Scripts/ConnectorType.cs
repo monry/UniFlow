@@ -32,6 +32,7 @@ namespace UniFlow
         TimelineSignal,
         RaycasterController,
         RaycastTargetController,
+        TransformSiblingController,
         MoveParentTransform,
         DontDestroyOnLoad,
 
@@ -61,6 +62,7 @@ namespace UniFlow
         ValueProviderVector3Int,
         ValueProviderColor,
         ValueProviderColor32,
+        ValueProviderRuntimePlatform,
         CustomValueProvider,
 
         ValueComparerBool         = 2000,
@@ -82,6 +84,7 @@ namespace UniFlow
         ValueComparerVector3Int,
         ValueComparerColor,
         ValueComparerColor32,
+        ValueComparerRuntimePlatform,
         CustomValueComparer,
 
         ValueExtractorVector2     = 3000,
@@ -119,6 +122,11 @@ namespace UniFlow
         SignalReceiver            = 6500,
         StringSignalReceiver,
         ScriptableObjectSignalReceiver,
+
+        And                       = 8000,
+        Or,
+        Xor,
+        Not,
 
         Timer                     = 9000,
         Interval,

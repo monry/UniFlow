@@ -73,11 +73,12 @@ namespace UniFlow.Connector.Controller
 
         public override IObservable<Unit> OnConnectAsObservable()
         {
+            PrepareSimpleAnimation();
             InvokeSimpleAnimationMethod();
             return Observable.ReturnUnit();
         }
 
-        private void Awake()
+        private void PrepareSimpleAnimation()
         {
             // ReSharper disable once InvertIf
             // Automatic add components Animator and SimpleAnimation if AudioClip specified and Animator component does not exists.
