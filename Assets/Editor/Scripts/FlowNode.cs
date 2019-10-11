@@ -346,9 +346,9 @@ namespace UniFlow.Editor
 
         private static GameObject DeterminateGameObject()
         {
-            if (Selection.activeGameObject != default)
+            if (UniFlowSettings.instance.SelectedGameObject)
             {
-                return Selection.activeGameObject;
+                return UniFlowSettings.instance.SelectedGameObject;
             }
 
             if (GameObject.Find(DefaultTargetGameObjectName) != default)
