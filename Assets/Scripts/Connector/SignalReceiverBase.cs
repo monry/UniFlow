@@ -23,7 +23,11 @@ namespace UniFlow.Connector
             {
                 Signal = signalCreator.CreateSignal();
             }
-            return ((ISignalReceiver<TSignal>) this).OnReceiveAsObservable().AsUnitObservable();
+            return ((ISignalReceiver<TSignal>) this).OnReceiveAsObservable().Do(OnReceive).AsUnitObservable();
+        }
+
+        protected virtual void OnReceive(TSignal receivedSignal)
+        {
         }
 
         IObservable<TSignal> ISignalReceiver<TSignal>.OnReceiveAsObservable()
