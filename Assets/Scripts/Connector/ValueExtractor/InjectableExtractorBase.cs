@@ -19,14 +19,18 @@ namespace UniFlow.Connector.ValueExtractor
         void IInjectable<T>.Inject(T v)
         {
             Value = v;
-            Extract();
             OnExtractSubject.OnNext(Unit.Default);
             OnExtractSubject.OnCompleted();
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        IObservable<Unit> IInjectable<T>.WaitForInjectAsObservable()
         {
             return OnExtractSubject;
+        }
+
+        public override IObservable<Unit> OnConnectAsObservable()
+        {
+            return ((IInjectable<T>) this).WaitForInjectAsObservable().Do(_ => Extract());
         }
 
         protected abstract void Extract();
