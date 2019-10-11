@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace UniFlow
@@ -10,5 +11,10 @@ namespace UniFlow
     public interface IListValueProvider<out TValue>
     {
         IEnumerable<TValue> Provide();
+    }
+
+    public interface IFilteredListValueProvider<TValue> : IListValueProvider<TValue>
+    {
+        Func<TValue, bool> Predicate { get; }
     }
 }

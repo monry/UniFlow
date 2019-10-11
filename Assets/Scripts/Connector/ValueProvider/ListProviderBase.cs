@@ -24,7 +24,13 @@ namespace UniFlow.Connector.ValueProvider
         {
             if (this is IListValueProvider<TValue> listValueProvider)
             {
-                Values = listValueProvider.Provide();
+                var temporaryValues = listValueProvider.Provide();
+                if (listValueProvider is IFilteredListValueProvider<TValue> filteredListValueProvider)
+                {
+                    temporaryValues = temporaryValues.Where(filteredListValueProvider.Predicate);
+                }
+
+                Values = temporaryValues;
             }
 
             var list = Values.ToList();
