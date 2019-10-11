@@ -272,8 +272,23 @@ namespace UniFlow.Editor
                 }
 
                 var serializedObject = new SerializedObject(connectorInfo.Connector as Component);
-                var field = new PropertyField(serializedObject.FindProperty(parameter.Name), ToDisplayName(parameter.Name));
-                field.Bind(serializedObject);
+                var serializedProperty = serializedObject.FindProperty(parameter.Name);
+                var displayName = ToDisplayName(parameter.Name);
+                var field = new PropertyField(serializedProperty, displayName);
+                try
+                {
+                    field.Bind(serializedObject);
+                }
+                catch (ArgumentException)
+                {
+                    // First-aid for problems that may cause the display to be corrupted when the enum value is changed
+                    serializedProperty.enumValueIndex = 0;
+                    serializedProperty.ClearArray();
+                    serializedObject.ApplyModifiedProperties();
+                    field = new PropertyField(serializedProperty, displayName);
+                    field.Bind(serializedObject);
+                }
+
                 return field;
             }
 
