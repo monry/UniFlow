@@ -8,7 +8,14 @@ namespace UniFlow.Utility
     {
         public static void Publish(TSignal signal)
         {
-            MessageBroker.Default.Publish(signal);
+            if (typeof(ScriptableObjectSignal).IsAssignableFrom(typeof(TSignal)))
+            {
+                MessageBroker.Default.Publish(signal as ScriptableObjectSignal);
+            }
+            else
+            {
+                MessageBroker.Default.Publish(signal);
+            }
         }
 
         public static IObservable<TSignal> OnReceiveAsObservable()
