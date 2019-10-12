@@ -29,8 +29,6 @@ namespace UniFlow.Editor
             "Misc",
             "ValueProvider",
             "ValueComparer",
-            "ValueExtractor",
-            "ValueCombiner",
             "ValueInjector",
             "SignalPublisher",
             "SignalReceiver",

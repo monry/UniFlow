@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class SelectorBase<TKey, TValue, TPublishEvent> : ProviderBase<TValue, TPublishEvent> where TPublishEvent : UnityEvent<TValue>, new()
+    public abstract class SelectorBase<TKey, TValue, TPublishEvent> : ProviderBase<TValue, TPublishEvent>, IValueProvider<TValue> where TPublishEvent : UnityEvent<TValue>, new()
     {
         [SerializeField] private List<TKey> keys = new List<TKey>();
         [SerializeField] private List<TValue> values = new List<TValue>();
@@ -19,7 +19,7 @@ namespace UniFlow.Connector.ValueProvider
 
         [ValueReceiver] public TKey Key { get; set; }
 
-        protected override TValue Provide()
+        TValue IValueProvider<TValue>.Provide()
         {
             if (!Keys.Contains(Key))
             {
