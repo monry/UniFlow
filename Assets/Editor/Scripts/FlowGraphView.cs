@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace UniFlow.Editor
 {
@@ -370,7 +371,10 @@ namespace UniFlow.Editor
                     .Where(
                         x =>
                             x is FlowValueReceivePort flowValueReceivePort
-                            && flowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type)
+                            && (
+                                flowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type)
+                                || typeof(ScriptableObject).IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type) && typeof(ScriptableObject).IsAssignableFrom(flowValueReceivePort.ValueReceiverInfo.Type)
+                            )
                             && x.direction != startPort.direction
                             && x.node != startPort.node
                     )

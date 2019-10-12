@@ -20,12 +20,14 @@ namespace UniFlow.Connector.SignalReceiver
         [SerializeField] private PublishFloatEvent publishFloatParameter = new PublishFloatEvent();
         [SerializeField] private PublishStringEvent publishStringParameter = new PublishStringEvent();
         [SerializeField] private PublishObjectEvent publishObjectParameter = new PublishObjectEvent();
+        [SerializeField] private PublishScriptableObjectEvent publishScriptableObjectParameter = new PublishScriptableObjectEvent();
 
         [ValuePublisher("BoolParameter")] private PublishBoolEvent PublishBoolParameter => publishBoolParameter;
         [ValuePublisher("IntParameter")] private PublishIntEvent PublishIntParameter => publishIntParameter;
         [ValuePublisher("FloatParameter")] private PublishFloatEvent PublishFloatParameter => publishFloatParameter;
         [ValuePublisher("StringParameter")] private PublishStringEvent PublishStringParameter => publishStringParameter;
         [ValuePublisher("ObjectParameter")] private PublishObjectEvent PublishObjectParameter => publishObjectParameter;
+        [ValuePublisher("ScriptableObjectParameter")] private PublishScriptableObjectEvent PublishScriptableObjectParameter => publishScriptableObjectParameter;
 
         bool ISignalFilter<StringSignal>.Filter(StringSignal signal)
         {
@@ -44,6 +46,7 @@ namespace UniFlow.Connector.SignalReceiver
             PublishFloatParameter.Invoke(receivedSignal.Parameter.FloatValue);
             PublishStringParameter.Invoke(receivedSignal.Parameter.StringValue);
             PublishObjectParameter.Invoke(receivedSignal.Parameter.ObjectValue);
+            PublishScriptableObjectParameter.Invoke(receivedSignal.Parameter.ScriptableObjectValue);
         }
     }
 }

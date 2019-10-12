@@ -53,13 +53,14 @@ namespace UniFlow.Signal
         [Serializable]
         public struct SignalParameter
         {
-            public SignalParameter(bool boolValue, int intValue, float floatValue, string stringValue, Object objectValue)
+            public SignalParameter(bool boolValue, int intValue, float floatValue, string stringValue, Object objectValue, ScriptableObject scriptableObjectValue)
             {
                 this.boolValue = boolValue;
                 this.intValue = intValue;
                 this.floatValue = floatValue;
                 this.stringValue = stringValue;
                 this.objectValue = objectValue;
+                this.scriptableObjectValue = scriptableObjectValue;
             }
 
             [SerializeField] private bool boolValue;
@@ -67,11 +68,13 @@ namespace UniFlow.Signal
             [SerializeField] private float floatValue;
             [SerializeField] private string stringValue;
             [SerializeField] private Object objectValue;
+            [SerializeField] private ScriptableObject scriptableObjectValue;
             public bool BoolValue => boolValue;
             public int IntValue => intValue;
             public float FloatValue => floatValue;
             public string StringValue => stringValue;
             public Object ObjectValue => objectValue;
+            public ScriptableObject ScriptableObjectValue => scriptableObjectValue;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace UniFlow.Connector.SignalPublisher
         [SerializeField] private float floatParameter = default;
         [SerializeField] private string stringParameter = default;
         [SerializeField] private Object objectParameter = default;
+        [SerializeField] private ScriptableObject scriptableObjectParameter = default;
 
         [ValueReceiver] public string SignalName
         {
@@ -44,6 +45,11 @@ namespace UniFlow.Connector.SignalPublisher
             get => objectParameter;
             set => objectParameter = value;
         }
+        [ValueReceiver] public ScriptableObject ScriptableObjectParameter
+        {
+            get => scriptableObjectParameter;
+            set => scriptableObjectParameter = value;
+        }
 
         StringSignal ISignalCreator<StringSignal>.CreateSignal()
         {
@@ -56,7 +62,8 @@ namespace UniFlow.Connector.SignalPublisher
                         IntParameter,
                         FloatParameter,
                         StringParameter,
-                        ObjectParameter
+                        ObjectParameter,
+                        ScriptableObjectParameter
                     )
                 );
         }
