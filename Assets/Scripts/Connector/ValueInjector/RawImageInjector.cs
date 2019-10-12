@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/ValueInjector/RawImageInjector", (int) ConnectorType.ValueInjectorRawImage)]
-    public class RawImageInjector : InjectorBase
+    public class RawImageInjector : InjectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -25,13 +25,7 @@ namespace UniFlow.Connector.Controller
         }
         [ValueReceiver] public RawImage RawImage
         {
-            get =>
-                rawImage != default
-                    ? rawImage
-                    : rawImage =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<RawImage>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<RawImage>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<RawImage>();
+            get => rawImage != default ? rawImage : rawImage = this.GetOrAddComponent<RawImage>();
             set => rawImage = value;
         }
         [ValueReceiver] public Texture Texture

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/ValueInjector/ImageInjector", (int) ConnectorType.ValueInjectorImage)]
-    public class ImageInjector : InjectorBase
+    public class ImageInjector : InjectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -25,13 +25,7 @@ namespace UniFlow.Connector.Controller
         }
         [ValueReceiver] public Image Image
         {
-            get =>
-                image != default
-                    ? image
-                    : image =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Image>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Image>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<Image>();
+            get => image != default ? image : image = this.GetOrAddComponent<Image>();
             set => image = value;
         }
         [ValueReceiver] public Sprite Sprite

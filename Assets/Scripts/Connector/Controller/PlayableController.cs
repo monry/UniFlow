@@ -9,7 +9,7 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/PlayableController", (int) ConnectorType.PlayableController)]
-    public class PlayableController : ConnectorBase
+    public class PlayableController : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -29,13 +29,7 @@ namespace UniFlow.Connector.Controller
         }
         [ValueReceiver] public PlayableDirector PlayableDirector
         {
-            get =>
-                playableDirector != default
-                    ? playableDirector
-                    : playableDirector =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<PlayableDirector>();
+            get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
         [UsedImplicitly] public PlayableControlMethod PlayableControlMethod

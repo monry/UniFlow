@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
-    public class AudioEvent : ConnectorBase
+    public class AudioEvent : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -29,13 +29,7 @@ namespace UniFlow.Connector.Event
         }
         [ValueReceiver] public AudioSource AudioSource
         {
-            get =>
-                audioSource != default
-                    ? audioSource
-                    : audioSource =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<AudioSource>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<AudioSource>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<AudioSource>();
+            get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
         [UsedImplicitly] public AudioEventType AudioEventType

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/AnimatorTrigger", (int) ConnectorType.AnimatorTrigger)]
-    public class AnimatorTrigger : ConnectorBase
+    public class AnimatorTrigger : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -27,7 +27,7 @@ namespace UniFlow.Connector.Controller
         }
         [ValueReceiver] public Animator Animator
         {
-            get => animator ? animator : animator = BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>();
+            get => animator ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
         [ValueReceiver] public string TriggerName

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
-    public class SimpleAnimationEvent : ConnectorBase
+    public class SimpleAnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -31,13 +31,7 @@ namespace UniFlow.Connector.Event
         }
         [ValuePublisher] public Animator Animator
         {
-            get =>
-                animator != default
-                    ? animator
-                    : animator =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<Animator>();
+            get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
         [ValuePublisher] public SimpleAnimation SimpleAnimation

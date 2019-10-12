@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
-    public class UIBehaviourEventTrigger : ConnectorBase
+    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -31,7 +31,7 @@ namespace UniFlow.Connector.Event
         }
         [ValueReceiver] public UIBehaviour UIBehaviour
         {
-            get => uiBehaviour ? uiBehaviour : uiBehaviour = BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<UIBehaviour>();
+            get => uiBehaviour ? uiBehaviour : uiBehaviour = ((IBaseGameObjectSpecifyable) this).GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
         [UsedImplicitly] public EventTriggerType EventTriggerType

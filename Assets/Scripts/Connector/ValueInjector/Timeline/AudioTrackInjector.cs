@@ -6,7 +6,7 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.ValueInjector.Timeline
 {
     [AddComponentMenu("UniFlow/ValueInjector/Timeline/AudioTrack", (int) ConnectorType.ValueInjectorTimelineAudioTrack)]
-    public class AudioTrackInjector : TimelineInjectorBase<AudioPlayableAsset>
+    public class AudioTrackInjector : TimelineInjectorBase<AudioPlayableAsset>, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -27,13 +27,7 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         }
         [ValueReceiver] public override PlayableDirector PlayableDirector
         {
-            get =>
-                playableDirector != default
-                    ? playableDirector
-                    : playableDirector =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<PlayableDirector>();
+            get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
         [ValueReceiver] public override string TrackName
