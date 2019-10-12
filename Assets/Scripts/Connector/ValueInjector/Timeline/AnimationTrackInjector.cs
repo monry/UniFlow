@@ -6,9 +6,10 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.ValueInjector.Timeline
 {
     [AddComponentMenu("UniFlow/ValueInjector/Timeline/AnimationTrack", (int) ConnectorType.ValueInjectorTimelineAnimationTrack)]
-    public class AnimationTrackInjector : TimelineInjectorBase<AnimationPlayableAsset>
+    public class AnimationTrackInjector : TimelineInjectorBase<AnimationPlayableAsset>, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private PlayableDirector playableDirector = default;
         [SerializeField] private string trackName = default;
         [SerializeField] private string clipName = default;
@@ -19,15 +20,14 @@ namespace UniFlow.Connector.ValueInjector.Timeline
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public override PlayableDirector PlayableDirector
         {
-            get =>
-                playableDirector != default
-                    ? playableDirector
-                    : playableDirector =
-                        BaseGameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.AddComponent<PlayableDirector>();
+            get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
         [ValueReceiver] public override string TrackName

@@ -10,9 +10,10 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
-    public class UIBehaviourEventTrigger : ConnectorBase
+    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private UIBehaviour uiBehaviour = default;
         [SerializeField] private EventTriggerType eventTriggerType = EventTriggerType.PointerClick;
         [SerializeField] private bool activateBeforeConnect = default;
@@ -23,9 +24,14 @@ namespace UniFlow.Connector.Event
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public UIBehaviour UIBehaviour
         {
-            get => uiBehaviour ? uiBehaviour : uiBehaviour = BaseGameObject.GetComponent<UIBehaviour>();
+            get => uiBehaviour ? uiBehaviour : uiBehaviour = ((IBaseGameObjectSpecifyable) this).GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
         [UsedImplicitly] public EventTriggerType EventTriggerType

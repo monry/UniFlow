@@ -9,9 +9,10 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/AnimationEvent", (int) ConnectorType.AnimationEvent)]
-    public class AnimationEvent : ConnectorBase
+    public class AnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField]
@@ -26,15 +27,14 @@ namespace UniFlow.Connector.Event
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public Animator Animator
         {
-            get =>
-                animator != default
-                    ? animator
-                    : animator =
-                        GetComponent<Animator>() != default
-                            ? GetComponent<Animator>()
-                            : gameObject.AddComponent<Animator>();
+            get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
         [ValueReceiver] public SimpleAnimation SimpleAnimation
