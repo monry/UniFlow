@@ -11,6 +11,7 @@ namespace UniFlow.Connector.Controller
     public class SimpleAnimationController : ConnectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField] private SimpleAnimationControlMethod simpleAnimationControlMethod = SimpleAnimationControlMethod.Play;
@@ -25,15 +26,20 @@ namespace UniFlow.Connector.Controller
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public Animator Animator
         {
             get =>
                 animator != default
                     ? animator
                     : animator =
-                        BaseGameObject.GetComponent<Animator>() != default
-                            ? BaseGameObject.GetComponent<Animator>()
-                            : BaseGameObject.AddComponent<Animator>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<Animator>();
             set => animator = value;
         }
         [ValueReceiver] public SimpleAnimation SimpleAnimation

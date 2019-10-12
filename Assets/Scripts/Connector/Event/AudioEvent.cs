@@ -10,6 +10,7 @@ namespace UniFlow.Connector.Event
     public class AudioEvent : ConnectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioEventType audioEventType = AudioEventType.Play;
         [SerializeField]
@@ -21,15 +22,20 @@ namespace UniFlow.Connector.Event
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public AudioSource AudioSource
         {
             get =>
                 audioSource != default
                     ? audioSource
                     : audioSource =
-                        BaseGameObject.GetComponent<AudioSource>() != default
-                            ? BaseGameObject.GetComponent<AudioSource>()
-                            : BaseGameObject.AddComponent<AudioSource>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<AudioSource>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<AudioSource>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<AudioSource>();
             set => audioSource = value;
         }
         [UsedImplicitly] public AudioEventType AudioEventType

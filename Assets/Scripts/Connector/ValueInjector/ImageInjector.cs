@@ -9,6 +9,7 @@ namespace UniFlow.Connector.Controller
     public class ImageInjector : InjectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private Image image = default;
         [SerializeField] private Sprite sprite = default;
 
@@ -17,15 +18,20 @@ namespace UniFlow.Connector.Controller
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public Image Image
         {
             get =>
                 image != default
                     ? image
                     : image =
-                        BaseGameObject.GetComponent<Image>() != default
-                            ? BaseGameObject.GetComponent<Image>()
-                            : BaseGameObject.AddComponent<Image>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Image>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Image>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<Image>();
             set => image = value;
         }
         [ValueReceiver] public Sprite Sprite

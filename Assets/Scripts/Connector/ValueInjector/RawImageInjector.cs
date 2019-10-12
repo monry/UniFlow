@@ -9,6 +9,7 @@ namespace UniFlow.Connector.Controller
     public class RawImageInjector : InjectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private RawImage rawImage = default;
         [SerializeField] private Texture texture = default;
 
@@ -17,15 +18,20 @@ namespace UniFlow.Connector.Controller
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public RawImage RawImage
         {
             get =>
                 rawImage != default
                     ? rawImage
                     : rawImage =
-                        BaseGameObject.GetComponent<RawImage>() != default
-                            ? BaseGameObject.GetComponent<RawImage>()
-                            : BaseGameObject.AddComponent<RawImage>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<RawImage>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<RawImage>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<RawImage>();
             set => rawImage = value;
         }
         [ValueReceiver] public Texture Texture

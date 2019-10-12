@@ -9,6 +9,7 @@ namespace UniFlow.Connector.Controller
     public class AnimatorTrigger : ConnectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
         private Animator animator = default;
@@ -19,9 +20,14 @@ namespace UniFlow.Connector.Controller
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public Animator Animator
         {
-            get => animator ? animator : animator = BaseGameObject.GetComponent<Animator>();
+            get => animator ? animator : animator = BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>();
             set => animator = value;
         }
         [ValueReceiver] public string TriggerName

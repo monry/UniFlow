@@ -12,6 +12,7 @@ namespace UniFlow.Connector.Event
     public class AnimationEvent : ConnectorBase
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private Animator animator = default;
         [SerializeField] private SimpleAnimation simpleAnimation = default;
         [SerializeField]
@@ -26,15 +27,20 @@ namespace UniFlow.Connector.Event
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
+        [ValueReceiver] public string TransformPath
+        {
+            get => transformPath;
+            set => transformPath = value;
+        }
         [ValueReceiver] public Animator Animator
         {
             get =>
                 animator != default
                     ? animator
                     : animator =
-                        GetComponent<Animator>() != default
-                            ? GetComponent<Animator>()
-                            : gameObject.AddComponent<Animator>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<Animator>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<Animator>();
             set => animator = value;
         }
         [ValueReceiver] public SimpleAnimation SimpleAnimation
