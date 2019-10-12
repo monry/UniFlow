@@ -32,11 +32,6 @@ namespace UniFlow.Connector.ValueProvider
                 Value = valueCombiner.Combine();
             }
 
-            if (this is IValueInjectable<TValue> valueInjectable)
-            {
-
-            }
-
             if (this is IValueExtractor<TValue> valueExtractor)
             {
                 valueExtractor.Extract(Value);
