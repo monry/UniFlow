@@ -1,13 +1,15 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
     public abstract class ComparerBase<TValue> : ConnectorBase
     {
+        private const string MessageParameterKey = "Result";
+
         [SerializeField] private TValue expect = default;
 
         [ValueReceiver] public TValue Expect
@@ -20,11 +22,11 @@ namespace UniFlow.Connector.ValueComparer
         [SerializeField] private PublishBoolEvent publishResult = new PublishBoolEvent();
         [ValuePublisher("Result")] public PublishBoolEvent PublishResult => publishResult;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             var result = Compare(Actual);
             PublishResult.Invoke(result);
-            return result ? Observable.ReturnUnit() : Observable.Empty<Unit>();
+            return result ? ObservableFactory.ReturnMessage(this, MessageParameterKey, true) : ObservableFactory.EmptyMessage();
         }
 
         protected abstract bool Compare(TValue actual);

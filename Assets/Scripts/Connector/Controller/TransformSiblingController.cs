@@ -1,6 +1,6 @@
 using System;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -26,7 +26,7 @@ namespace UniFlow.Connector.Controller
             set => index = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             switch (TransformSiblingControlMethod)
             {
@@ -42,7 +42,7 @@ namespace UniFlow.Connector.Controller
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 

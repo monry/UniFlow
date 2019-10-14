@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UniRx;
 
 namespace UniFlow
 {
     public interface IConnector
     {
-        IObservable<Unit> OnConnectAsObservable();
-        void Connect(IObservable<Unit> source);
+        IObservable<Message> OnConnectAsObservable();
+        void Connect(IObservable<Message> source);
+        IList<Message> StreamedMessages { get; }
 #if UNITY_EDITOR
-        ISubject<Unit> OnConnectSubject { get; }
+        ISubject<Message> OnConnectSubject { get; }
 #endif
     }
 }

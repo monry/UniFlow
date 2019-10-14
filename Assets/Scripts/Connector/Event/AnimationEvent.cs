@@ -69,13 +69,13 @@ namespace UniFlow.Connector.Event
 
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             PrepareAnimationEvent();
             return Subject
                 // Prevents the previous flow from being re-invoked when triggered multiple times
                 .Take(1)
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         /// <summary>

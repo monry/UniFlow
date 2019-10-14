@@ -24,9 +24,9 @@ namespace UniFlow.Connector.Event
             set => cameraEventType = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().Select(this.CreateMessage);
         }
 
         private IObservable<Unit> OnEventAsObservable()

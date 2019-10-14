@@ -1,6 +1,6 @@
 using System;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -26,11 +26,11 @@ namespace UniFlow.Connector.Controller
 
         [ValuePublisher("Instantiated")] private PublishGameObjectEvent Publisher => publisher;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             var go = Instantiate(Source, Parent);
             Publisher.Invoke(go);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

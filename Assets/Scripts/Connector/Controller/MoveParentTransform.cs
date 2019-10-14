@@ -1,6 +1,6 @@
 using System;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -31,10 +31,10 @@ namespace UniFlow.Connector.Controller
             set => worldPositionStays = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             TargetTransform.SetParent(ParentTransform, WorldPositionStays);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

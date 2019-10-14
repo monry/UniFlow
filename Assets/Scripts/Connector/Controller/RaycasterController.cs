@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -25,10 +25,10 @@ namespace UniFlow.Connector.Controller
             set => raycasters = value.ToList();
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             HandleActivation();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         private void HandleActivation()

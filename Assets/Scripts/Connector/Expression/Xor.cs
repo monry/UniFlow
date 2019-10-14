@@ -1,6 +1,6 @@
 using System;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Expression
@@ -11,9 +11,9 @@ namespace UniFlow.Connector.Expression
         [ValueReceiver] public bool Left { get; set; }
         [ValueReceiver] public bool Right { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Left ^ Right ? Observable.ReturnUnit() : Observable.Empty<Unit>();
+            return Left ^ Right ? ObservableFactory.ReturnMessage(this) : ObservableFactory.EmptyMessage();
         }
     }
 }

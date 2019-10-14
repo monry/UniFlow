@@ -52,9 +52,9 @@ namespace UniFlow.Connector.Event
 
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Observable
+            return UniRx.Observable
                 .ReturnUnit()
                 .Do(
                     _ =>
@@ -75,7 +75,7 @@ namespace UniFlow.Connector.Event
                         }
                     }
                 )
-                .AsUnitObservable();
+                .AsMessageObservable(this);
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()

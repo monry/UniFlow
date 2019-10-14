@@ -8,6 +8,8 @@ namespace UniFlow.Connector.Logic
     [AddComponentMenu("UniFlow/Logic/IntervalFrame", (int) ConnectorType.IntervalFrame)]
     public class IntervalFrame : ConnectorBase
     {
+        private const string MessageParameterKey = "Count";
+
         [SerializeField] private int frames = default;
         [SerializeField] private FrameCountType frameCountType = FrameCountType.Update;
 
@@ -22,11 +24,11 @@ namespace UniFlow.Connector.Logic
             set => frameCountType = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return Observable
                 .IntervalFrame(Frames, FrameCountType)
-                .AsUnitObservable();
+                .AsMessageObservable(this, MessageParameterKey);
         }
     }
 }

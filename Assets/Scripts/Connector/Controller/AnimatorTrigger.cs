@@ -1,6 +1,6 @@
 using System;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -38,10 +38,10 @@ namespace UniFlow.Connector.Controller
 
         private int TriggerId => Animator.StringToHash(TriggerName);
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             Animator.SetTrigger(TriggerId);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

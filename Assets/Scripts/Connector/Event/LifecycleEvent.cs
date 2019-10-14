@@ -27,9 +27,9 @@ namespace UniFlow.Connector.Event
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().Select(this.CreateMessage);
         }
 
         protected override void Start()

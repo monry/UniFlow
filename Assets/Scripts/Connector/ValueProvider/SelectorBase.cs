@@ -19,14 +19,28 @@ namespace UniFlow.Connector.ValueProvider
 
         [ValueReceiver] public TKey Key { get; set; }
 
+        private class IntUnityEvent : UnityEvent<int> {}
+
         TValue IValueProvider<TValue>.Provide()
         {
+            var foo = new IntUnityEvent();
+
             if (!Keys.Contains(Key))
             {
                 return default;
             }
 
             return Values[Keys.IndexOf(Key)];
+        }
+    }
+
+    public abstract class ValueReceiver<T>
+    {
+        [SerializeField] private ConnectorBase connector = default;
+
+        public T Receive(Message message)
+        {
+            return message.GetParameter<T>("");
         }
     }
 

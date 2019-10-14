@@ -24,10 +24,10 @@ namespace UniFlow.Connector.Event
             set => particleEventType = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<GameObject> OnEventAsObservable()

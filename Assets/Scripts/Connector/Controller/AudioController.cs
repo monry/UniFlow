@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -43,10 +43,10 @@ namespace UniFlow.Connector.Controller
             set => audioClip = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             InvokeAudioSourceMethod();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         private void InvokeAudioSourceMethod()

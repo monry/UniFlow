@@ -45,10 +45,10 @@ namespace UniFlow.Connector.Event
 
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnAudioEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()

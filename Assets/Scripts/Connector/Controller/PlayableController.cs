@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -43,11 +43,11 @@ namespace UniFlow.Connector.Controller
             set => timelineAsset = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             PreparePlayableDirector();
             InvokePlayableDirectorMethod();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         private void PreparePlayableDirector()

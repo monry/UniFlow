@@ -30,10 +30,10 @@ namespace UniFlow.Connector.Controller
 
         private ISubject<Unit> OnCompleteTweenSubject { get; } = new Subject<Unit>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             ChangeTimeScale();
-            return OnCompleteTweenSubject;
+            return OnCompleteTweenSubject.Select(this.CreateMessage);
         }
 
         private void ChangeTimeScale()

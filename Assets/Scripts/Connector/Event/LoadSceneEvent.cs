@@ -19,7 +19,7 @@ namespace UniFlow.Connector.Event
 
         private ISubject<Unit> Subject { get; } = new Subject<Unit>();
 
-        public override IObservable<Unit> OnConnectAsObservable() => Subject;
+        public override IObservable<Message> OnConnectAsObservable() => Subject.AsMessageObservable(this);
 
         protected override void Start()
         {

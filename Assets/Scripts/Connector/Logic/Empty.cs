@@ -1,5 +1,5 @@
 using System;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Logic
@@ -7,9 +7,9 @@ namespace UniFlow.Connector.Logic
     [AddComponentMenu("UniFlow/Logic/Empty", (int) ConnectorType.Empty)]
     public class Empty : ConnectorBase
     {
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

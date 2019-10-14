@@ -24,9 +24,9 @@ namespace UniFlow.Connector.Event
             set => transformEventType = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().AsMessageObservable(this);
         }
 
         private IObservable<Unit> OnEventAsObservable()

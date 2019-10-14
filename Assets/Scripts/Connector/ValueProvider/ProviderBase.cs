@@ -18,9 +18,9 @@ namespace UniFlow.Connector.ValueProvider
             set => this.value = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            var observable = Observable.ReturnUnit();
+            var message = this.CreateMessage().AddParameter(nameof(Value), Value);
 
             if (this is IValueProvider<TValue> valueProvider)
             {
@@ -39,7 +39,7 @@ namespace UniFlow.Connector.ValueProvider
 
             Publisher.Invoke(Value);
 
-            return observable;
+            return Observable.Return(message);
         }
     }
 }

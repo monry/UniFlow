@@ -24,10 +24,10 @@ namespace UniFlow.Connector.Event
             set => physicsTrigger2DEventType = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<Collider2D> OnEventAsObservable()

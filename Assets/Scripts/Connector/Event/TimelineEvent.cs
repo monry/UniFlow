@@ -104,10 +104,10 @@ namespace UniFlow.Connector.Event
             }
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return SignalEmittedSubject
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private void RegisterSignal()

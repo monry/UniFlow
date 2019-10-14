@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Utility;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -48,7 +49,7 @@ namespace UniFlow
             set => flowGraphNodePosition = value;
         }
 
-        public ISubject<Unit> OnConnectSubject { get; } = new Subject<Unit>();
+        public ISubject<Message> OnConnectSubject { get; } = new Subject<Message>();
 #endif
 
         [UsedImplicitly] public virtual bool ActAsTrigger
@@ -59,15 +60,17 @@ namespace UniFlow
 
         [Inject] private DiContainer Container { get; }
 
+        public IList<Message> StreamedMessages { get; private set; } = new List<Message>();
+
         protected virtual void Start()
         {
             if (ActAsTrigger)
             {
-                ((IConnector) this).Connect(Observable.ReturnUnit());
+                ((IConnector) this).Connect(ObservableFactory.ReturnMessage(this));
             }
         }
 
-        void IConnector.Connect(IObservable<Unit> source)
+        void IConnector.Connect(IObservable<Message> source)
         {
 #if UNITY_EDITOR
             if (Logger.IsEnabled)
@@ -77,10 +80,12 @@ namespace UniFlow
 #endif
             var observable = source
                 .SelectMany(
-                    _ =>
+                    message =>
                     {
+                        StreamedMessages = message.StreamedMessages.ToList();
                         return (this as IConnector)
                             .OnConnectAsObservable()
+                            .Do(x => x.StreamedMessages?.Add(x))
 #if UNITY_EDITOR
                             .Do(OnConnectSubject.OnNext)
 #endif
@@ -109,7 +114,7 @@ namespace UniFlow
             }
         }
 
-        public abstract IObservable<Unit> OnConnectAsObservable();
+        public abstract IObservable<Message> OnConnectAsObservable();
 
         [PublicAPI]
         public void AddConnector(ConnectorBase connectable)

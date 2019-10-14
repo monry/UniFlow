@@ -8,6 +8,8 @@ namespace UniFlow.Connector.Logic
     [AddComponentMenu("UniFlow/Logic/Timer", (int) ConnectorType.Timer)]
     public class Timer : ConnectorBase
     {
+        private const string MessageParameterKey = "Count";
+
         [SerializeField] private float seconds = default;
         [SerializeField] private bool ignoreTimeScale = default;
 
@@ -22,11 +24,11 @@ namespace UniFlow.Connector.Logic
             set => ignoreTimeScale = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return Observable
                 .Timer(TimeSpan.FromSeconds(Seconds), IgnoreTimeScale ? Scheduler.MainThreadIgnoreTimeScale : Scheduler.MainThread)
-                .AsUnitObservable();
+                .AsMessageObservable(this, MessageParameterKey);
         }
     }
 }

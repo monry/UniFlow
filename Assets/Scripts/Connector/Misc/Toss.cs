@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UniFlow.Utility;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
@@ -18,16 +19,16 @@ namespace UniFlow.Connector.Misc
             set => Targets.Add(value);
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             foreach (var target in Targets)
             {
                 if (target != default && target.activeSelf)
                 {
-                    (target.GetComponent<Receive>() as IConnector)?.Connect(Observable.ReturnUnit());
+                    (target.GetComponent<Receive>() as IConnector)?.Connect(ObservableFactory.ReturnMessage(this));
                 }
             }
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

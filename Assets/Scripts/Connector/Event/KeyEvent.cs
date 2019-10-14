@@ -14,9 +14,9 @@ namespace UniFlow.Connector.Event
         private KeyEventType KeyEventType => keyEventType;
         private KeyCode KeyCode => keyCode;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return KeyEventAsObservable();
+            return KeyEventAsObservable().Select(this.CreateMessage);
         }
 
         private IObservable<Unit> KeyEventAsObservable()

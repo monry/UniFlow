@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -41,14 +41,14 @@ namespace UniFlow.Connector.Controller
             set => Behaviours.Add(value);
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
             gameObjects.ForEach(x => x.SetActive(Activated));
             var monoBehaviours = Behaviours.Where(x => x.enabled != Activated).ToList();
             monoBehaviours.ForEach(x => x.enabled = Activated);
 
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

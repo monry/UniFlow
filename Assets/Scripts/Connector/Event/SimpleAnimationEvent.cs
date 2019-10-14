@@ -10,6 +10,8 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
     public class SimpleAnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable
     {
+        private const string MessageParameterKey = "SimpleAnimationEvent";
+
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
         [SerializeField] private Animator animator = default;
@@ -61,12 +63,12 @@ namespace UniFlow.Connector.Event
 
         private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             ObserveSimpleAnimation();
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .AsUnitObservable();
+                .Select(x => this.CreateMessage(MessageParameterKey, x));
         }
 
         private void ObserveSimpleAnimation()

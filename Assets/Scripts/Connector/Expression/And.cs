@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UniFlow.Utility;
 using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Expression
@@ -19,9 +19,9 @@ namespace UniFlow.Connector.Expression
             set => Conditions.Add(value);
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Value ? Observable.ReturnUnit() : Observable.Empty<Unit>();
+            return Value ? ObservableFactory.ReturnMessage(this) : ObservableFactory.EmptyMessage();
         }
     }
 }

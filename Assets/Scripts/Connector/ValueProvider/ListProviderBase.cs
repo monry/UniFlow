@@ -10,6 +10,8 @@ namespace UniFlow.Connector.ValueProvider
 {
     public abstract class ListProviderBase<TValue, TPublishEvent> : ConnectorBase where TPublishEvent : UnityEvent<TValue>, new()
     {
+        private const string MessageParameterKey = "Value";
+
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
         [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
 
@@ -20,7 +22,7 @@ namespace UniFlow.Connector.ValueProvider
             set => values = value.ToList();
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             if (this is IListValueProvider<TValue> listValueProvider)
             {
@@ -35,7 +37,7 @@ namespace UniFlow.Connector.ValueProvider
 
             var list = Values.ToList();
             list.ForEach(Publisher.Invoke);
-            return list.ToObservable().AsUnitObservable();
+            return list.ToObservable().AsMessageObservable(this, MessageParameterKey);
         }
     }
 }
