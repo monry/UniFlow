@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace UniFlow
@@ -29,6 +32,36 @@ namespace UniFlow
             return string.IsNullOrEmpty(baseGameObjectSpecifyable.TransformPath)
                 ? baseGameObjectSpecifyable.BaseGameObject.GetOrAddComponent<TComponent>()
                 : baseGameObjectSpecifyable.BaseGameObject.transform.Find(baseGameObjectSpecifyable.TransformPath).gameObject.GetOrAddComponent<TComponent>();
+        }
+
+        public static IObservable<Message> AsMessageObservable(this IObservable<Unit> observable, IConnector connector)
+        {
+            return observable.Select(connector.CreateMessage);
+        }
+
+        public static IObservable<Message> AsMessageObservable<T>(this IObservable<T> observable, IConnector connector)
+        {
+            return observable.Select(connector.CreateMessage);
+        }
+
+        public static Message CreateMessage(this IConnector connector)
+        {
+            return Message.Create(connector);
+        }
+
+        public static Message CreateMessage(this IConnector connector, Unit _)
+        {
+            return Message.Create(connector);
+        }
+
+        public static Message CreateMessage<T>(this IConnector connector, T parameter)
+        {
+            return Message.Create(connector, parameter);
+        }
+
+        public static Message CreateMessage<T>(this IConnector connector, IEnumerable<T> parameters)
+        {
+            return Message.Create(connector, parameters);
         }
     }
 }
