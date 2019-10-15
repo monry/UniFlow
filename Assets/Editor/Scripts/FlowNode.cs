@@ -17,11 +17,12 @@ namespace UniFlow.Editor
 {
     public class FlowNode : Node, IRemovableElement
     {
-        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener, ValueInjectionConnectorListener valueInjectionConnectorListener)
+        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener, ValueInjectionConnectorListener valueInjectionConnectorListener, IEdgeConnectorListener messageConnectorListener)
         {
             ConnectorInfo = connectorInfo;
             EdgeConnectorListener = edgeConnectorListener;
             ValueInjectionConnectorListener = valueInjectionConnectorListener;
+            MessageConnectorListener = messageConnectorListener;
         }
 
         public void Initialize()
@@ -70,11 +71,14 @@ namespace UniFlow.Editor
 
         public IList<FlowValueReceivePort> ValueReceivePorts { get; } = new List<FlowValueReceivePort>();
         public IList<FlowValuePublishPort> ValuePublishPorts { get; } = new List<FlowValuePublishPort>();
+        public IList<FlowMessageComposePort> MessageComposePorts { get; } = new List<FlowMessageComposePort>();
+        public IList<FlowMessageCollectPort> MessageCollectPorts { get; } = new List<FlowMessageCollectPort>();
 
         internal ConnectorInfo ConnectorInfo { get; }
 
         private IEdgeConnectorListener EdgeConnectorListener { get; }
         private IEdgeConnectorListener ValueInjectionConnectorListener { get; }
+        private IEdgeConnectorListener MessageConnectorListener { get; }
 
         private const string DefaultTargetGameObjectName = "UniFlowController";
         private static IEnumerable<string> ParameterNamesHideInNode { get; } = new List<string>
@@ -388,6 +392,8 @@ namespace UniFlow.Editor
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
 
+#region Will be removed
+
             if (ConnectorInfo.ValuePublishers.Any())
             {
                 var divider = new VisualElement {name = "divider"};
@@ -415,6 +421,38 @@ namespace UniFlow.Editor
                     port.portName = receiver.Name;
                     inputContainer.Add(port);
                     ValueReceivePorts.Add(port as FlowValueReceivePort);
+                }
+            }
+
+#endregion
+
+            if (ConnectorInfo.ComposableMessageAnnotations.Any())
+            {
+                var divider = new VisualElement {name = "divider"};
+                divider.AddToClassList("horizontal");
+                outputContainer.Add(divider);
+
+                foreach (var composableMessageAnnotation in ConnectorInfo.ComposableMessageAnnotations)
+                {
+                    var port = FlowMessageComposePort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, composableMessageAnnotation, MessageConnectorListener);
+                    port.portName = composableMessageAnnotation.Label;
+                    outputContainer.Add(port);
+                    MessageComposePorts.Add(port as FlowMessageComposePort);
+                }
+            }
+
+            if (ConnectorInfo.CollectableMessageAnnotations.Any())
+            {
+                var divider = new VisualElement {name = "divider"};
+                divider.AddToClassList("horizontal");
+                inputContainer.Add(divider);
+
+                foreach (var collectableMessageAnnotation in ConnectorInfo.CollectableMessageAnnotations)
+                {
+                    var port = FlowMessageCollectPort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, collectableMessageAnnotation, MessageConnectorListener);
+                    port.portName = collectableMessageAnnotation.Label;
+                    inputContainer.Add(port);
+                    MessageCollectPorts.Add(port as FlowMessageCollectPort);
                 }
             }
         }

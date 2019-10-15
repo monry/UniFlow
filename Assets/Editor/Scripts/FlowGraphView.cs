@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace UniFlow.Editor
 {
@@ -23,6 +22,7 @@ namespace UniFlow.Editor
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
         private ValueInjectionConnectorListener ValueInjectionConnectorListener { get; set; }
+        private MessageConnectorListener MessageConnectorListener { get; set; }
 
         private const float NodeWidth = 300.0f;
         private static Vector2 NodesOffset { get; } = new Vector2(50.0f, 50.0f);
@@ -48,6 +48,7 @@ namespace UniFlow.Editor
             SearchWindowProvider.Initialize(this);
             EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
             ValueInjectionConnectorListener = new ValueInjectionConnectorListener(this);
+            MessageConnectorListener = new MessageConnectorListener(this);
 
             viewTransformChanged += graphView =>
             {
@@ -99,7 +100,13 @@ namespace UniFlow.Editor
 
             CreateEdges();
 
+            CreateMessageConnectorEdges();
+
+#region Will be removed
+
             CreateValueInjectionEdges();
+
+#endregion
 
             RegisterCallback(
                 (GeometryChangedEvent e) =>
@@ -305,6 +312,36 @@ namespace UniFlow.Editor
             }
         }
 
+        private void CreateMessageConnectorEdges()
+        {
+            foreach (var connector in Connectors)
+            {
+                var valueCollectors = connector.GetType()
+                    .GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
+                    .Where(x => typeof(IValueCollector).IsAssignableFrom(x.PropertyType))
+                    .Select(x => x.GetMethod.Invoke(connector, null) as IValueCollector)
+                    .ToArray();
+                foreach (var valueCollector in valueCollectors)
+                {
+                    if (!RenderedNodes.ContainsKey(valueCollector.Connector) || !(valueCollector.Connector is IMessageComposable) || !(connector is IMessageCollectable))
+                    {
+                        continue;
+                    }
+
+                    var messageComposeNode = RenderedNodes[valueCollector.Connector];
+                    var messageCollectNode = RenderedNodes[connector];
+                    var messageComposePort = messageComposeNode.MessageComposePorts.FirstOrDefault(x => x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && (string.IsNullOrEmpty(valueCollector.ComposerKey) || x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey));
+                    var messageCollectPort = messageCollectNode.MessageCollectPorts.FirstOrDefault(x => x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && (string.IsNullOrEmpty(valueCollector.ComposerKey) || x.CollectableMessageAnnotation.Label == valueCollector.CollectorLabel));
+                    if (messageComposePort != null && messageCollectPort != null)
+                    {
+                        AddEdge(messageComposePort, messageCollectPort);
+                    }
+                }
+            }
+        }
+
+#region Will be removed
+
         private void CreateValueInjectionEdges()
         {
             foreach (var connector in Connectors)
@@ -338,11 +375,13 @@ namespace UniFlow.Editor
             }
         }
 
+#endregion
+
         public FlowNode AddNode(Type connectableType, IConnector connectableInstance, Vector2 position)
         {
             var connectableInfo = ConnectorInfo.Create(connectableType, connectableInstance);
             FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
-            var node = new FlowNode(connectableInfo, EdgeConnectorListener, ValueInjectionConnectorListener);
+            var node = new FlowNode(connectableInfo, EdgeConnectorListener, ValueInjectionConnectorListener, MessageConnectorListener);
             node.Initialize();
             node.SetPosition(new Rect(position.x, position.y, 0, 0));
             AddElement(node);
@@ -389,6 +428,37 @@ namespace UniFlow.Editor
                         x =>
                             x is FlowValuePublishPort flowValuePublishPort
                             && startFlowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(flowValuePublishPort.ValuePublisherInfo.Type)
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
+            if (startPort is FlowMessageComposePort startFlowMessageComposePort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowMessageCollectPort flowMessageCollectPort
+                            && (
+                                flowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type)
+                                || typeof(ScriptableObject).IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type) && typeof(ScriptableObject).IsAssignableFrom(flowMessageCollectPort.CollectableMessageAnnotation.Type)
+                            )
+                            && x.direction != startPort.direction
+                            && x.node != startPort.node
+                    )
+                    .ToList();
+            }
+
+            if (startPort is FlowMessageCollectPort startFlowMessageCollectPort)
+            {
+                return ports
+                    .ToList()
+                    .Where(
+                        x =>
+                            x is FlowMessageComposePort flowMessageComposePort
+                            && startFlowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(flowMessageComposePort.ComposableMessageAnnotation.Type)
                             && x.direction != startPort.direction
                             && x.node != startPort.node
                     )
