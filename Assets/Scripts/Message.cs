@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace UniFlow
@@ -86,7 +87,7 @@ namespace UniFlow
                 Parameters.Add(typeof(T), new Dictionary<string, object>());
             }
 
-            return Parameters[typeof(T)] as IDictionary<string, T>;
+            return Parameters[typeof(T)].ToDictionary(x => x.Key, x => (T) x.Value);
         }
     }
 }
