@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Color32", (int) ConnectorType.ValueProviderColor32)]
-    public class Color32Provider : ProviderBase<Color32, PublishColor32Event>, IValueCombiner<Color32>, IValueExtractor<Color32>
+    public class Color32Provider : ProviderBase<Color32, PublishColor32Event, Color32Collector>, IValueCombiner<Color32>, IValueExtractor<Color32>
     {
         private byte? r;
         private byte? g;

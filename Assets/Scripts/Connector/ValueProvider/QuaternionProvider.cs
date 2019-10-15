@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Quaternion", (int) ConnectorType.ValueProviderQuaternion)]
-    public class QuaternionProvider : ProviderBase<Quaternion, PublishQuaternionEvent>, IValueCombiner<Quaternion>, IValueExtractor<Quaternion>
+    public class QuaternionProvider : ProviderBase<Quaternion, PublishQuaternionEvent, QuaternionCollector>, IValueCombiner<Quaternion>, IValueExtractor<Quaternion>
     {
         private float? x;
         private float? y;

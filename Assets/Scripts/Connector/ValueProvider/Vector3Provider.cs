@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector3", (int) ConnectorType.ValueProviderVector3)]
-    public class Vector3Provider : ProviderBase<Vector3, PublishVector3Event>, IValueCombiner<Vector3>, IValueExtractor<Vector3>
+    public class Vector3Provider : ProviderBase<Vector3, PublishVector3Event, Vector3Collector>, IValueCombiner<Vector3>, IValueExtractor<Vector3>
     {
         private float? x;
         private float? y;

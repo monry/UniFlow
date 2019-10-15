@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector2Int", (int) ConnectorType.ValueProviderVector2Int)]
-    public class Vector2IntProvider : ProviderBase<Vector2Int, PublishVector2IntEvent>, IValueCombiner<Vector2Int>, IValueExtractor<Vector2Int>
+    public class Vector2IntProvider : ProviderBase<Vector2Int, PublishVector2IntEvent, Vector2IntCollector>, IValueCombiner<Vector2Int>, IValueExtractor<Vector2Int>
     {
         private int? x;
         private int? y;

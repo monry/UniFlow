@@ -8,19 +8,24 @@ using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ListProviderBase<TValue, TPublishEvent> : ConnectorBase where TPublishEvent : UnityEvent<TValue>, new()
+    public abstract class ListProviderBase<TValue, TPublishEvent, TValueCollector> : ConnectorBase, IMessageComposable, IMessageCollectable
+        where TPublishEvent : UnityEvent<TValue>, new()
+        where TValueCollector : ValueCollectorBase<IEnumerable<TValue>>, new()
     {
-        private const string MessageParameterKey = "Value";
-
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
         [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
 
         [SerializeField] private List<TValue> values = default;
-        [ValueReceiver] public IEnumerable<TValue> Values
+
+        [ValueReceiver]
+        public IEnumerable<TValue> Values
         {
             get => values;
             set => values = value.ToList();
         }
+
+        [SerializeField] private TValueCollector valuesCollector = default;
+        private TValueCollector ValuesCollector => valuesCollector ?? (valuesCollector = new TValueCollector());
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -37,7 +42,41 @@ namespace UniFlow.Connector.ValueProvider
 
             var list = Values.ToList();
             list.ForEach(Publisher.Invoke);
-            return list.ToObservable().AsMessageObservable(this, MessageParameterKey);
+            return list
+                .ToObservable()
+                .AsMessageObservable(this, typeof(TValue).Name);
         }
+
+        IEnumerable<ComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                new ComposableMessageAnnotation(this, typeof(TValue)),
+            };
+
+        Message IMessageComposable.Compose(Message message)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<CollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation(typeof(IEnumerable<TValue>), ValuesCollector, "List"),
+            };
+
+        void IMessageCollectable.Collect()
+        {
+            ValuesCollector.Collect(StreamedMessages);
+        }
+
+        void IMessageCollectable.RegisterCollectDelegates()
+        {
+            ValuesCollector.Action = value => Values = value;
+        }
+    }
+
+    [Serializable]
+    public class CollectMessage
+    {
     }
 }

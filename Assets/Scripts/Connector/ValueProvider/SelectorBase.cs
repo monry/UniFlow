@@ -9,7 +9,9 @@ using UnityEngine.EventSystems;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class SelectorBase<TKey, TValue, TPublishEvent> : ProviderBase<TValue, TPublishEvent>, IValueProvider<TValue> where TPublishEvent : UnityEvent<TValue>, new()
+    public abstract class SelectorBase<TKey, TValue, TPublishEvent, TValueCollector> : ProviderBase<TValue, TPublishEvent, TValueCollector>, IValueProvider<TValue>
+        where TPublishEvent : UnityEvent<TValue>, new()
+        where TValueCollector : ValueCollectorBase<TValue>, new()
     {
         [SerializeField] private List<TKey> keys = new List<TKey>();
         [SerializeField] private List<TValue> values = new List<TValue>();
@@ -19,12 +21,8 @@ namespace UniFlow.Connector.ValueProvider
 
         [ValueReceiver] public TKey Key { get; set; }
 
-        private class IntUnityEvent : UnityEvent<int> {}
-
         TValue IValueProvider<TValue>.Provide()
         {
-            var foo = new IntUnityEvent();
-
             if (!Keys.Contains(Key))
             {
                 return default;
@@ -34,29 +32,22 @@ namespace UniFlow.Connector.ValueProvider
         }
     }
 
-    public abstract class ValueReceiver<T>
-    {
-        [SerializeField] private ConnectorBase connector = default;
-
-        public T Receive(Message message)
-        {
-            return message.GetParameter<T>("");
-        }
-    }
-
-    public abstract class GameObjectSelectorBase<TKey> : SelectorBase<TKey, GameObject, PublishGameObjectEvent>
+    public abstract class GameObjectSelectorBase<TKey> : SelectorBase<TKey, GameObject, PublishGameObjectEvent, GameObjectCollector>
     {
     }
 
-    public abstract class MonoBehaviourSelectorBase<TKey> : SelectorBase<TKey, MonoBehaviour, PublishMonoBehaviourEvent>
+    public abstract class MonoBehaviourSelectorBase<TKey> : SelectorBase<TKey, MonoBehaviour, PublishMonoBehaviourEvent, MonoBehaviourCollector>
     {
     }
 
-    public abstract class UIBehaviourSelectorBase<TKey> : SelectorBase<TKey, UIBehaviour, PublishUIBehaviourEvent>
+    public abstract class UIBehaviourSelectorBase<TKey> : SelectorBase<TKey, UIBehaviour, PublishUIBehaviourEvent, UIBehaviourCollector>
     {
     }
 
-    public abstract class EnumSelectorBase<TKey, TEnum, TPublishEvent> : SelectorBase<TKey, TEnum, TPublishEvent> where TEnum : Enum where TPublishEvent : UnityEvent<TEnum>, new()
+    public abstract class EnumSelectorBase<TKey, TEnum, TPublishEvent, TValueCollector> : SelectorBase<TKey, TEnum, TPublishEvent, TValueCollector>
+        where TEnum : Enum
+        where TPublishEvent : UnityEvent<TEnum>, new()
+        where TValueCollector : ValueCollectorBase<TEnum>, new()
     {
     }
 }
