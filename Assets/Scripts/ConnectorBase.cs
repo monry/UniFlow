@@ -96,6 +96,7 @@ namespace UniFlow
 
                         return (this as IConnector)
                             .OnConnectAsObservable()
+                            .Select(x => this is IMessageComposable messageComposable ? messageComposable.Compose(x) : x)
                             .Do(x => x.StreamedMessages?.Add(x))
 #if UNITY_EDITOR
                             .Do(OnConnectSubject.OnNext)
