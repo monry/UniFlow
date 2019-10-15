@@ -53,10 +53,7 @@ namespace UniFlow.Connector.ValueProvider
                 new ComposableMessageAnnotation(this, typeof(TValue)),
             };
 
-        Message IMessageComposable.Compose(Message message)
-        {
-            throw new NotImplementedException();
-        }
+        Message IMessageComposable.Compose(Message message) => message;
 
         IEnumerable<CollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]

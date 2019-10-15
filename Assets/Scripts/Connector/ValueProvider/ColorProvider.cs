@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Color", (int) ConnectorType.ValueProviderColor)]
-    public class ColorProvider : ProviderBase<Color, PublishColorEvent, ColorCollector>, IValueCombiner<Color>, IValueExtractor<Color>
+    public class ColorProvider : ProviderBase<Color, PublishColorEvent>, IValueCombiner<Color>, IValueExtractor<Color>
     {
         private float? r;
         private float? g;
