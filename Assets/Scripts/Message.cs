@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace UniFlow
@@ -9,7 +7,7 @@ namespace UniFlow
     [PublicAPI]
     public struct Message
     {
-        public Message(IConnector connector, IDictionary<Type, IDictionary<string, IList>> parameters = default)
+        public Message(IConnector connector, IDictionary<Type, IDictionary<string, object>> parameters = default)
         {
             this.connector = connector;
             this.parameters = parameters;
@@ -17,11 +15,12 @@ namespace UniFlow
         }
 
         private IConnector connector;
-        private IDictionary<Type, IDictionary<string, IList>> parameters;
+        private IDictionary<Type, IDictionary<string, object>> parameters;
         private IList<Message> streamedMessages;
 
-        private IDictionary<Type, IDictionary<string, IList>> Parameters => parameters ?? (parameters = new Dictionary<Type, IDictionary<string, IList>>());
+        private IDictionary<Type, IDictionary<string, object>> Parameters => parameters ?? (parameters = new Dictionary<Type, IDictionary<string, object>>());
 
+        public IConnector Connector => connector;
         public IList<Message> StreamedMessages
         {
             get => streamedMessages ?? (streamedMessages = new List<Message>());
@@ -43,16 +42,6 @@ namespace UniFlow
             return new Message(connector).AddParameter(key, value);
         }
 
-        public static Message Create<T>(IConnector connector, IEnumerable<T> values)
-        {
-            return Create(connector, $"{typeof(T).Name}List", values);
-        }
-
-        public static Message Create<T>(IConnector connector, string key, IEnumerable<T> values)
-        {
-            return new Message(connector).AddParameters(key, values);
-        }
-
         public Message AddParameter<T>(T value)
         {
             return AddParameter(typeof(T).Name, value);
@@ -60,66 +49,43 @@ namespace UniFlow
 
         public Message AddParameter<T>(string key, T value)
         {
-            GetOrCreateParameterList<T>(key).Add(value);
+            GetOrCreateParameterDictionary<T>()[key] = value;
             return this;
         }
 
-        public Message AddParameters<T>(IEnumerable<T> values)
+        public bool HasParameter<T>()
         {
-            return AddParameters($"{typeof(T).Name}List", values);
-        }
-
-        public Message AddParameters<T>(string key, IEnumerable<T> values)
-        {
-            var list = GetOrCreateParameterList<T>(key);
-            foreach (var value in values)
-            {
-                list.Add(value);
-            }
-
-            Parameters[typeof(T)][key] = list as IList;
-
-            return this;
+            return HasParameter<T>(typeof(T).Name);
         }
 
         public bool HasParameter<T>(string key)
         {
-            return GetOrCreateParameterList<T>(key).Any();
+            return GetOrCreateParameterDictionary<T>().ContainsKey(key);
         }
 
-        public bool HasParameter<T>(string key, Func<T, bool> predicate)
+        public IDictionary<string, T> GetParameters<T>()
         {
-            return GetOrCreateParameterList<T>(key).Any(predicate);
+            return GetOrCreateParameterDictionary<T>();
         }
 
-        public IEnumerable<T> GetParameters<T>(string key)
+        public T GetParameter<T>()
         {
-            return GetOrCreateParameterList<T>(key);
+            return GetParameter<T>(typeof(T).Name);
         }
 
-        public T GetParameter<T>(string key, bool latest = true)
+        public T GetParameter<T>(string key)
         {
-            return latest ? GetOrCreateParameterList<T>(key).Last() : GetOrCreateParameterList<T>(key).First();
+            return GetOrCreateParameterDictionary<T>()[key];
         }
 
-        public T GetParameter<T>(string key, Func<T, bool> predicate, bool latest = true)
-        {
-            return latest ? GetOrCreateParameterList<T>(key).Last(predicate) : GetOrCreateParameterList<T>(key).First(predicate);
-        }
-
-        private IList<T> GetOrCreateParameterList<T>(string key)
+        private IDictionary<string, T> GetOrCreateParameterDictionary<T>()
         {
             if (!Parameters.ContainsKey(typeof(T)))
             {
-                Parameters.Add(typeof(T), new Dictionary<string, IList>());
+                Parameters.Add(typeof(T), new Dictionary<string, object>());
             }
 
-            if (!Parameters[typeof(T)].ContainsKey(key))
-            {
-                Parameters[typeof(T)][key] = new List<T>();
-            }
-
-            return Parameters[typeof(T)][key] as IList<T>;
+            return Parameters[typeof(T)] as IDictionary<string, T>;
         }
     }
 }

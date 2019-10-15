@@ -12,7 +12,7 @@ namespace UniFlow.Editor
     [Serializable]
     public class ConnectorInfo
     {
-        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers)
+        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers, IEnumerable<ComposableMessageAnnotation> composableMessageAnnotations, IEnumerable<CollectableMessageAnnotation> collectableMessageAnnotations)
         {
             GameObject = gameObject;
             Connector = connector;
@@ -21,6 +21,8 @@ namespace UniFlow.Editor
             parameterList = parameters.ToList();
             ValuePublishers = valuePublishers;
             ValueReceivers = valueReceivers;
+            ComposableMessageAnnotations = composableMessageAnnotations;
+            CollectableMessageAnnotations = collectableMessageAnnotations;
         }
 
         public GameObject GameObject { get; set; }
@@ -31,6 +33,8 @@ namespace UniFlow.Editor
         public IEnumerable<Parameter> ParameterList => parameterList;
         public IEnumerable<ValuePublisherInfo> ValuePublishers { get; }
         public IEnumerable<ValueReceiverInfo> ValueReceivers { get; }
+        public IEnumerable<ComposableMessageAnnotation> ComposableMessageAnnotations { get; }
+        public IEnumerable<CollectableMessageAnnotation> CollectableMessageAnnotations { get; }
 
         public void ApplyParameter(Parameter parameter)
         {
@@ -96,14 +100,30 @@ namespace UniFlow.Editor
                     .Select(ValuePublisherInfo.Create),
                 type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
-                    .Select(ValueReceiverInfo.Create)
+                    .Select(ValueReceiverInfo.Create),
+                typeof(IMessageComposable).IsAssignableFrom(type) && instance != null
+                    ? ((IMessageComposable) instance).GetMessageComposableAnnotations()
+                    : new ComposableMessageAnnotation[0],
+                typeof(IMessageCollectable).IsAssignableFrom(type) && instance != null
+                    ? ((IMessageCollectable) instance).GetMessageCollectableAnnotations()
+                    : new CollectableMessageAnnotation[0]
             );
         }
 
         [PublicAPI]
-        public static ConnectorInfo Create(GameObject gameObject, IConnector instance, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers)
+        public static ConnectorInfo Create(
+            GameObject gameObject,
+            IConnector instance,
+            Type type,
+            string name,
+            IEnumerable<Parameter> parameters,
+            IEnumerable<ValuePublisherInfo> valuePublishers,
+            IEnumerable<ValueReceiverInfo> valueReceivers,
+            IEnumerable<ComposableMessageAnnotation> composableMessageAnnotations,
+            IEnumerable<CollectableMessageAnnotation> collectableMessageAnnotations
+        )
         {
-            return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers);
+            return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers, composableMessageAnnotations, collectableMessageAnnotations);
         }
 
         [Serializable]

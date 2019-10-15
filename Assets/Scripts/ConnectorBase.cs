@@ -64,6 +64,11 @@ namespace UniFlow
 
         protected virtual void Start()
         {
+            if (this is IMessageCollectable messageCollectable)
+            {
+                messageCollectable.RegisterCollectDelegates();
+            }
+
             if (ActAsTrigger)
             {
                 ((IConnector) this).Connect(ObservableFactory.ReturnMessage(this));
@@ -83,6 +88,12 @@ namespace UniFlow
                     message =>
                     {
                         StreamedMessages = message.StreamedMessages.ToList();
+
+                        if (this is IMessageCollectable messageCollectable)
+                        {
+                            messageCollectable.Collect();
+                        }
+
                         return (this as IConnector)
                             .OnConnectAsObservable()
                             .Do(x => x.StreamedMessages?.Add(x))
