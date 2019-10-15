@@ -68,7 +68,7 @@ namespace UniFlow.Connector.Event
             ObserveSimpleAnimation();
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .Select(x => this.CreateMessage(MessageParameterKey, x));
+                .Select(x => this.CreateMessage(x, MessageParameterKey));
         }
 
         private void ObserveSimpleAnimation()

@@ -42,36 +42,38 @@ namespace UniFlow
 
         public static IObservable<Message> AsMessageObservable<T>(this IObservable<T> observable, IConnector connector)
         {
-            return observable.AsMessageObservable(connector, typeof(T).Name);
+            return observable.Select(connector.CreateMessage);
         }
 
         public static IObservable<Message> AsMessageObservable<T>(this IObservable<T> observable, IConnector connector, string key)
         {
-            return observable.Select(x => connector.CreateMessage(key, x));
+            return observable.Select(x => connector.CreateMessage(x, key));
         }
 
         public static Message CreateMessage(this IConnector connector)
         {
-            var message = Message.Create(connector, connector.StreamedMessages);
+            var message = Message.Create(connector);
             message.StreamedMessages = connector.StreamedMessages;
             return message;
         }
 
         public static Message CreateMessage(this IConnector connector, Unit _)
         {
-            var message = Message.Create(connector, connector.StreamedMessages);
+            var message = Message.Create(connector);
             message.StreamedMessages = connector.StreamedMessages;
             return message;
         }
 
         public static Message CreateMessage<T>(this IConnector connector, T parameter)
         {
-            return connector.CreateMessage(typeof(T).Name, parameter);
+            var message = Message.Create(connector, parameter);
+            message.StreamedMessages = connector.StreamedMessages;
+            return message;
         }
 
-        public static Message CreateMessage<T>(this IConnector connector, string key, T parameter)
+        public static Message CreateMessage<T>(this IConnector connector, T parameter, string key)
         {
-            var message = Message.Create(connector, key, parameter);
+            var message = Message.Create(connector, parameter, key);
             message.StreamedMessages = connector.StreamedMessages;
             return message;
         }

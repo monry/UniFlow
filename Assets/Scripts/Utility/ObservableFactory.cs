@@ -12,7 +12,7 @@ namespace UniFlow.Utility
 
         public static IObservable<Message> ReturnMessage<T>(IConnector connector, string key, T parameter)
         {
-            return Observable.Return(connector.CreateMessage(key, parameter));
+            return Observable.Return(connector.CreateMessage(parameter, key));
         }
 
         public static IObservable<Message> EmptyMessage()

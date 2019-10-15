@@ -28,7 +28,7 @@ namespace UniFlow.Connector
             return ((ISignalReceiver<TSignal>) this)
                 .OnReceiveAsObservable()
                 .Do(OnReceive)
-                .Select(x => this.CreateMessage(MessageParameterKey, x));
+                .Select(x => this.CreateMessage(x, MessageParameterKey));
         }
 
         protected virtual void OnReceive(TSignal receivedSignal)

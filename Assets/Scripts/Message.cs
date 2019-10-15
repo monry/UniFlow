@@ -34,20 +34,21 @@ namespace UniFlow
 
         public static Message Create<T>(IConnector connector, T value)
         {
-            return Create(connector, typeof(T).Name, value);
+            return new Message(connector).AddParameter(value);
         }
 
-        public static Message Create<T>(IConnector connector, string key, T value)
+        public static Message Create<T>(IConnector connector, T value, string key)
         {
-            return new Message(connector).AddParameter(key, value);
+            return new Message(connector).AddParameter(value, key);
         }
 
         public Message AddParameter<T>(T value)
         {
-            return AddParameter(typeof(T).Name, value);
+            GetOrCreateParameterDictionary<T>()[string.Empty] = value;
+            return this;
         }
 
-        public Message AddParameter<T>(string key, T value)
+        public Message AddParameter<T>(T value, string key)
         {
             GetOrCreateParameterDictionary<T>()[key] = value;
             return this;
@@ -55,7 +56,7 @@ namespace UniFlow
 
         public bool HasParameter<T>()
         {
-            return HasParameter<T>(typeof(T).Name);
+            return GetOrCreateParameterDictionary<T>().ContainsKey(string.Empty);
         }
 
         public bool HasParameter<T>(string key)
@@ -70,7 +71,7 @@ namespace UniFlow
 
         public T GetParameter<T>()
         {
-            return GetParameter<T>(typeof(T).Name);
+            return GetOrCreateParameterDictionary<T>()[string.Empty];
         }
 
         public T GetParameter<T>(string key)
