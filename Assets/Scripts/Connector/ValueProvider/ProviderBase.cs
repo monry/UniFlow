@@ -7,9 +7,8 @@ using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ProviderBase<TValue, TPublishEvent, TValueCollector> : ConnectorBase, IMessageCollectable
+    public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase, IMessageComposable
         where TPublishEvent : UnityEvent<TValue>, new()
-        where TValueCollector : ValueCollectorBase<TValue>, new()
     {
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
         [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
@@ -21,12 +20,8 @@ namespace UniFlow.Connector.ValueProvider
             set => this.value = value;
         }
 
-        [SerializeField] private TValueCollector valueCollector = default;
-        private TValueCollector ValueCollector => valueCollector ?? (valueCollector = new TValueCollector());
-
         public override IObservable<Message> OnConnectAsObservable()
         {
-            var message = this.CreateMessage().AddParameter(nameof(Value), Value);
 
             if (this is IValueProvider<TValue> valueProvider)
             {
@@ -45,23 +40,21 @@ namespace UniFlow.Connector.ValueProvider
 
             Publisher.Invoke(Value);
 
-            return Observable.Return(message);
+            return Observable.Return(this.CreateMessage());
         }
 
-        IEnumerable<CollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new[]
+        public virtual IEnumerable<ComposableMessageAnnotation> GetMessageComposableAnnotations()
+        {
+            return new[]
             {
-                new CollectableMessageAnnotation(typeof(TValue), ValueCollector, "Value"),
+                new ComposableMessageAnnotation(this, typeof(TValue)),
             };
-
-        void IMessageCollectable.Collect()
-        {
-            ValueCollector.Collect(StreamedMessages);
         }
 
-        void IMessageCollectable.RegisterCollectDelegates()
+        public virtual Message Compose(Message message)
         {
-            ValueCollector.Action = v => Value = v;
+            return message
+                .AddParameter(Value);
         }
     }
 }
