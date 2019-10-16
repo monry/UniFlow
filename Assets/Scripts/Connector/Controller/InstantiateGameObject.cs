@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UniFlow.Utility;
 using UnityEngine;
+using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
@@ -32,9 +33,11 @@ namespace UniFlow.Connector.Controller
 
         private GameObject Instantiated { get; set; }
 
+        [Inject] private DiContainer DiContainer { get; }
+
         public override IObservable<Message> OnConnectAsObservable()
         {
-            Instantiated = Instantiate(Source, Parent);
+            Instantiated = DiContainer.InstantiatePrefab(Source, Parent);
             return ObservableFactory.ReturnMessage(this);
         }
 

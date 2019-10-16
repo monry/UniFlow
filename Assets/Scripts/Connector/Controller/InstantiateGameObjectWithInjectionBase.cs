@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniFlow.Utility;
 using UnityEngine;
+using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
@@ -33,9 +34,11 @@ namespace UniFlow.Connector.Controller
 
         private GameObject Instantiated { get; set; }
 
+        [Inject] private DiContainer DiContainer { get; }
+
         public override IObservable<Message> OnConnectAsObservable()
         {
-            Instantiated = Instantiate(Source, Parent);
+            Instantiated = DiContainer.InstantiatePrefab(Source, Parent);
             GetMessageCollectableAnnotations().ToList().ForEach(x => x.Inject(Instantiated));
             return ObservableFactory.ReturnMessage(this);
         }
