@@ -9,7 +9,8 @@ using UnityEngine;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/ActivationController", (int) ConnectorType.LoadScene)]
-    public class ActivationController : ConnectorBase
+    public class ActivationController : ConnectorBase,
+        IMessageCollectable
     {
         [SerializeField] private List<GameObject> targetGameObjects = default;
         [SerializeField] private List<Behaviour> targetBehaviours = default;
@@ -41,6 +42,14 @@ namespace UniFlow.Connector.Controller
             set => Behaviours.Add(value);
         }
 
+        [SerializeField] private BoolCollector activatedCollector = default;
+        [SerializeField] private GameObjectCollector targetGameObjectCollector = default;
+        [SerializeField] private BehaviourCollector targetBehaviourCollector = default;
+
+        private BoolCollector ActivatedCollector => activatedCollector;
+        private GameObjectCollector TargetGameObjectCollector => targetGameObjectCollector;
+        private BehaviourCollector TargetBehaviourCollector => targetBehaviourCollector;
+
         public override IObservable<Message> OnConnectAsObservable()
         {
             var gameObjects = GameObjects.Where(x => x.activeSelf != Activated).ToList();
@@ -50,5 +59,13 @@ namespace UniFlow.Connector.Controller
 
             return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<bool>(ActivatedCollector, x => Activated = x, nameof(Activated)),
+                new CollectableMessageAnnotation<GameObject>(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
+                new CollectableMessageAnnotation<Behaviour>(TargetBehaviourCollector, x => TargetBehaviour = x, nameof(TargetBehaviour)),
+            };
     }
 }

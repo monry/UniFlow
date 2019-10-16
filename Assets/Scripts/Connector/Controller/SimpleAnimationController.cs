@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UniFlow.Utility;
@@ -9,7 +10,9 @@ using UnityEngine;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/SimpleAnimationController", (int) ConnectorType.SimpleAnimationController)]
-    public class SimpleAnimationController : ConnectorBase, IBaseGameObjectSpecifyable
+    public class SimpleAnimationController : ConnectorBase,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -70,6 +73,19 @@ namespace UniFlow.Connector.Controller
             set => updateMode = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AnimatorCollector animatorCollector = default;
+        [SerializeField] private SimpleAnimationCollector simpleAnimationCollector = default;
+        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+        // TODO: Implement EnumCollector
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AnimatorCollector AnimatorCollector => animatorCollector;
+        private SimpleAnimationCollector SimpleAnimationCollector => simpleAnimationCollector;
+        private AnimationClipCollector AnimationClipCollector => animationClipCollector;
+
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
         public override IObservable<Message> OnConnectAsObservable()
@@ -127,6 +143,16 @@ namespace UniFlow.Connector.Controller
         {
             Disposable.Dispose();
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
+                new CollectableMessageAnnotation<SimpleAnimation>(SimpleAnimationCollector, x => SimpleAnimation = x),
+                new CollectableMessageAnnotation<AnimationClip>(AnimationClipCollector, x => AnimationClip = x),
+            };
     }
 
     public enum SimpleAnimationControlMethod

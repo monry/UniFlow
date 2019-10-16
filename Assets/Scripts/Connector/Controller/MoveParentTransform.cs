@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UniFlow.Utility;
 using UniFlow.Attribute;
 using UnityEngine;
@@ -6,7 +7,8 @@ using UnityEngine;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/MoveParentTransform", (int) ConnectorType.MoveParentTransform)]
-    public class MoveParentTransform : ConnectorBase
+    public class MoveParentTransform : ConnectorBase,
+        IMessageCollectable
     {
         // ReSharper disable once InconsistentNaming
         [SerializeField] private Transform targetTransform = default;
@@ -31,10 +33,26 @@ namespace UniFlow.Connector.Controller
             set => worldPositionStays = value;
         }
 
+        [SerializeField] private TransformCollector targetTransformCollector = default;
+        [SerializeField] private TransformCollector parentTransformCollector = default;
+        [SerializeField] private BoolCollector worldPositionStaysCollector = default;
+
+        private TransformCollector TargetTransformCollector => targetTransformCollector;
+        private TransformCollector ParentTransformCollector => parentTransformCollector;
+        private BoolCollector WorldPositionStaysCollector => worldPositionStaysCollector;
+
         public override IObservable<Message> OnConnectAsObservable()
         {
             TargetTransform.SetParent(ParentTransform, WorldPositionStays);
             return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<Transform>(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                new CollectableMessageAnnotation<Transform>(ParentTransformCollector, x => ParentTransform = x, nameof(ParentTransform)),
+                new CollectableMessageAnnotation<bool>(WorldPositionStaysCollector, x => WorldPositionStays = x, nameof(WorldPositionStays)),
+            };
     }
 }

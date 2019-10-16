@@ -48,6 +48,7 @@ namespace UniFlow.Editor
             if (ConnectorInfo.Connector == default)
             {
                 ConnectorInfo.Connector = Undo.AddComponent(ConnectorInfo.GameObject, ConnectorInfo.Type) as IConnector;
+                ConnectorInfo.ReCalculateAnnotations();
             }
 
             AddParameters();
@@ -215,6 +216,7 @@ namespace UniFlow.Editor
                             {
                                 ConnectorInfo.GameObject = newGameObject;
                                 ConnectorInfo.Connector = Undo.AddComponent(ConnectorInfo.GameObject, ConnectorInfo.Type) as IConnector;
+                                ConnectorInfo.ReCalculateAnnotations();
                                 ConnectorInfo.ApplyParameters();
                                 ApplyTargetConnectors();
                                 InputPort?.connections.Select(y => y.output.node).OfType<FlowNode>().ToList().ForEach(y => y.ApplyTargetConnectors());
@@ -435,7 +437,7 @@ namespace UniFlow.Editor
                 foreach (var composableMessageAnnotation in ConnectorInfo.ComposableMessageAnnotations)
                 {
                     var port = FlowMessageComposePort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, composableMessageAnnotation, MessageConnectorListener);
-                    port.portName = composableMessageAnnotation.Label;
+                    port.portName = composableMessageAnnotation.Key;
                     outputContainer.Add(port);
                     MessageComposePorts.Add(port as FlowMessageComposePort);
                 }
@@ -450,7 +452,7 @@ namespace UniFlow.Editor
                 foreach (var collectableMessageAnnotation in ConnectorInfo.CollectableMessageAnnotations)
                 {
                     var port = FlowMessageCollectPort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, collectableMessageAnnotation, MessageConnectorListener);
-                    port.portName = collectableMessageAnnotation.Label;
+                    port.portName = collectableMessageAnnotation.Key;
                     inputContainer.Add(port);
                     MessageCollectPorts.Add(port as FlowMessageCollectPort);
                 }

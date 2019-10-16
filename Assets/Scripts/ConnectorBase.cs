@@ -64,11 +64,6 @@ namespace UniFlow
 
         protected virtual void Start()
         {
-            if (this is IMessageCollectable messageCollectable)
-            {
-                messageCollectable.RegisterCollectDelegates();
-            }
-
             if (ActAsTrigger)
             {
                 ((IConnector) this).Connect(ObservableFactory.ReturnMessage(this));
@@ -91,12 +86,12 @@ namespace UniFlow
 
                         if (this is IMessageCollectable messageCollectable)
                         {
-                            messageCollectable.Collect();
+                            messageCollectable.GetMessageCollectableAnnotations().ToList().ForEach(x => x.Collect());
                         }
 
                         return (this as IConnector)
                             .OnConnectAsObservable()
-                            .Select(x => this is IMessageComposable messageComposable ? messageComposable.Compose(x) : x)
+                            .Select(x => this is IMessageComposable messageComposable ? messageComposable.ComposeAll(x) : x)
                             .Do(x => x.StreamedMessages?.Add(x))
 #if UNITY_EDITOR
                             .Do(OnConnectSubject.OnNext)

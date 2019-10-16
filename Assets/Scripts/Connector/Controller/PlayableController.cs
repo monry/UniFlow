@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniFlow.Utility;
 using UniFlow.Attribute;
@@ -9,7 +10,9 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/PlayableController", (int) ConnectorType.PlayableController)]
-    public class PlayableController : ConnectorBase, IBaseGameObjectSpecifyable
+    public class PlayableController : ConnectorBase,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -42,6 +45,16 @@ namespace UniFlow.Connector.Controller
             get => timelineAsset;
             set => timelineAsset = value;
         }
+
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private TimelineAssetCollector timelineAssetCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private TimelineAssetCollector TimelineAssetCollector => timelineAssetCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -79,6 +92,15 @@ namespace UniFlow.Connector.Controller
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x),
+                new CollectableMessageAnnotation<TimelineAsset>(TimelineAssetCollector, x => TimelineAsset = x),
+            };
     }
 
     public enum PlayableControlMethod

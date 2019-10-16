@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniFlow.Utility;
 using UniFlow.Attribute;
@@ -7,7 +8,9 @@ using UnityEngine;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/AudioController", (int) ConnectorType.AudioController)]
-    public class AudioController : ConnectorBase, IBaseGameObjectSpecifyable
+    public class AudioController : ConnectorBase,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -43,6 +46,16 @@ namespace UniFlow.Connector.Controller
             set => audioClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AudioSourceCollector audioSourceCollector = default;
+        [SerializeField] private AudioClipCollector audioClipCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
+        private AudioClipCollector AudioClipCollector => audioClipCollector;
+
         public override IObservable<Message> OnConnectAsObservable()
         {
             InvokeAudioSourceMethod();
@@ -74,6 +87,15 @@ namespace UniFlow.Connector.Controller
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<AudioSource>(AudioSourceCollector, x => AudioSource = x),
+                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x),
+            };
     }
 
     public enum AudioControlMethod

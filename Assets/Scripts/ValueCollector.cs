@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace UniFlow
@@ -103,6 +104,11 @@ namespace UniFlow
     }
 
     [Serializable]
+    public class BehaviourCollector : ValueCollectorBase<Behaviour>
+    {
+    }
+
+    [Serializable]
     public class MonoBehaviourCollector : ValueCollectorBase<MonoBehaviour>
     {
     }
@@ -139,6 +145,16 @@ namespace UniFlow
 
     [Serializable]
     public class PlayableDirectorCollector : ValueCollectorBase<PlayableDirector>
+    {
+    }
+
+    [Serializable]
+    public class ImageCollector : ValueCollectorBase<Image>
+    {
+    }
+
+    [Serializable]
+    public class RawImageCollector : ValueCollectorBase<RawImage>
     {
     }
 

@@ -9,7 +9,9 @@ using UnityEngine.EventSystems;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class SelectorBase<TKey, TValue, TPublishEvent, TKeyCollector> : ProviderBase<TValue, TPublishEvent>, IValueProvider<TValue>, IMessageCollectable
+    public abstract class SelectorBase<TKey, TValue, TPublishEvent, TKeyCollector> : ProviderBase<TValue, TPublishEvent>,
+        IMessageCollectable,
+        IMessageComposable
         where TPublishEvent : UnityEvent<TValue>, new()
         where TKeyCollector : ValueCollectorBase<TKey>, new()
     {
@@ -22,46 +24,19 @@ namespace UniFlow.Connector.ValueProvider
         [ValueReceiver] public TKey Key { get; set; }
 
         [SerializeField] private TKeyCollector keyCollector = default;
-        private TKeyCollector KeyCollector => keyCollector ?? (keyCollector = new TKeyCollector());
+        private TKeyCollector KeyCollector => keyCollector;
 
-        TValue IValueProvider<TValue>.Provide()
-        {
-            if (!Keys.Contains(Key))
-            {
-                return default;
-            }
-
-            return Values[Keys.IndexOf(Key)];
-        }
-
-        public override IEnumerable<ComposableMessageAnnotation> GetMessageComposableAnnotations() =>
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation(this, typeof(TValue)),
+                new ComposableMessageAnnotation<TValue>(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
             };
 
-        public override Message Compose(Message message)
-        {
-            return message
-                .AddParameter(Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default);
-        }
-
-        public IEnumerable<CollectableMessageAnnotation> GetMessageCollectableAnnotations() =>
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation(typeof(TKey), KeyCollector),
+                new CollectableMessageAnnotation<TKey>(KeyCollector, x => Key = x),
             };
-
-        public virtual void Collect()
-        {
-            KeyCollector.Collect(StreamedMessages);
-        }
-
-        public virtual void RegisterCollectDelegates()
-        {
-            KeyCollector.Action = x => Key = x;
-        }
-
     }
 
     public abstract class GameObjectSelectorBase<TKey, TKeyCollector> : SelectorBase<TKey, GameObject, PublishGameObjectEvent, TKeyCollector> where TKeyCollector : ValueCollectorBase<TKey>, new()

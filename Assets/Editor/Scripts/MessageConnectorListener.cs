@@ -41,10 +41,11 @@ namespace UniFlow.Editor
                 return;
             }
 
-            messageCollectPort.CollectableMessageAnnotation.ValueCollector.Connector = messageComposePort.ComposableMessageAnnotation.Connector;
+            messageCollectPort.CollectableMessageAnnotation.ValueCollector.SourceConnector = ((FlowNode) messageComposePort.node).ConnectorInfo.Connector;
+            messageCollectPort.CollectableMessageAnnotation.ValueCollector.TargetConnector = ((FlowNode) messageCollectPort.node).ConnectorInfo.Connector;
             messageCollectPort.CollectableMessageAnnotation.ValueCollector.TypeString = messageComposePort.ComposableMessageAnnotation.Type.AssemblyQualifiedName;
             messageCollectPort.CollectableMessageAnnotation.ValueCollector.ComposerKey = messageComposePort.ComposableMessageAnnotation.Key;
-            messageCollectPort.CollectableMessageAnnotation.ValueCollector.CollectorLabel = messageCollectPort.CollectableMessageAnnotation.Label;
+            messageCollectPort.CollectableMessageAnnotation.ValueCollector.CollectorKey = messageCollectPort.CollectableMessageAnnotation.Key;
             EditorUtility.SetDirty(((FlowNode) messageCollectPort.node).ConnectorInfo.Connector as ConnectorBase);
         }
     }

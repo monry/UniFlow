@@ -1,27 +1,25 @@
 using System;
 using System.Collections.Generic;
-using UniFlow.Attribute;
+using System.Linq;
 using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateGameObject)]
-    public class InstantiateGameObject : ConnectorBase,
+    public abstract class InstantiateGameObjectWithInjectionBase : ConnectorBase,
         IMessageCollectable,
         IMessageComposable
     {
         [SerializeField] private GameObject source = default;
         [SerializeField] private Transform parent = default;
 
-        [SerializeField] private PublishGameObjectEvent publisher = new PublishGameObjectEvent();
-
-        [ValueReceiver] public GameObject Source
+        private GameObject Source
         {
             get => source == default ? gameObject : source;
             set => source = value;
         }
-        [ValueReceiver] public Transform Parent
+
+        private Transform Parent
         {
             get => parent == default ? transform : parent;
             set => parent = value;
@@ -33,29 +31,29 @@ namespace UniFlow.Connector.Controller
         private GameObjectCollector SourceCollector => sourceCollector;
         private TransformCollector ParentCollector => parentCollector;
 
-        [ValuePublisher("Instantiated")] private PublishGameObjectEvent Publisher => publisher;
-
         private GameObject Instantiated { get; set; }
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            var go = Instantiate(Source, Parent);
-            Publisher.Invoke(go);
-            Instantiated = go;
+            Instantiated = Instantiate(Source, Parent);
+            GetMessageCollectableAnnotations().ToList().ForEach(x => x.Inject(Instantiated));
             return ObservableFactory.ReturnMessage(this);
         }
 
-        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+        protected virtual IEnumerable<ICollectableMessageAnnotation> GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
                 new CollectableMessageAnnotation<GameObject>(SourceCollector, x => Source = x, nameof(Source)),
                 new CollectableMessageAnnotation<Transform>(ParentCollector, x => Parent = x, nameof(Parent)),
             };
 
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            GetMessageCollectableAnnotations();
+
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new IComposableMessageAnnotation[]
+            new[]
             {
-                new ComposableMessageAnnotation<GameObject>(() => Instantiated, nameof(Instantiated)),
+                new ComposableMessageAnnotation<GameObject>(() => Instantiated),
             };
     }
 }

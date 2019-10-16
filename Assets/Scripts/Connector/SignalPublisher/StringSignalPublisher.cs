@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UniFlow.Attribute;
 using UniFlow.Signal;
 using UnityEngine;
@@ -5,7 +6,9 @@ using UnityEngine;
 namespace UniFlow.Connector.SignalPublisher
 {
     [AddComponentMenu("UniFlow/SignalPublisher/String", (int) ConnectorType.StringSignalPublisher)]
-    public class StringSignalPublisher : SignalPublisherBase<StringSignal>, ISignalCreator<StringSignal>
+    public class StringSignalPublisher : SignalPublisherBase<StringSignal>,
+        ISignalCreator<StringSignal>,
+        IMessageCollectable
     {
         [SerializeField] private string signalName = default;
         [SerializeField] private bool boolParameter = default;
@@ -67,5 +70,30 @@ namespace UniFlow.Connector.SignalPublisher
                     )
                 );
         }
+
+        [SerializeField] private BoolCollector boolCollector = default;
+        [SerializeField] private IntCollector intCollector = default;
+        [SerializeField] private FloatCollector floatCollector = default;
+        [SerializeField] private StringCollector stringCollector = default;
+        [SerializeField] private ObjectCollector objectCollector = default;
+        [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = default;
+
+        private BoolCollector BoolCollector => boolCollector;
+        private IntCollector IntCollector => intCollector;
+        private FloatCollector FloatCollector => floatCollector;
+        private StringCollector StringCollector => stringCollector;
+        private ObjectCollector ObjectCollector => objectCollector;
+        private ScriptableObjectCollector ScriptableObjectCollector => scriptableObjectCollector;
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<bool>(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
+                new CollectableMessageAnnotation<int>(IntCollector, x => IntParameter = x, nameof(IntParameter)),
+                new CollectableMessageAnnotation<float>(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
+                new CollectableMessageAnnotation<string>(StringCollector, x => StringParameter = x, nameof(StringParameter)),
+                new CollectableMessageAnnotation<Object>(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
+                new CollectableMessageAnnotation<ScriptableObject>(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
+            };
     }
 }

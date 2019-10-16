@@ -1,41 +1,90 @@
 using System;
+using UnityEngine;
 
 namespace UniFlow
 {
-    public class ComposableMessageAnnotation
+    public interface IComposableMessageAnnotation
     {
-        public ComposableMessageAnnotation(IConnector connector, Type type) : this(connector, type, type.Name)
+        Type Type { get; }
+        string Key { get; }
+        Message Compose(Message message);
+    }
+
+    public class ComposableMessageAnnotation<TValue> : IComposableMessageAnnotation
+    {
+        public ComposableMessageAnnotation(Func<TValue> callback) : this(callback, typeof(TValue).Name)
         {
         }
 
-        public ComposableMessageAnnotation(IConnector connector, Type type, string key)
+        public ComposableMessageAnnotation(Func<TValue> callback, string key)
         {
-            Type = type;
-            Connector = connector;
+            Type = typeof(TValue);
+            Callback = callback;
             Key = key;
         }
 
         public Type Type { get; }
-        public IConnector Connector { get; }
         public string Key { get; }
-        public string Label => string.IsNullOrEmpty(Key) ? Type.Name : Key;
+        private Func<TValue> Callback { get; }
+
+        Message IComposableMessageAnnotation.Compose(Message message)
+        {
+            if (Callback != default)
+            {
+                message = message.AddParameter(Callback(), Key);
+            }
+
+            return message;
+        }
     }
 
-    public class CollectableMessageAnnotation
+    public interface ICollectableMessageAnnotation
     {
-        public CollectableMessageAnnotation(Type type, IValueCollector valueCollector) : this(type, valueCollector, type.Name)
+        Type Type { get; }
+        IValueCollector ValueCollector { get; }
+        string Key { get; }
+        void Collect();
+        void Inject(GameObject gameObject);
+    }
+
+    public class CollectableMessageAnnotation<TValue> : ICollectableMessageAnnotation
+    {
+        public CollectableMessageAnnotation(IValueCollector valueCollector, Action<TValue> callback) : this(valueCollector, callback, typeof(TValue).Name)
         {
         }
 
-        public CollectableMessageAnnotation(Type type, IValueCollector valueCollector, string label)
+        public CollectableMessageAnnotation(IValueCollector valueCollector, Action<TValue> callback, string key)
         {
-            Type = type;
+            Type = typeof(TValue);
             ValueCollector = valueCollector;
-            Label = label;
+            Callback = callback;
+            Key = key;
         }
 
         public Type Type { get; }
         public IValueCollector ValueCollector { get; }
-        public string Label { get; }
+        public string Key { get; }
+        private Action<TValue> Callback { get; }
+
+        void ICollectableMessageAnnotation.Collect()
+        {
+            Callback?.Invoke(GetValue());
+        }
+
+        void ICollectableMessageAnnotation.Inject(GameObject gameObject)
+        {
+            gameObject.GetComponentsInChildren<IInjectable<TValue>>().InjectAll(GetValue());
+        }
+
+        private TValue GetValue()
+        {
+            var result = default(TValue);
+            if (ValueCollector is IValueCollector<TValue> valueCollector && valueCollector.CanCollect())
+            {
+                result = valueCollector.Collect();
+            }
+
+            return result;
+        }
     }
 }

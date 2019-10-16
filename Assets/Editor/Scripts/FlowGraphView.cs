@@ -323,15 +323,15 @@ namespace UniFlow.Editor
                     .ToArray();
                 foreach (var valueCollector in valueCollectors)
                 {
-                    if (!(valueCollector.Connector is IMessageComposable) || !RenderedNodes.ContainsKey(valueCollector.Connector) || !(connector is IMessageCollectable))
+                    if (!(valueCollector.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
                     {
                         continue;
                     }
 
-                    var messageComposeNode = RenderedNodes[valueCollector.Connector];
+                    var messageComposeNode = RenderedNodes[valueCollector.SourceConnector];
                     var messageCollectNode = RenderedNodes[connector];
-                    var messageComposePort = messageComposeNode.MessageComposePorts.FirstOrDefault(x => x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && (string.IsNullOrEmpty(valueCollector.ComposerKey) || x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey));
-                    var messageCollectPort = messageCollectNode.MessageCollectPorts.FirstOrDefault(x => x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && (string.IsNullOrEmpty(valueCollector.ComposerKey) || x.CollectableMessageAnnotation.Label == valueCollector.CollectorLabel));
+                    var messageComposePort = messageComposeNode.MessageComposePorts.FirstOrDefault(x => x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey);
+                    var messageCollectPort = messageCollectNode.MessageCollectPorts.FirstOrDefault(x => x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.CollectableMessageAnnotation.Key == valueCollector.CollectorKey);
                     if (messageComposePort != null && messageCollectPort != null)
                     {
                         AddEdge(messageComposePort, messageCollectPort);

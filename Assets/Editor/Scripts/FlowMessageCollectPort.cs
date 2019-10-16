@@ -10,9 +10,9 @@ namespace UniFlow.Editor
         {
         }
 
-        public CollectableMessageAnnotation CollectableMessageAnnotation { get; private set; }
+        public ICollectableMessageAnnotation CollectableMessageAnnotation { get; private set; }
 
-        public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, CollectableMessageAnnotation collectableMessageAnnotation, IEdgeConnectorListener edgeConnectorListener = default)
+        public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, ICollectableMessageAnnotation collectableMessageAnnotation, IEdgeConnectorListener edgeConnectorListener = default)
         {
             var port = new FlowMessageCollectPort(portOrientation, portDirection, portCapacity, typeof(FlowMessageCollectPort))
             {

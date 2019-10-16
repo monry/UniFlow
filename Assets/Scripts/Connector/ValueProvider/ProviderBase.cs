@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
@@ -7,7 +6,7 @@ using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase, IMessageComposable
+    public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase, IInjectable<TValue>
         where TPublishEvent : UnityEvent<TValue>, new()
     {
         [SerializeField] private TPublishEvent publisher = new TPublishEvent();
@@ -22,39 +21,12 @@ namespace UniFlow.Connector.ValueProvider
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-
-            if (this is IValueProvider<TValue> valueProvider)
-            {
-                Value = valueProvider.Provide();
-            }
-
-            if (this is IValueCombiner<TValue> valueCombiner)
-            {
-                Value = valueCombiner.Combine();
-            }
-
-            if (this is IValueExtractor<TValue> valueExtractor)
-            {
-                valueExtractor.Extract(Value);
-            }
-
-            Publisher.Invoke(Value);
-
             return Observable.Return(this.CreateMessage());
         }
 
-        public virtual IEnumerable<ComposableMessageAnnotation> GetMessageComposableAnnotations()
+        void IInjectable<TValue>.Inject(TValue v)
         {
-            return new[]
-            {
-                new ComposableMessageAnnotation(this, typeof(TValue)),
-            };
-        }
-
-        public virtual Message Compose(Message message)
-        {
-            return message
-                .AddParameter(Value);
+            Value = v;
         }
     }
 }

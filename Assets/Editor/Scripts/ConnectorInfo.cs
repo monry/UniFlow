@@ -12,7 +12,17 @@ namespace UniFlow.Editor
     [Serializable]
     public class ConnectorInfo
     {
-        private ConnectorInfo(GameObject gameObject, IConnector connector, Type type, string name, IEnumerable<Parameter> parameters, IEnumerable<ValuePublisherInfo> valuePublishers, IEnumerable<ValueReceiverInfo> valueReceivers, IEnumerable<ComposableMessageAnnotation> composableMessageAnnotations, IEnumerable<CollectableMessageAnnotation> collectableMessageAnnotations)
+        private ConnectorInfo(
+            GameObject gameObject,
+            IConnector connector,
+            Type type,
+            string name,
+            IEnumerable<Parameter> parameters,
+            IEnumerable<ValuePublisherInfo> valuePublishers,
+            IEnumerable<ValueReceiverInfo> valueReceivers,
+            IEnumerable<IComposableMessageAnnotation> composableMessageAnnotations,
+            IEnumerable<ICollectableMessageAnnotation> collectableMessageAnnotations
+        )
         {
             GameObject = gameObject;
             Connector = connector;
@@ -33,8 +43,8 @@ namespace UniFlow.Editor
         public IEnumerable<Parameter> ParameterList => parameterList;
         public IEnumerable<ValuePublisherInfo> ValuePublishers { get; }
         public IEnumerable<ValueReceiverInfo> ValueReceivers { get; }
-        public IEnumerable<ComposableMessageAnnotation> ComposableMessageAnnotations { get; }
-        public IEnumerable<CollectableMessageAnnotation> CollectableMessageAnnotations { get; }
+        public IEnumerable<IComposableMessageAnnotation> ComposableMessageAnnotations { get; set; }
+        public IEnumerable<ICollectableMessageAnnotation> CollectableMessageAnnotations { get; set; }
 
         public void ApplyParameter(Parameter parameter)
         {
@@ -45,6 +55,21 @@ namespace UniFlow.Editor
 
             GetFieldRecursive(Type, parameter.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?
                 .SetValue(Connector, parameter.Value);
+        }
+
+        public void ReCalculateAnnotations()
+        {
+            if (Connector == default)
+            {
+                return;
+            }
+
+            ComposableMessageAnnotations = typeof(IMessageComposable).IsAssignableFrom(Type)
+                ? ((IMessageComposable) Connector).GetMessageComposableAnnotations()
+                : new IComposableMessageAnnotation[0];
+            CollectableMessageAnnotations = typeof(IMessageCollectable).IsAssignableFrom(Type)
+                ? ((IMessageCollectable) Connector).GetMessageCollectableAnnotations()
+                : new ICollectableMessageAnnotation[0];
         }
 
         private static FieldInfo GetFieldRecursive(Type type, string name, BindingFlags bindingFlags)
@@ -103,10 +128,10 @@ namespace UniFlow.Editor
                     .Select(ValueReceiverInfo.Create),
                 typeof(IMessageComposable).IsAssignableFrom(type) && instance != null
                     ? ((IMessageComposable) instance).GetMessageComposableAnnotations()
-                    : new ComposableMessageAnnotation[0],
+                    : new IComposableMessageAnnotation[0],
                 typeof(IMessageCollectable).IsAssignableFrom(type) && instance != null
                     ? ((IMessageCollectable) instance).GetMessageCollectableAnnotations()
-                    : new CollectableMessageAnnotation[0]
+                    : new ICollectableMessageAnnotation[0]
             );
         }
 
@@ -119,8 +144,8 @@ namespace UniFlow.Editor
             IEnumerable<Parameter> parameters,
             IEnumerable<ValuePublisherInfo> valuePublishers,
             IEnumerable<ValueReceiverInfo> valueReceivers,
-            IEnumerable<ComposableMessageAnnotation> composableMessageAnnotations,
-            IEnumerable<CollectableMessageAnnotation> collectableMessageAnnotations
+            IEnumerable<IComposableMessageAnnotation> composableMessageAnnotations,
+            IEnumerable<ICollectableMessageAnnotation> collectableMessageAnnotations
         )
         {
             return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers, composableMessageAnnotations, collectableMessageAnnotations);

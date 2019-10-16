@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UniFlow.Attribute;
 using UniFlow.Connector.SignalPublisher;
 using UniFlow.Signal;
@@ -6,7 +7,10 @@ using UnityEngine;
 namespace UniFlow.Connector.SignalReceiver
 {
     [AddComponentMenu("UniFlow/SignalReceiver/String", (int) ConnectorType.StringSignalReceiver)]
-    public class StringSignalReceiver : SignalReceiverBase<StringSignal>, ISignalCreator<StringSignal>, ISignalFilter<StringSignal>
+    public class StringSignalReceiver : SignalReceiverBase<StringSignal>,
+        ISignalCreator<StringSignal>,
+        ISignalFilter<StringSignal>,
+        IMessageComposable
     {
         [SerializeField] private string signalName = default;
         [ValueReceiver] public string SignalName
@@ -47,6 +51,19 @@ namespace UniFlow.Connector.SignalReceiver
             PublishStringParameter.Invoke(receivedSignal.Parameter.StringValue);
             PublishObjectParameter.Invoke(receivedSignal.Parameter.ObjectValue);
             PublishScriptableObjectParameter.Invoke(receivedSignal.Parameter.ScriptableObjectValue);
+
+            Signal = receivedSignal;
         }
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[]
+            {
+                new ComposableMessageAnnotation<bool>(() => Signal.Parameter.BoolValue, "BoolParameter"),
+                new ComposableMessageAnnotation<int>(() => Signal.Parameter.IntValue, "IntParameter"),
+                new ComposableMessageAnnotation<float>(() => Signal.Parameter.FloatValue, "FloatParameter"),
+                new ComposableMessageAnnotation<string>(() => Signal.Parameter.StringValue, "StringParameter"),
+                new ComposableMessageAnnotation<Object>(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
+                new ComposableMessageAnnotation<ScriptableObject>(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
+            };
     }
 }

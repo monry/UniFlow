@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UnityEngine;
 
 namespace UniFlow
 {
@@ -76,32 +77,37 @@ namespace UniFlow
 
         private bool HasValue<T>(string key)
         {
-            return Parameters.ContainsKey(typeof(T)) && Parameters[typeof(T)].ContainsKey(key);
+            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+            return Parameters.ContainsKey(type) && Parameters[type].ContainsKey(key);
         }
 
         private T GetValue<T>(string key)
         {
-            if (!Parameters.ContainsKey(typeof(T)))
+            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+
+            if (!Parameters.ContainsKey(type))
             {
-                Parameters.Add(typeof(T), new Dictionary<string, object>());
+                Parameters.Add(type, new Dictionary<string, object>());
             }
 
-            if (!Parameters[typeof(T)].ContainsKey(key))
+            if (!Parameters[type].ContainsKey(key))
             {
                 return default;
             }
 
-            return (T) Parameters[typeof(T)][key];
+            return (T) Parameters[type][key];
         }
 
         private void SetValue<T>(string key, T value)
         {
-            if (!Parameters.ContainsKey(typeof(T)))
+            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+
+            if (!Parameters.ContainsKey(type))
             {
-                Parameters.Add(typeof(T), new Dictionary<string, object>());
+                Parameters.Add(type, new Dictionary<string, object>());
             }
 
-            Parameters[typeof(T)][key] = value;
+            Parameters[type][key] = value;
         }
     }
 }

@@ -8,7 +8,9 @@ using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ListProviderBase<TValue, TPublishEvent, TValueCollector> : ConnectorBase, IMessageComposable, IMessageCollectable
+    public abstract class ListProviderBase<TValue, TPublishEvent, TValueCollector> : ConnectorBase,
+        IMessageCollectable,
+        IMessageComposable
         where TPublishEvent : UnityEvent<TValue>, new()
         where TValueCollector : ValueCollectorBase<IEnumerable<TValue>>, new()
     {
@@ -25,21 +27,10 @@ namespace UniFlow.Connector.ValueProvider
         }
 
         [SerializeField] private TValueCollector valuesCollector = default;
-        private TValueCollector ValuesCollector => valuesCollector ?? (valuesCollector = new TValueCollector());
+        private TValueCollector ValuesCollector => valuesCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            if (this is IListValueProvider<TValue> listValueProvider)
-            {
-                var temporaryValues = listValueProvider.Provide();
-                if (listValueProvider is IFilteredListValueProvider<TValue> filteredListValueProvider)
-                {
-                    temporaryValues = temporaryValues.Where(filteredListValueProvider.Predicate);
-                }
-
-                Values = temporaryValues;
-            }
-
             var list = Values.ToList();
             list.ForEach(Publisher.Invoke);
             return list
@@ -47,29 +38,18 @@ namespace UniFlow.Connector.ValueProvider
                 .AsMessageObservable(this, typeof(TValue).Name);
         }
 
-        IEnumerable<ComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation(this, typeof(TValue)),
+                new CollectableMessageAnnotation<IEnumerable<TValue>>(ValuesCollector, x => Values = x, $"{typeof(TValue).Name}List"),
             };
 
-        Message IMessageComposable.Compose(Message message) => message;
-
-        IEnumerable<CollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation(typeof(IEnumerable<TValue>), ValuesCollector, "List"),
+                // Will compose parameter in OnConnectAsObservable()
+                new ComposableMessageAnnotation<TValue>(null),
             };
-
-        void IMessageCollectable.Collect()
-        {
-            ValuesCollector.Collect(StreamedMessages);
-        }
-
-        void IMessageCollectable.RegisterCollectDelegates()
-        {
-            ValuesCollector.Action = value => Values = value;
-        }
     }
 
     [Serializable]

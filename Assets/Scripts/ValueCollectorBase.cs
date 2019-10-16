@@ -1,21 +1,27 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UniFlow
 {
     [Serializable]
-    public abstract class ValueCollectorBase<TValue> : IValueCollector
+    public abstract class ValueCollectorBase<TValue> : IValueCollector<TValue>
     {
-        [SerializeField] private ConnectorBase connector = default;
+        [SerializeField] private ConnectorBase sourceConnector = default;
+        [SerializeField] private ConnectorBase targetConnector = default;
         [SerializeField] private string typeString = default;
         [SerializeField] private string composerKey = default;
-        [SerializeField] private string collectorLabel = default;
+        [SerializeField] private string collectorKey = default;
 
-        public IConnector Connector
+        public IConnector SourceConnector
         {
-            get => connector;
-            set => connector = value as ConnectorBase;
+            get => sourceConnector;
+            set => sourceConnector = value as ConnectorBase;
+        }
+
+        public IConnector TargetConnector
+        {
+            get => targetConnector;
+            set => targetConnector = value as ConnectorBase;
         }
 
         public string TypeString
@@ -30,25 +36,24 @@ namespace UniFlow
             set => composerKey = value;
         }
 
-        public string CollectorLabel
+        public string CollectorKey
         {
-            get => collectorLabel;
-            set => collectorLabel = value;
+            get => collectorKey;
+            set => collectorKey = value;
         }
 
-        public Action<TValue> Action { get; set; }
-
-        public void Collect(IList<Message> messages)
+        public bool CanCollect()
         {
-            if (messages == null || Connector == null || !messages.HasMessage(Connector) || !messages.FindMessage(Connector).HasParameter<TValue>())
-            {
-                return;
-            }
+            return
+                SourceConnector != null
+                && TargetConnector?.StreamedMessages != null
+                && TargetConnector.StreamedMessages.HasMessage(SourceConnector)
+                && TargetConnector.StreamedMessages.GetMessage(SourceConnector).HasParameter<TValue>(ComposerKey);
+        }
 
-            var value = string.IsNullOrEmpty(ComposerKey)
-                ? messages.FindMessage(Connector).GetParameter<TValue>()
-                : messages.FindMessage(Connector).GetParameter<TValue>(ComposerKey);
-            Action(value);
+        public TValue Collect()
+        {
+            return TargetConnector.StreamedMessages.GetMessage(SourceConnector).GetParameter<TValue>(ComposerKey);
         }
     }
 }

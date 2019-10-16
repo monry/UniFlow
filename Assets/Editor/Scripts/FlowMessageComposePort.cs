@@ -10,9 +10,9 @@ namespace UniFlow.Editor
         {
         }
 
-        public ComposableMessageAnnotation ComposableMessageAnnotation { get; private set; }
+        public IComposableMessageAnnotation ComposableMessageAnnotation { get; private set; }
 
-        public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, ComposableMessageAnnotation composableMessageAnnotation, IEdgeConnectorListener edgeConnectorListener = default)
+        public static Port Create(Orientation portOrientation, Direction portDirection, Capacity portCapacity, IComposableMessageAnnotation composableMessageAnnotation, IEdgeConnectorListener edgeConnectorListener = default)
         {
             var port = new FlowMessageComposePort(portOrientation, portDirection, portCapacity, typeof(FlowMessageComposePort))
             {

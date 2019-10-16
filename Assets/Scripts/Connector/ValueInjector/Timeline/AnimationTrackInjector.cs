@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UniFlow.Attribute;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -6,7 +7,9 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.ValueInjector.Timeline
 {
     [AddComponentMenu("UniFlow/ValueInjector/Timeline/AnimationTrack", (int) ConnectorType.ValueInjectorTimelineAnimationTrack)]
-    public class AnimationTrackInjector : TimelineInjectorBase<AnimationPlayableAsset>, IBaseGameObjectSpecifyable
+    public class AnimationTrackInjector : TimelineInjectorBase<AnimationPlayableAsset>,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -46,9 +49,34 @@ namespace UniFlow.Connector.ValueInjector.Timeline
             set => animationClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private StringCollector trackNameCollector = default;
+        [SerializeField] private StringCollector clipNameCollector = default;
+        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private StringCollector TrackNameCollector => trackNameCollector;
+        private StringCollector ClipNameCollector => clipNameCollector;
+        private AnimationClipCollector AnimationClipCollector => animationClipCollector;
+
         protected override void Inject(AnimationPlayableAsset playableAsset)
         {
             playableAsset.clip = AnimationClip;
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                new CollectableMessageAnnotation<string>(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                new CollectableMessageAnnotation<string>(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                new CollectableMessageAnnotation<AnimationClip>(AnimationClipCollector, x => AnimationClip = x, nameof(AnimationClip)),
+            };
     }
 }
