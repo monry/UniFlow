@@ -11,11 +11,13 @@ namespace UniFlow.Connector.Event
     [AddComponentMenu("UniFlow/Event/TimelineSignal", (int) ConnectorType.TimelineSignal)]
     public class TimelineSignal : ConnectorBase
     {
+        private const string MessageParameterKey = "TimelineSignal";
+
         private ISubject<(int intParameter, float floatParameter, string stringParameter, Object objectParameter)> Subject { get; } = new Subject<(int intParameter, float floatParameter, string stringParameter, Object objectParameter)>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Subject.AsUnitObservable();
+            return Subject.AsMessageObservable(this, MessageParameterKey);
         }
 
         [UsedImplicitly]

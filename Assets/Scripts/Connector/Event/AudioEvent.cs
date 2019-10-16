@@ -1,13 +1,12 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
-    public class AudioEvent : ConnectorBase, IBaseGameObjectSpecifyable
+    public class AudioEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -17,38 +16,44 @@ namespace UniFlow.Connector.Event
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public AudioSource AudioSource
+        private AudioSource AudioSource
         {
             get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
-        [UsedImplicitly] public AudioEventType AudioEventType
-        {
-            get => audioEventType;
-            set => audioEventType = value;
-        }
-        [ValueReceiver] public AudioClip AudioClip
+        private AudioEventType AudioEventType => audioEventType;
+        private AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AudioSourceCollector audioSourceCollector = default;
+        [SerializeField] private AudioClipCollector audioClipCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
+        private AudioClipCollector AudioClipCollector => audioClipCollector;
+
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnAudioEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
@@ -107,6 +112,15 @@ namespace UniFlow.Connector.Event
 
             return (AudioEventType) -1;
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<AudioSource>(AudioSourceCollector, x => AudioSource = x),
+                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x),
+            };
     }
 
     public enum AudioEventType

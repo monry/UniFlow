@@ -1,4 +1,4 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -6,7 +6,9 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.ValueInjector.Timeline
 {
     [AddComponentMenu("UniFlow/ValueInjector/Timeline/AudioTrack", (int) ConnectorType.ValueInjectorTimelineAudioTrack)]
-    public class AudioTrackInjector : TimelineInjectorBase<AudioPlayableAsset>, IBaseGameObjectSpecifyable
+    public class AudioTrackInjector : TimelineInjectorBase<AudioPlayableAsset>,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -15,40 +17,65 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         [SerializeField] private string clipName = default;
         [SerializeField] private AudioClip audioClip = default;
 
-        [ValueReceiver] public override GameObject BaseGameObject
+        public override GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public override PlayableDirector PlayableDirector
+        protected override PlayableDirector PlayableDirector
         {
             get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
-        [ValueReceiver] public override string TrackName
+        protected override string TrackName
         {
             get => trackName;
             set => trackName = value;
         }
-        [ValueReceiver] public override string ClipName
+        protected override string ClipName
         {
             get => clipName;
             set => clipName = value;
         }
-        [ValueReceiver] public AudioClip AudioClip
+        private AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private StringCollector trackNameCollector = default;
+        [SerializeField] private StringCollector clipNameCollector = default;
+        [SerializeField] private AudioClipCollector audioClipCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private StringCollector TrackNameCollector => trackNameCollector;
+        private StringCollector ClipNameCollector => clipNameCollector;
+        private AudioClipCollector AudioClipCollector => audioClipCollector;
+
         protected override void Inject(AudioPlayableAsset playableAsset)
         {
             playableAsset.clip = AudioClip;
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                new CollectableMessageAnnotation<string>(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                new CollectableMessageAnnotation<string>(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x, nameof(AudioClip)),
+            };
     }
 }

@@ -1,37 +1,31 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector3", (int) ConnectorType.ValueProviderVector3)]
-    public class Vector3Provider : ProviderBase<Vector3, PublishVector3Event>, IValueCombiner<Vector3>, IValueExtractor<Vector3>
+    public class Vector3Provider : ProviderBase<Vector3>, IMessageCollectable, IMessageComposable
     {
-        private float? x;
-        private float? y;
-        private float? z;
-        [ValueReceiver] private float X { get => x ?? Value.x; set => x = value; }
-        [ValueReceiver] private float Y { get => y ?? Value.y; set => y = value; }
-        [ValueReceiver] private float Z { get => z ?? Value.z; set => z = value; }
+        [SerializeField] private FloatCollector xCollector = default;
+        [SerializeField] private FloatCollector yCollector = default;
+        [SerializeField] private FloatCollector zCollector = default;
 
-        [SerializeField] private PublishFloatEvent publisherX = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherY = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherZ = new PublishFloatEvent();
+        private FloatCollector XCollector => xCollector;
+        private FloatCollector YCollector => yCollector;
+        private FloatCollector ZCollector => zCollector;
 
-        [ValuePublisher("X")] private UnityEvent<float> PublisherX => publisherX;
-        [ValuePublisher("Y")] private UnityEvent<float> PublisherY => publisherY;
-        [ValuePublisher("Z")] private UnityEvent<float> PublisherZ => publisherZ;
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<float>(XCollector, v => Value = new Vector3(v, Value.y, Value.z), "X"),
+                new CollectableMessageAnnotation<float>(YCollector, v => Value = new Vector3(Value.x, v, Value.z), "Y"),
+                new CollectableMessageAnnotation<float>(ZCollector, v => Value = new Vector3(Value.x, Value.y, v), "Z"),
+            };
 
-        Vector3 IValueCombiner<Vector3>.Combine()
-        {
-            return new Vector3(X, Y, Z);
-        }
-
-        void IValueExtractor<Vector3>.Extract(Vector3 value)
-        {
-            PublisherX.Invoke(value.x);
-            PublisherY.Invoke(value.y);
-            PublisherZ.Invoke(value.z);
-        }
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[]
+            {
+                new ComposableMessageAnnotation<Vector3>(() => Value),
+            };
     }
 }

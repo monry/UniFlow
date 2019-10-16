@@ -1,7 +1,6 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
-using UniRx;
+using System.Collections.Generic;
+using UniFlow.Utility;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -9,7 +8,7 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/PlayableController", (int) ConnectorType.PlayableController)]
-    public class PlayableController : ConnectorBase, IBaseGameObjectSpecifyable
+    public class PlayableController : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -17,37 +16,43 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private PlayableControlMethod playableControlMethod = PlayableControlMethod.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public PlayableDirector PlayableDirector
+        private PlayableDirector PlayableDirector
         {
             get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
-        [UsedImplicitly] public PlayableControlMethod PlayableControlMethod
-        {
-            get => playableControlMethod;
-            set => playableControlMethod = value;
-        }
-        [ValueReceiver] public TimelineAsset TimelineAsset
+        private PlayableControlMethod PlayableControlMethod => playableControlMethod;
+        private TimelineAsset TimelineAsset
         {
             get => timelineAsset;
             set => timelineAsset = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private TimelineAssetCollector timelineAssetCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private TimelineAssetCollector TimelineAssetCollector => timelineAssetCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             PreparePlayableDirector();
             InvokePlayableDirectorMethod();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         private void PreparePlayableDirector()
@@ -79,6 +84,15 @@ namespace UniFlow.Connector.Controller
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x),
+                new CollectableMessageAnnotation<TimelineAsset>(TimelineAssetCollector, x => TimelineAsset = x),
+            };
     }
 
     public enum PlayableControlMethod

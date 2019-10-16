@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,7 +9,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
-    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable
+    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -19,40 +18,49 @@ namespace UniFlow.Connector.Event
         [SerializeField] private bool activateBeforeConnect = default;
         [SerializeField] private bool deactivateAfterConnect = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public UIBehaviour UIBehaviour
+        private UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = ((IBaseGameObjectSpecifyable) this).GetComponent<UIBehaviour>();
             set => uiBehaviour = value;
         }
-        [UsedImplicitly] public EventTriggerType EventTriggerType
-        {
-            get => eventTriggerType;
-            set => eventTriggerType = value;
-        }
-        [ValueReceiver] public bool ActivateBeforeConnect
+        private EventTriggerType EventTriggerType => eventTriggerType;
+        private bool ActivateBeforeConnect
         {
             get => activateBeforeConnect;
             set => activateBeforeConnect = value;
         }
-        [ValueReceiver] public bool DeactivateAfterConnect
+        private bool DeactivateAfterConnect
         {
             get => deactivateAfterConnect;
             set => deactivateAfterConnect = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private UIBehaviourCollector uiBehaviourCollector = default;
+        [SerializeField] private BoolCollector activateBeforeConnectCollector = default;
+        [SerializeField] private BoolCollector deactivateAfterConnectCollector = default;
+        // TODO: Implement EnumCollector
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private UIBehaviourCollector UIBehaviourCollector => uiBehaviourCollector;
+        private BoolCollector ActivateBeforeConnectCollector => activateBeforeConnectCollector;
+        private BoolCollector DeactivateAfterConnectCollector => deactivateAfterConnectCollector;
+
         private IDisposable Disposable { get; } = new CompositeDisposable();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return Observable
                 .ReturnUnit()
@@ -75,7 +83,7 @@ namespace UniFlow.Connector.Event
                         }
                     }
                 )
-                .AsUnitObservable();
+                .AsMessageObservable(this);
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -125,5 +133,15 @@ namespace UniFlow.Connector.Event
         {
             Disposable.Dispose();
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<UIBehaviour>(UIBehaviourCollector, x => UIBehaviour = x),
+                new CollectableMessageAnnotation<bool>(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
+                new CollectableMessageAnnotation<bool>(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
+            };
     }
 }

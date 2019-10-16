@@ -1,32 +1,28 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector2Int", (int) ConnectorType.ValueProviderVector2Int)]
-    public class Vector2IntProvider : ProviderBase<Vector2Int, PublishVector2IntEvent>, IValueCombiner<Vector2Int>, IValueExtractor<Vector2Int>
+    public class Vector2IntProvider : ProviderBase<Vector2Int>, IMessageCollectable, IMessageComposable
     {
-        private int? x;
-        private int? y;
-        [ValueReceiver] private int X { get => x ?? Value.x; set => x = value; }
-        [ValueReceiver] private int Y { get => y ?? Value.y; set => y = value; }
+        [SerializeField] private IntCollector xCollector = default;
+        [SerializeField] private IntCollector yCollector = default;
 
-        [SerializeField] private PublishIntEvent publisherX = new PublishIntEvent();
-        [SerializeField] private PublishIntEvent publisherY = new PublishIntEvent();
+        private IntCollector XCollector => xCollector;
+        private IntCollector YCollector => yCollector;
 
-        [ValuePublisher("X")] private UnityEvent<int> PublisherX => publisherX;
-        [ValuePublisher("Y")] private UnityEvent<int> PublisherY => publisherY;
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<int>(XCollector, v => Value = new Vector2Int(v, Value.y), "X"),
+                new CollectableMessageAnnotation<int>(YCollector, v => Value = new Vector2Int(Value.x, v), "Y"),
+            };
 
-        Vector2Int IValueCombiner<Vector2Int>.Combine()
-        {
-            return new Vector2Int(X, Y);
-        }
-
-        void IValueExtractor<Vector2Int>.Extract(Vector2Int value)
-        {
-            PublisherX.Invoke(value.x);
-            PublisherY.Invoke(value.y);
-        }
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[]
+            {
+                new ComposableMessageAnnotation<Vector2Int>(() => Value),
+            };
     }
 }

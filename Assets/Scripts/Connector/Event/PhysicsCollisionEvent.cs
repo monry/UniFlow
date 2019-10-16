@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,26 +7,26 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/PhysicsCollisionEvent", (int) ConnectorType.PhysicsCollisionEvent)]
-    public class PhysicsCollisionEvent : ConnectorBase
+    public class PhysicsCollisionEvent : ConnectorBase, IMessageCollectable
     {
-        [ValuePublisher] public Component Component
+        [SerializeField] private Component component = default;
+        [SerializeField] private PhysicsCollisionEventType physicsCollisionEventType = PhysicsCollisionEventType.CollisionEnter;
+
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [SerializeField] private Component component = default;
-        [SerializeField] private PhysicsCollisionEventType physicsCollisionEventType = PhysicsCollisionEventType.CollisionEnter;
+        private PhysicsCollisionEventType PhysicsCollisionEventType => physicsCollisionEventType;
 
-        [UsedImplicitly] public PhysicsCollisionEventType PhysicsCollisionEventType
-        {
-            get => physicsCollisionEventType;
-            set => physicsCollisionEventType = value;
-        }
+        [SerializeField] private ComponentCollector componentCollector = default;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<Collision> OnEventAsObservable()
@@ -44,6 +43,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum PhysicsCollisionEventType

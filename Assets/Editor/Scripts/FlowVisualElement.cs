@@ -70,6 +70,10 @@ namespace UniFlow.Editor
                         Load();
                         Observable.TimerFrame(1).Subscribe(_ => FlowGraphView.Relocation(true));
                     }
+                    if (GUILayout.Button("Refresh Connector List", EditorStyles.toolbarButton))
+                    {
+                        FlowGraphView.CollectConnectorsForSearchTree();
+                    }
 
                     if (UniFlowSettings.instance.SelectedGameObject != default)
                     {

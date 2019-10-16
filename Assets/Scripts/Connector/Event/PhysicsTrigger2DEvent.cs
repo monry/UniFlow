@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,26 +7,26 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/PhysicsTrigger2DEvent", (int) ConnectorType.PhysicsTrigger2DEvent)]
-    public class PhysicsTrigger2DEvent : ConnectorBase
+    public class PhysicsTrigger2DEvent : ConnectorBase, IMessageCollectable
     {
-        [ValuePublisher] public Component Component
+        [SerializeField] private Component component = default;
+        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = PhysicsTrigger2DEventType.TriggerEnter2D;
+
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [SerializeField] private Component component = default;
-        [SerializeField] private PhysicsTrigger2DEventType physicsTrigger2DEventType = PhysicsTrigger2DEventType.TriggerEnter2D;
+        private PhysicsTrigger2DEventType PhysicsTrigger2DEventType => physicsTrigger2DEventType;
 
-        [UsedImplicitly] public PhysicsTrigger2DEventType PhysicsTrigger2DEventType
-        {
-            get => physicsTrigger2DEventType;
-            set => physicsTrigger2DEventType = value;
-        }
+        [SerializeField] private ComponentCollector componentCollector = default;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<Collider2D> OnEventAsObservable()
@@ -44,6 +43,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum PhysicsTrigger2DEventType

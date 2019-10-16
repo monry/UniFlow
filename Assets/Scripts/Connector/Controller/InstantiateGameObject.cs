@@ -1,36 +1,57 @@
 using System;
-using UniFlow.Attribute;
-using UniRx;
+using System.Collections.Generic;
+using UniFlow.Utility;
 using UnityEngine;
+using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateGameObject)]
-    public class InstantiateGameObject : ConnectorBase
+    public class InstantiateGameObject : ConnectorBase,
+        IMessageCollectable,
+        IMessageComposable
     {
         [SerializeField] private GameObject source = default;
         [SerializeField] private Transform parent = default;
 
-        [SerializeField] private PublishGameObjectEvent publisher = new PublishGameObjectEvent();
-
-        [ValueReceiver] public GameObject Source
+        public GameObject Source
         {
             get => source == default ? gameObject : source;
-            set => source = value;
+            private set => source = value;
         }
-        [ValueReceiver] public Transform Parent
+        private Transform Parent
         {
             get => parent == default ? transform : parent;
             set => parent = value;
         }
 
-        [ValuePublisher("Instantiated")] private PublishGameObjectEvent Publisher => publisher;
+        [SerializeField] private GameObjectCollector sourceCollector = default;
+        [SerializeField] private TransformCollector parentCollector = default;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        private GameObjectCollector SourceCollector => sourceCollector;
+        private TransformCollector ParentCollector => parentCollector;
+
+        private GameObject Instantiated { get; set; }
+
+        [Inject] private DiContainer DiContainer { get; }
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            var go = Instantiate(Source, Parent);
-            Publisher.Invoke(go);
-            return Observable.ReturnUnit();
+            Instantiated = DiContainer.InstantiatePrefab(Source, Parent);
+            return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(SourceCollector, x => Source = x, nameof(Source)),
+                new CollectableMessageAnnotation<Transform>(ParentCollector, x => Parent = x, nameof(Parent)),
+            };
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[]
+            {
+                new ComposableMessageAnnotation<GameObject>(() => Instantiated, nameof(Instantiated)),
+            };
     }
 }

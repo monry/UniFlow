@@ -1,42 +1,34 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Color", (int) ConnectorType.ValueProviderColor)]
-    public class ColorProvider : ProviderBase<Color, PublishColorEvent>, IValueCombiner<Color>, IValueExtractor<Color>
+    public class ColorProvider : ProviderBase<Color>, IMessageCollectable, IMessageComposable
     {
-        private float? r;
-        private float? g;
-        private float? b;
-        private float? a;
-        [ValueReceiver] private float R { get => r ?? Value.r; set => r = value; }
-        [ValueReceiver] private float G { get => g ?? Value.g; set => g = value; }
-        [ValueReceiver] private float B { get => b ?? Value.b; set => b = value; }
-        [ValueReceiver] private float A { get => a ?? Value.a; set => a = value; }
+        [SerializeField] private FloatCollector rCollector = default;
+        [SerializeField] private FloatCollector gCollector = default;
+        [SerializeField] private FloatCollector bCollector = default;
+        [SerializeField] private FloatCollector aCollector = default;
 
-        [SerializeField] private PublishFloatEvent publisherR = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherG = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherB = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherA = new PublishFloatEvent();
+        private FloatCollector RCollector => rCollector;
+        private FloatCollector GCollector => gCollector;
+        private FloatCollector BCollector => bCollector;
+        private FloatCollector ACollector => aCollector;
 
-        [ValuePublisher("R")] private UnityEvent<float> PublisherR => publisherR;
-        [ValuePublisher("G")] private UnityEvent<float> PublisherG => publisherG;
-        [ValuePublisher("B")] private UnityEvent<float> PublisherB => publisherB;
-        [ValuePublisher("A")] private UnityEvent<float> PublisherA => publisherA;
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<float>(RCollector, x => Value = new Color(x, Value.g, Value.b, Value.a), "R"),
+                new CollectableMessageAnnotation<float>(GCollector, x => Value = new Color(Value.r, x, Value.b, Value.a), "G"),
+                new CollectableMessageAnnotation<float>(BCollector, x => Value = new Color(Value.r, Value.g, x, Value.a), "B"),
+                new CollectableMessageAnnotation<float>(ACollector, x => Value = new Color(Value.r, Value.g, Value.b, x), "A"),
+            };
 
-        Color IValueCombiner<Color>.Combine()
-        {
-            return new Color(R, G, B, A);
-        }
-
-        void IValueExtractor<Color>.Extract(Color value)
-        {
-            PublisherR.Invoke(value.r);
-            PublisherG.Invoke(value.g);
-            PublisherB.Invoke(value.b);
-            PublisherA.Invoke(value.a);
-        }
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                new ComposableMessageAnnotation<Color>(() => Value),
+            };
     }
 }

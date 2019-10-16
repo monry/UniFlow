@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -25,11 +25,11 @@ namespace UniFlow.Connector.Controller
             set => targetGameObjects = value.ToList();
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             var targets = Components.Concat<Object>(GameObjects).ToList();
             targets.ToList().ForEach(Destroy);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

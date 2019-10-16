@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UniFlow.Attribute;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace UniFlow.Editor
 {
@@ -22,7 +19,7 @@ namespace UniFlow.Editor
         private IDictionary<FlowNode, Vector2Int> NormalizedPositionDictionary { get; } = new Dictionary<FlowNode, Vector2Int>();
         private SearchWindowProvider SearchWindowProvider { get; set; }
         private EdgeConnectorListener EdgeConnectorListener { get; set; }
-        private ValueInjectionConnectorListener ValueInjectionConnectorListener { get; set; }
+        private MessageConnectorListener MessageConnectorListener { get; set; }
 
         private const float NodeWidth = 300.0f;
         private static Vector2 NodesOffset { get; } = new Vector2(50.0f, 50.0f);
@@ -47,7 +44,7 @@ namespace UniFlow.Editor
             SearchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             SearchWindowProvider.Initialize(this);
             EdgeConnectorListener = new EdgeConnectorListener(this, SearchWindowProvider);
-            ValueInjectionConnectorListener = new ValueInjectionConnectorListener(this);
+            MessageConnectorListener = new MessageConnectorListener(this);
 
             viewTransformChanged += graphView =>
             {
@@ -99,7 +96,7 @@ namespace UniFlow.Editor
 
             CreateEdges();
 
-            CreateValueInjectionEdges();
+            CreateMessageConnectorEdges();
 
             RegisterCallback(
                 (GeometryChangedEvent e) =>
@@ -167,6 +164,11 @@ namespace UniFlow.Editor
             }
 
             Undo.CollapseUndoOperations(groupId);
+        }
+
+        public void CollectConnectorsForSearchTree()
+        {
+            SearchWindowProvider.CalculateSearchTree();
         }
 
         internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
@@ -305,34 +307,29 @@ namespace UniFlow.Editor
             }
         }
 
-        private void CreateValueInjectionEdges()
+        private void CreateMessageConnectorEdges()
         {
             foreach (var connector in Connectors)
             {
-                var persistentEventsList = connector.GetType()
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
-                    .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null && typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
-                    .Select(x => (propertyInfo: x, unityEvent: x.GetValue(connector) as UnityEventBase))
-                    .Where(x => x.unityEvent != null)
-                    .Select(x => Enumerable.Range(0, x.unityEvent.GetPersistentEventCount()).Select(index => (x.propertyInfo, target: x.unityEvent.GetPersistentTarget(index), methodName: x.unityEvent.GetPersistentMethodName(index))))
+                var valueCollectors = connector.GetType()
+                    .GetPropertiesRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
+                    .Where(x => typeof(IValueCollector).IsAssignableFrom(x.PropertyType))
+                    .Select(x => x.GetMethod.Invoke(connector, null) as IValueCollector)
                     .ToArray();
-                foreach (var persistentEvents in persistentEventsList)
+                foreach (var valueCollector in valueCollectors)
                 {
-                    foreach (var (propertyInfo, target, methodName) in persistentEvents)
+                    if (!(valueCollector.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
                     {
-                        if (!(target is IConnector targetConnector) || !RenderedNodes.ContainsKey(targetConnector) || !RenderedNodes.ContainsKey(connector))
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        var publisherNode = RenderedNodes[connector];
-                        var receiverNode = RenderedNodes[targetConnector];
-                        var publisherPort = publisherNode.ValuePublishPorts.FirstOrDefault(x => x.ValuePublisherInfo.PropertyInfo == propertyInfo);
-                        var receiverPort = receiverNode.ValueReceivePorts.FirstOrDefault(x => x.ValueReceiverInfo.PropertyInfo.GetSetMethod(true).Name == methodName);
-                        if (publisherPort != null && receiverPort != null)
-                        {
-                            AddEdge(publisherPort, receiverPort);
-                        }
+                    var messageComposeNode = RenderedNodes[valueCollector.SourceConnector];
+                    var messageCollectNode = RenderedNodes[connector];
+                    var messageComposePort = messageComposeNode.MessageComposePorts.FirstOrDefault(x => x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey);
+                    var messageCollectPort = messageCollectNode.MessageCollectPorts.FirstOrDefault(x => x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.CollectableMessageAnnotation.Key == valueCollector.CollectorKey);
+                    if (messageComposePort != null && messageCollectPort != null)
+                    {
+                        AddEdge(messageComposePort, messageCollectPort);
                     }
                 }
             }
@@ -342,7 +339,7 @@ namespace UniFlow.Editor
         {
             var connectableInfo = ConnectorInfo.Create(connectableType, connectableInstance);
             FlowEditorWindow.Window.ConnectableInfoList.Add(connectableInfo);
-            var node = new FlowNode(connectableInfo, EdgeConnectorListener, ValueInjectionConnectorListener);
+            var node = new FlowNode(connectableInfo, EdgeConnectorListener, MessageConnectorListener);
             node.Initialize();
             node.SetPosition(new Rect(position.x, position.y, 0, 0));
             AddElement(node);
@@ -364,41 +361,39 @@ namespace UniFlow.Editor
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            if (startPort is FlowValuePublishPort startFlowValuePublishPort)
+            switch (startPort)
             {
-                return ports
-                    .ToList()
-                    .Where(
-                        x =>
-                            x is FlowValueReceivePort flowValueReceivePort
-                            && (
-                                flowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type)
-                                || typeof(ScriptableObject).IsAssignableFrom(startFlowValuePublishPort.ValuePublisherInfo.Type) && typeof(ScriptableObject).IsAssignableFrom(flowValueReceivePort.ValueReceiverInfo.Type)
-                            )
-                            && x.direction != startPort.direction
-                            && x.node != startPort.node
-                    )
-                    .ToList();
+                case FlowMessageComposePort startFlowMessageComposePort:
+                    return ports
+                        .ToList()
+                        .Where(
+                            x =>
+                                x is FlowMessageCollectPort flowMessageCollectPort
+                                && (
+                                    flowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type)
+                                    || typeof(ScriptableObject).IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type) && typeof(ScriptableObject).IsAssignableFrom(flowMessageCollectPort.CollectableMessageAnnotation.Type)
+                                )
+                                && x.direction != startPort.direction
+                                && x.node != startPort.node
+                        )
+                        .ToList();
+                case FlowMessageCollectPort startFlowMessageCollectPort:
+                    return ports
+                        .ToList()
+                        .Where(
+                            x =>
+                                x is FlowMessageComposePort flowMessageComposePort
+                                && startFlowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(flowMessageComposePort.ComposableMessageAnnotation.Type)
+                                && x.direction != startPort.direction
+                                && x.node != startPort.node
+                        )
+                        .ToList();
+                default:
+                    return ports
+                        .ToList()
+                        .Where(x => x is FlowPort && x.direction != startPort.direction && x.node != startPort.node)
+                        .ToList();
             }
-
-            if (startPort is FlowValueReceivePort startFlowValueReceivePort)
-            {
-                return ports
-                    .ToList()
-                    .Where(
-                        x =>
-                            x is FlowValuePublishPort flowValuePublishPort
-                            && startFlowValueReceivePort.ValueReceiverInfo.Type.IsAssignableFrom(flowValuePublishPort.ValuePublisherInfo.Type)
-                            && x.direction != startPort.direction
-                            && x.node != startPort.node
-                    )
-                    .ToList();
-            }
-
-            return ports
-                .ToList()
-                .Where(x => x is FlowPort && x.direction != startPort.direction && x.node != startPort.node)
-                .ToList();
         }
     }
 }

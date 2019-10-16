@@ -1,5 +1,5 @@
 using System;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.ValueInjector
@@ -8,10 +8,10 @@ namespace UniFlow.Connector.ValueInjector
     {
         public abstract GameObject BaseGameObject { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             Inject();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         protected abstract void Inject();

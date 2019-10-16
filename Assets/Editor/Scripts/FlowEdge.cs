@@ -19,8 +19,16 @@ namespace UniFlow.Editor
                 case FlowPort _:
                     outputNode.ApplyTargetConnectors();
                     break;
-                case FlowValuePublishPort _:
-                    outputNode.ApplyValuePublishers();
+            }
+
+            switch (input)
+            {
+                case FlowMessageCollectPort messageCollectPort:
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.SourceConnector = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.TargetConnector = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.TypeString = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.CollectorKey = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.ComposerKey = default;
                     break;
             }
         }

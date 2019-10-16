@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,25 +7,25 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/TransformEvent", (int) ConnectorType.TransformEvent)]
-    public class TransformEvent : ConnectorBase
+    public class TransformEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private TransformEventType transformEventType = TransformEventType.TransformChildrenChanged;
 
-        [ValuePublisher] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public TransformEventType TransformEventType
-        {
-            get => transformEventType;
-            set => transformEventType = value;
-        }
+        private TransformEventType TransformEventType => transformEventType;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private ComponentCollector componentCollector = default;
+
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().AsMessageObservable(this);
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -43,6 +42,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum TransformEventType

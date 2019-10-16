@@ -1,5 +1,4 @@
 using System;
-using UniFlow.Attribute;
 using UniFlow.Connector.SignalPublisher;
 using UniFlow.Connector.SignalReceiver;
 using UniFlow.Utility;
@@ -10,20 +9,26 @@ namespace UniFlow.Connector
 {
     public abstract class SignalReceiverBase<TSignal> : ConnectorBase, ISignalReceiver<TSignal> where TSignal : ISignal
     {
+        private const string MessageParameterKey = "Signal";
+
         [SerializeField] private TSignal signal = default;
-        [ValueReceiver] public TSignal Signal
+
+        protected TSignal Signal
         {
             get => signal;
             set => signal = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             if (this is ISignalCreator<TSignal> signalCreator)
             {
                 Signal = signalCreator.CreateSignal();
             }
-            return ((ISignalReceiver<TSignal>) this).OnReceiveAsObservable().Do(OnReceive).AsUnitObservable();
+            return ((ISignalReceiver<TSignal>) this)
+                .OnReceiveAsObservable()
+                .Do(OnReceive)
+                .Select(x => this.CreateMessage(x, MessageParameterKey));
         }
 
         protected virtual void OnReceive(TSignal receivedSignal)

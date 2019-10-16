@@ -7,9 +7,9 @@ namespace UniFlow.Connector.ValueInjector
 {
     public abstract class TimelineInjectorBase<TPlayableAsset> : InjectorBase where TPlayableAsset : PlayableAsset
     {
-        public abstract PlayableDirector PlayableDirector { get; set; }
-        public abstract string TrackName { get; set; }
-        public abstract string ClipName { get; set; }
+        protected abstract PlayableDirector PlayableDirector { get; set; }
+        protected abstract string TrackName { get; set; }
+        protected abstract string ClipName { get; set; }
 
         protected override void Inject()
         {

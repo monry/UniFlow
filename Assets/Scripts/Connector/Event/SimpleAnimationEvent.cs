@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/SimpleAnimationEvent", (int) ConnectorType.SimpleAnimationEvent)]
-    public class SimpleAnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable
+    public class SimpleAnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
+        private const string MessageParameterKey = "SimpleAnimationEvent";
+
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
         [SerializeField] private Animator animator = default;
@@ -19,22 +19,22 @@ namespace UniFlow.Connector.Event
         [Tooltip("If you do not specify it will not be filtered")]
         private AnimationClip animationClip = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValuePublisher] public Animator Animator
+        private Animator Animator
         {
             get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        [ValuePublisher] public SimpleAnimation SimpleAnimation
+        private SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -46,27 +46,36 @@ namespace UniFlow.Connector.Event
             ;
             set => simpleAnimation = value;
         }
-        [UsedImplicitly] public SimpleAnimationEventType SimpleAnimationEventType
-        {
-            get => simpleAnimationEventType;
-            set => simpleAnimationEventType = value;
-        }
-        [ValuePublisher] public AnimationClip AnimationClip
+        private SimpleAnimationEventType SimpleAnimationEventType => simpleAnimationEventType;
+        private AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AnimatorCollector animatorCollector = default;
+        [SerializeField] private SimpleAnimationCollector simpleAnimationCollector = default;
+        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+        // TODO: Implement EnumCollector
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AnimatorCollector AnimatorCollector => animatorCollector;
+        private SimpleAnimationCollector SimpleAnimationCollector => simpleAnimationCollector;
+        private AnimationClipCollector AnimationClipCollector => animationClipCollector;
+
         private ISubject<(SimpleAnimationEventType eventType, AnimationClip animationClip)> CurrentStateSubject { get; } = new Subject<(SimpleAnimationEventType, AnimationClip)>();
 
         private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             ObserveSimpleAnimation();
             return CurrentStateSubject
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .AsUnitObservable();
+                .Select(x => this.CreateMessage(x, MessageParameterKey));
         }
 
         private void ObserveSimpleAnimation()
@@ -100,6 +109,16 @@ namespace UniFlow.Connector.Event
                 CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
+                new CollectableMessageAnnotation<SimpleAnimation>(SimpleAnimationCollector, x => SimpleAnimation = x),
+                new CollectableMessageAnnotation<AnimationClip>(AnimationClipCollector, x => AnimationClip = x),
+            };
     }
 
     public enum SimpleAnimationEventType

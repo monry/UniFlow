@@ -1,4 +1,4 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -6,7 +6,9 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.ValueInjector.Timeline
 {
     [AddComponentMenu("UniFlow/ValueInjector/Timeline/ControlTrack", (int) ConnectorType.ValueInjectorTimelineControlTrack)]
-    public class ControlTrackInjector : TimelineInjectorBase<ControlPlayableAsset>, IBaseGameObjectSpecifyable
+    public class ControlTrackInjector : TimelineInjectorBase<ControlPlayableAsset>,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -16,41 +18,57 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         [SerializeField] private GameObject sourceGameObject = default;
         [SerializeField] private GameObject prefabGameObject = default;
 
-        [ValueReceiver] public override GameObject BaseGameObject
+        public override GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public override PlayableDirector PlayableDirector
+        protected override PlayableDirector PlayableDirector
         {
             get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
-        [ValueReceiver] public override string TrackName
+        protected override string TrackName
         {
             get => trackName;
             set => trackName = value;
         }
-        [ValueReceiver] public override string ClipName
+        protected override string ClipName
         {
             get => clipName;
             set => clipName = value;
         }
-        [ValueReceiver] public GameObject SourceGameObject
+        public GameObject SourceGameObject
         {
             get => sourceGameObject;
             set => sourceGameObject = value;
         }
-        [ValueReceiver] public GameObject PrefabGameObject
+        private GameObject PrefabGameObject
         {
             get => prefabGameObject;
             set => prefabGameObject = value;
         }
+
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private StringCollector trackNameCollector = default;
+        [SerializeField] private StringCollector clipNameCollector = default;
+        [SerializeField] private GameObjectCollector sourceGameObjectCollector = default;
+        [SerializeField] private GameObjectCollector prefabGameObjectCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private StringCollector TrackNameCollector => trackNameCollector;
+        private StringCollector ClipNameCollector => clipNameCollector;
+        private GameObjectCollector SourceGameObjectCollector => sourceGameObjectCollector;
+        private GameObjectCollector PrefabGameObjectCollector => prefabGameObjectCollector;
 
         protected override void Inject(ControlPlayableAsset playableAsset)
         {
@@ -63,5 +81,17 @@ namespace UniFlow.Connector.ValueInjector.Timeline
                 playableAsset.prefabGameObject = PrefabGameObject;
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                new CollectableMessageAnnotation<string>(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                new CollectableMessageAnnotation<string>(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                new CollectableMessageAnnotation<GameObject>(SourceGameObjectCollector, x => SourceGameObject = x, nameof(SourceGameObject)),
+                new CollectableMessageAnnotation<GameObject>(PrefabGameObjectCollector, x => PrefabGameObject = x, nameof(PrefabGameObject)),
+            };
     }
 }
