@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class SelectorBase<TKey, TValue, TKeyCollector> : ProviderBase<TValue>,
+    public abstract class SelectorBase<TKey, TValue, TKeyCollector> : ConnectorBase,
         IMessageCollectable,
         IMessageComposable
         where TKeyCollector : ValueCollectorBase<TKey>, new()
@@ -22,6 +23,11 @@ namespace UniFlow.Connector.ValueProvider
 
         [SerializeField] private TKeyCollector keyCollector = default;
         private TKeyCollector KeyCollector => keyCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
+        {
+            return Observable.Return(this.CreateMessage());
+        }
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
