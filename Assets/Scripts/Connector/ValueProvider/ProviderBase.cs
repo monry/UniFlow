@@ -2,16 +2,11 @@ using System;
 using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase, IInjectable<TValue>
-        where TPublishEvent : UnityEvent<TValue>, new()
+    public abstract class ProviderBase<TValue> : ConnectorBase, IInjectable<TValue>
     {
-        [SerializeField] private TPublishEvent publisher = new TPublishEvent();
-        [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
-
         [SerializeField] private TValue value = default;
         [ValueReceiver] public TValue Value
         {

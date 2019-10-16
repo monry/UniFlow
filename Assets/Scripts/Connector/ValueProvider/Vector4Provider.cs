@@ -1,42 +1,34 @@
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
     [AddComponentMenu("UniFlow/ValueProvider/Vector4", (int) ConnectorType.ValueProviderVector4)]
-    public class Vector4Provider : ProviderBase<Vector4, PublishVector4Event>, IValueCombiner<Vector4>, IValueExtractor<Vector4>
+    public class Vector4Provider : ProviderBase<Vector4>, IMessageCollectable, IMessageComposable
     {
-        private float? x;
-        private float? y;
-        private float? z;
-        private float? w;
-        [ValueReceiver] private float X { get => x ?? Value.x; set => x = value; }
-        [ValueReceiver] private float Y { get => y ?? Value.y; set => y = value; }
-        [ValueReceiver] private float Z { get => z ?? Value.z; set => z = value; }
-        [ValueReceiver] private float W { get => w ?? Value.w; set => w = value; }
+        [SerializeField] private FloatCollector xCollector = default;
+        [SerializeField] private FloatCollector yCollector = default;
+        [SerializeField] private FloatCollector zCollector = default;
+        [SerializeField] private FloatCollector wCollector = default;
 
-        [SerializeField] private PublishFloatEvent publisherX = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherY = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherZ = new PublishFloatEvent();
-        [SerializeField] private PublishFloatEvent publisherW = new PublishFloatEvent();
+        private FloatCollector XCollector => xCollector;
+        private FloatCollector YCollector => yCollector;
+        private FloatCollector ZCollector => zCollector;
+        private FloatCollector WCollector => wCollector;
 
-        [ValuePublisher("X")] private UnityEvent<float> PublisherX => publisherX;
-        [ValuePublisher("Y")] private UnityEvent<float> PublisherY => publisherY;
-        [ValuePublisher("Z")] private UnityEvent<float> PublisherZ => publisherZ;
-        [ValuePublisher("W")] private UnityEvent<float> PublisherW => publisherW;
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<float>(XCollector, v => Value = new Vector4(v, Value.y, Value.z, Value.w), "X"),
+                new CollectableMessageAnnotation<float>(YCollector, v => Value = new Vector4(Value.x, v, Value.z, Value.w), "Y"),
+                new CollectableMessageAnnotation<float>(ZCollector, v => Value = new Vector4(Value.x, Value.y, v, Value.w), "Z"),
+                new CollectableMessageAnnotation<float>(WCollector, v => Value = new Vector4(Value.x, Value.y, Value.z, v), "W"),
+            };
 
-        Vector4 IValueCombiner<Vector4>.Combine()
-        {
-            return new Vector4(X, Y, Z, W);
-        }
-
-        void IValueExtractor<Vector4>.Extract(Vector4 value)
-        {
-            PublisherX.Invoke(value.x);
-            PublisherY.Invoke(value.y);
-            PublisherZ.Invoke(value.z);
-            PublisherW.Invoke(value.w);
-        }
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[]
+            {
+                new ComposableMessageAnnotation<Vector4>(() => Value),
+            };
     }
 }

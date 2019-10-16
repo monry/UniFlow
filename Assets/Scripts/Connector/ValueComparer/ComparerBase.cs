@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniFlow.Utility;
 using UniFlow.Attribute;
@@ -6,7 +7,8 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    public abstract class ComparerBase<TValue> : ConnectorBase
+    public abstract class ComparerBase<TValue, TCollector> : ConnectorBase, IMessageCollectable, IMessageComposable
+        where TCollector : ValueCollectorBase<TValue>
     {
         private const string MessageParameterKey = "Result";
 
@@ -19,21 +21,39 @@ namespace UniFlow.Connector.ValueComparer
         }
         [ValueReceiver] public TValue Actual { get; set; }
 
-        [SerializeField] private PublishBoolEvent publishResult = new PublishBoolEvent();
-        [ValuePublisher("Result")] public PublishBoolEvent PublishResult => publishResult;
+        [SerializeField] private TCollector expectCollector = default;
+        [SerializeField] private TCollector actualCollector = default;
+
+        private TCollector ExpectCollector => expectCollector;
+        private TCollector ActualCollector => actualCollector;
+
+        private bool Result { get; set; }
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            var result = Compare(Actual);
-            PublishResult.Invoke(result);
-            return result ? ObservableFactory.ReturnMessage(this, MessageParameterKey, true) : ObservableFactory.EmptyMessage();
+            Result = Compare(Actual);
+            return Result ? ObservableFactory.ReturnMessage(this, MessageParameterKey, true) : ObservableFactory.EmptyMessage();
         }
 
         protected abstract bool Compare(TValue actual);
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<TValue>(ExpectCollector, x => Expect = x, nameof(Expect)),
+                new CollectableMessageAnnotation<TValue>(ActualCollector, x => Actual = x, nameof(Actual)),
+            };
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                new ComposableMessageAnnotation<bool>(() => Result, "Result"),
+            };
     }
 
-    public abstract class ComparerBase<TValue, TOperator> : ComparerBase<TValue>
+    public abstract class ComparerBase<TValue, TOperator, TCollector> : ComparerBase<TValue, TCollector>
         where TOperator : Enum
+        where TCollector : ValueCollectorBase<TValue>
     {
         [SerializeField] private TOperator @operator = default;
 

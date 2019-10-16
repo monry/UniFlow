@@ -14,8 +14,6 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private GameObject source = default;
         [SerializeField] private Transform parent = default;
 
-        [SerializeField] private PublishGameObjectEvent publisher = new PublishGameObjectEvent();
-
         [ValueReceiver] public GameObject Source
         {
             get => source == default ? gameObject : source;
@@ -33,15 +31,11 @@ namespace UniFlow.Connector.Controller
         private GameObjectCollector SourceCollector => sourceCollector;
         private TransformCollector ParentCollector => parentCollector;
 
-        [ValuePublisher("Instantiated")] private PublishGameObjectEvent Publisher => publisher;
-
         private GameObject Instantiated { get; set; }
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            var go = Instantiate(Source, Parent);
-            Publisher.Invoke(go);
-            Instantiated = go;
+            Instantiated = Instantiate(Source, Parent);
             return ObservableFactory.ReturnMessage(this);
         }
 
