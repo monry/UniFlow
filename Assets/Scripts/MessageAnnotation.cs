@@ -68,7 +68,10 @@ namespace UniFlow
 
         void ICollectableMessageAnnotation.Collect()
         {
-            Callback?.Invoke(GetValue());
+            if (ValueCollector?.TargetConnector != default && ValueCollector?.SourceConnector != default)
+            {
+                Callback?.Invoke(GetValue());
+            }
         }
 
         void ICollectableMessageAnnotation.Inject(GameObject gameObject)
