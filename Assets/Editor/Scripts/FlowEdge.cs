@@ -19,9 +19,6 @@ namespace UniFlow.Editor
                 case FlowPort _:
                     outputNode.ApplyTargetConnectors();
                     break;
-                case FlowValuePublishPort _:
-                    outputNode.ApplyValuePublishers();
-                    break;
             }
 
             switch (input)

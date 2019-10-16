@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -26,20 +25,18 @@ namespace UniFlow.Connector.Controller
             get => targetBehaviours;
             set => targetBehaviours = value.ToList();
         }
-        [ValueReceiver] public bool Activated
+        public GameObject TargetGameObject
+        {
+            set => GameObjects.Add(value);
+        }
+        private Behaviour TargetBehaviour
+        {
+            set => Behaviours.Add(value);
+        }
+        private bool Activated
         {
             get => activated;
             set => activated = value;
-        }
-        [ValueReceiver] public GameObject TargetGameObject
-        {
-            get => null;
-            set => GameObjects.Add(value);
-        }
-        [ValueReceiver] public Behaviour TargetBehaviour
-        {
-            get => null;
-            set => Behaviours.Add(value);
         }
 
         [SerializeField] private BoolCollector activatedCollector = default;

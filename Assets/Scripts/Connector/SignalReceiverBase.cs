@@ -1,5 +1,4 @@
 using System;
-using UniFlow.Attribute;
 using UniFlow.Connector.SignalPublisher;
 using UniFlow.Connector.SignalReceiver;
 using UniFlow.Utility;
@@ -13,7 +12,8 @@ namespace UniFlow.Connector
         private const string MessageParameterKey = "Signal";
 
         [SerializeField] private TSignal signal = default;
-        [ValueReceiver] public TSignal Signal
+
+        protected TSignal Signal
         {
             get => signal;
             set => signal = value;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
@@ -14,12 +13,12 @@ namespace UniFlow.Connector.ValueComparer
 
         [SerializeField] private TValue expect = default;
 
-        [ValueReceiver] public TValue Expect
+        protected TValue Expect
         {
             get => expect;
-            set => expect = value;
+            private set => expect = value;
         }
-        [ValueReceiver] public TValue Actual { get; set; }
+        protected TValue Actual { get; set; }
 
         [SerializeField] private TCollector expectCollector = default;
         [SerializeField] private TCollector actualCollector = default;
@@ -47,7 +46,7 @@ namespace UniFlow.Connector.ValueComparer
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<bool>(() => Result, "Result"),
+                new ComposableMessageAnnotation<bool>(() => Result, nameof(Result)),
             };
     }
 

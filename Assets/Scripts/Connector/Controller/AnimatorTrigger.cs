@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -18,22 +17,22 @@ namespace UniFlow.Connector.Controller
         private Animator animator = default;
         [SerializeField] private string triggerName = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public Animator Animator
+        private Animator Animator
         {
             get => animator ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        [ValueReceiver] public string TriggerName
+        private string TriggerName
         {
             get => triggerName;
             set => triggerName = value;

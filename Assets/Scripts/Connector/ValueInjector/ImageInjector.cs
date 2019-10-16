@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UniFlow.Connector.ValueInjector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,22 +15,22 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private Image image = default;
         [SerializeField] private Sprite sprite = default;
 
-        [ValueReceiver] public override GameObject BaseGameObject
+        public override GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public Image Image
+        private Image Image
         {
             get => image != default ? image : image = this.GetOrAddComponent<Image>();
             set => image = value;
         }
-        [ValueReceiver] public Sprite Sprite
+        private Sprite Sprite
         {
             get => sprite;
             set => sprite = value;

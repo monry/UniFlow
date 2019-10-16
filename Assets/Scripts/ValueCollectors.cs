@@ -237,5 +237,10 @@ namespace UniFlow
     {
     }
 
+    [Serializable]
+    public class EaseTypeCollector : ValueCollectorBase<ObservableTween.EaseType>
+    {
+    }
+
 #endregion
 }

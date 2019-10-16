@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/AnimationEvent", (int) ConnectorType.AnimationEvent)]
-    public class AnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageComposable
+    public class AnimationEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable, IMessageComposable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -21,22 +20,22 @@ namespace UniFlow.Connector.Event
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public Animator Animator
+        private Animator Animator
         {
             get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        [ValueReceiver] public SimpleAnimation SimpleAnimation
+        private SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -48,21 +47,26 @@ namespace UniFlow.Connector.Event
             ;
             set => simpleAnimation = value;
         }
-        [ValueReceiver] public AnimationClip AnimationClip
+        private AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [ValueReceiver] public AnimatorCullingMode CullingMode
-        {
-            get => cullingMode;
-            set => cullingMode = value;
-        }
-        [ValueReceiver] public AnimatorUpdateMode UpdateMode
-        {
-            get => updateMode;
-            set => updateMode = value;
-        }
+        private AnimatorCullingMode CullingMode => cullingMode;
+        private AnimatorUpdateMode UpdateMode => updateMode;
+
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AnimatorCollector animatorCollector = default;
+        [SerializeField] private SimpleAnimationCollector simpleAnimationCollector = default;
+        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+        // TODO: Implement EnumCollector
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AnimatorCollector AnimatorCollector => animatorCollector;
+        private SimpleAnimationCollector SimpleAnimationCollector => simpleAnimationCollector;
+        private AnimationClipCollector AnimationClipCollector => animationClipCollector;
 
         private ISubject<UnityEngine.AnimationEvent> Subject { get; } = new Subject<UnityEngine.AnimationEvent>();
 
@@ -99,6 +103,16 @@ namespace UniFlow.Connector.Event
                 Animator.updateMode = UpdateMode;
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
+                new CollectableMessageAnnotation<SimpleAnimation>(SimpleAnimationCollector, x => SimpleAnimation = x),
+                new CollectableMessageAnnotation<AnimationClip>(AnimationClipCollector, x => AnimationClip = x),
+            };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]

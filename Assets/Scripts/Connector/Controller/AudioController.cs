@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -20,27 +18,23 @@ namespace UniFlow.Connector.Controller
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public AudioSource AudioSource
+        private AudioSource AudioSource
         {
             get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
-        [UsedImplicitly] public AudioControlMethod AudioControlMethod
-        {
-            get => audioControlMethod;
-            set => audioControlMethod = value;
-        }
-        [ValueReceiver] public AudioClip AudioClip
+        private AudioControlMethod AudioControlMethod => audioControlMethod;
+        private AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;

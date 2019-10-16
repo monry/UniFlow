@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -18,32 +17,32 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         [SerializeField] private string clipName = default;
         [SerializeField] private AudioClip audioClip = default;
 
-        [ValueReceiver] public override GameObject BaseGameObject
+        public override GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
             set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public override PlayableDirector PlayableDirector
+        protected override PlayableDirector PlayableDirector
         {
             get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
-        [ValueReceiver] public override string TrackName
+        protected override string TrackName
         {
             get => trackName;
             set => trackName = value;
         }
-        [ValueReceiver] public override string ClipName
+        protected override string ClipName
         {
             get => clipName;
             set => clipName = value;
         }
-        [ValueReceiver] public AudioClip AudioClip
+        private AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;

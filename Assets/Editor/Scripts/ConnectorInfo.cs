@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
-using UniFlow.Attribute;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Editor
 {
@@ -18,8 +16,6 @@ namespace UniFlow.Editor
             Type type,
             string name,
             IEnumerable<Parameter> parameters,
-            IEnumerable<ValuePublisherInfo> valuePublishers,
-            IEnumerable<ValueReceiverInfo> valueReceivers,
             IEnumerable<IComposableMessageAnnotation> composableMessageAnnotations,
             IEnumerable<ICollectableMessageAnnotation> collectableMessageAnnotations
         )
@@ -29,8 +25,6 @@ namespace UniFlow.Editor
             Type = type;
             Name = name;
             parameterList = parameters.ToList();
-            ValuePublishers = valuePublishers;
-            ValueReceivers = valueReceivers;
             ComposableMessageAnnotations = composableMessageAnnotations;
             CollectableMessageAnnotations = collectableMessageAnnotations;
         }
@@ -41,10 +35,8 @@ namespace UniFlow.Editor
         public string Name { get; }
         [SerializeField] private List<Parameter> parameterList = default;
         public IEnumerable<Parameter> ParameterList => parameterList;
-        public IEnumerable<ValuePublisherInfo> ValuePublishers { get; }
-        public IEnumerable<ValueReceiverInfo> ValueReceivers { get; }
-        public IEnumerable<IComposableMessageAnnotation> ComposableMessageAnnotations { get; set; }
-        public IEnumerable<ICollectableMessageAnnotation> CollectableMessageAnnotations { get; set; }
+        public IEnumerable<IComposableMessageAnnotation> ComposableMessageAnnotations { get; private set; }
+        public IEnumerable<ICollectableMessageAnnotation> CollectableMessageAnnotations { get; private set; }
 
         public void ApplyParameter(Parameter parameter)
         {
@@ -119,13 +111,6 @@ namespace UniFlow.Editor
                 type.GetFieldsRecursive(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => (x.GetCustomAttribute<SerializeField>() != null || x.IsPublic) && x.GetCustomAttribute<HideInInspector>() == null)
                     .Select(x => Parameter.Create(x.FieldType, x.Name, instance != default ? x.GetValue(instance) : default)),
-                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(x => typeof(UnityEventBase).IsAssignableFrom(x.PropertyType))
-                    .Where(x => x.GetCustomAttribute<ValuePublisherAttribute>() != null)
-                    .Select(ValuePublisherInfo.Create),
-                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(x => x.GetCustomAttribute<ValueReceiverAttribute>() != null)
-                    .Select(ValueReceiverInfo.Create),
                 typeof(IMessageComposable).IsAssignableFrom(type) && instance != null
                     ? ((IMessageComposable) instance).GetMessageComposableAnnotations()
                     : new IComposableMessageAnnotation[0],
@@ -142,13 +127,11 @@ namespace UniFlow.Editor
             Type type,
             string name,
             IEnumerable<Parameter> parameters,
-            IEnumerable<ValuePublisherInfo> valuePublishers,
-            IEnumerable<ValueReceiverInfo> valueReceivers,
             IEnumerable<IComposableMessageAnnotation> composableMessageAnnotations,
             IEnumerable<ICollectableMessageAnnotation> collectableMessageAnnotations
         )
         {
-            return new ConnectorInfo(gameObject, instance, type, name, parameters, valuePublishers, valueReceivers, composableMessageAnnotations, collectableMessageAnnotations);
+            return new ConnectorInfo(gameObject, instance, type, name, parameters, composableMessageAnnotations, collectableMessageAnnotations);
         }
 
         [Serializable]
@@ -174,64 +157,6 @@ namespace UniFlow.Editor
             public static Parameter Create(Type type, string name, object value)
             {
                 return new Parameter(type, name, value);
-            }
-        }
-
-        public class ValuePublisherInfo
-        {
-            private ValuePublisherInfo(PropertyInfo propertyInfo)
-            {
-                var attribute = propertyInfo.GetCustomAttribute<ValuePublisherAttribute>();
-                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
-                Type = GetGenericType(propertyInfo.PropertyType);
-                PropertyInfo = propertyInfo;
-            }
-
-            public string Name { get; }
-            public Type Type { get; }
-            public PropertyInfo PropertyInfo { get; }
-
-            public static ValuePublisherInfo Create(PropertyInfo propertyInfo)
-            {
-                return new ValuePublisherInfo(propertyInfo);
-            }
-
-            private static Type GetGenericType(Type type)
-            {
-                while (true)
-                {
-                    if (type == default)
-                    {
-                        return default;
-                    }
-
-                    if (type.IsGenericType)
-                    {
-                        return type.GetGenericArguments().First();
-                    }
-
-                    type = type.BaseType;
-                }
-            }
-        }
-
-        public class ValueReceiverInfo
-        {
-            private ValueReceiverInfo(PropertyInfo propertyInfo)
-            {
-                var attribute = propertyInfo.GetCustomAttribute<ValueReceiverAttribute>();
-                Name = string.IsNullOrEmpty(attribute.Name) ? propertyInfo.Name : attribute.Name;
-                Type = propertyInfo.PropertyType;
-                PropertyInfo = propertyInfo;
-            }
-
-            public string Name { get; }
-            public Type Type { get; }
-            public PropertyInfo PropertyInfo { get; }
-
-            public static ValueReceiverInfo Create(PropertyInfo propertyInfo)
-            {
-                return new ValueReceiverInfo(propertyInfo);
             }
         }
     }

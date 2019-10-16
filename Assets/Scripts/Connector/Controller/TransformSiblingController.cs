@@ -1,18 +1,18 @@
 using System;
+using System.Collections.Generic;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/TransformSiblingController", (int) ConnectorType.TransformSiblingController)]
-    public class TransformSiblingController : ConnectorBase
+    public class TransformSiblingController : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Transform targetTransform = default;
         [SerializeField] private TransformSiblingControlMethod transformSiblingControlMethod = default;
         [SerializeField] private int index = default;
 
-        [ValueReceiver] public Transform TargetTransform
+        private Transform TargetTransform
         {
             get => targetTransform != default
                 ? targetTransform
@@ -20,11 +20,16 @@ namespace UniFlow.Connector.Controller
             set => targetTransform = value;
         }
         private TransformSiblingControlMethod TransformSiblingControlMethod => transformSiblingControlMethod;
-        [ValueReceiver] public int Index
+        private int Index
         {
             get => index;
             set => index = value;
         }
+
+        [SerializeField] private TransformCollector targetTransformCollector = default;
+        [SerializeField] private IntCollector indexCollector = default;
+        private TransformCollector TargetTransformCollector => targetTransformCollector;
+        private IntCollector IndexCollector => indexCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -44,6 +49,13 @@ namespace UniFlow.Connector.Controller
             }
             return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<Transform>(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                new CollectableMessageAnnotation<int>(IndexCollector, x => Index = x, nameof(Index)),
+            };
     }
 
     public enum TransformSiblingControlMethod

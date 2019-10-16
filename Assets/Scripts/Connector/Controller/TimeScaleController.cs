@@ -1,32 +1,40 @@
 using System;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/TimeScaleController", (int) ConnectorType.TimeScaleController)]
-    public class TimeScaleController : ConnectorBase
+    public class TimeScaleController : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private float timeScale = default;
         [SerializeField] private float duration = default;
         [SerializeField] private ObservableTween.EaseType easeType = default;
 
-        [ValueReceiver] private float TimeScale
+        private float TimeScale
         {
             get => timeScale;
             set => timeScale = value;
         }
-        [ValueReceiver] private float Duration
+        private float Duration
         {
             get => duration;
             set => duration = value;
         }
-        [ValueReceiver] private ObservableTween.EaseType EaseType
+        private ObservableTween.EaseType EaseType
         {
             get => easeType;
             set => easeType = value;
         }
+
+        [SerializeField] private FloatCollector timeScaleCollector = default;
+        [SerializeField] private FloatCollector durationCollector = default;
+        [SerializeField] private EaseTypeCollector easeTypeCollector = default;
+
+        private FloatCollector TimeScaleCollector => timeScaleCollector;
+        private FloatCollector DurationCollector => durationCollector;
+        private EaseTypeCollector EaseTypeCollector => easeTypeCollector;
 
         private ISubject<Unit> OnCompleteTweenSubject { get; } = new Subject<Unit>();
 
@@ -58,5 +66,13 @@ namespace UniFlow.Connector.Controller
                 .Subscribe(x => Time.timeScale = x)
                 .AddTo(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<float>(TimeScaleCollector, x => TimeScale = x, nameof(TimeScale)),
+                new CollectableMessageAnnotation<float>(DurationCollector, x => Duration = x, nameof(Duration)),
+                new CollectableMessageAnnotation<ObservableTween.EaseType>(EaseTypeCollector, x => EaseType = x, nameof(EaseType)),
+            };
     }
 }

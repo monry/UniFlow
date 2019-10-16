@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {

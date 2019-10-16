@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UniFlow.Connector.SignalPublisher;
 using UniFlow.Signal;
 using UnityEngine;
@@ -14,13 +13,15 @@ namespace UniFlow.Connector.SignalReceiver
         IMessageComposable
     {
         [SerializeField] private string signalName = default;
-        [ValueReceiver] public string SignalName
+
+        private string SignalName
         {
             get => signalName;
             set => signalName = value;
         }
 
         [SerializeField] private StringCollector signalNameCollector = default;
+
         private StringCollector SignalNameCollector => signalNameCollector;
 
         bool ISignalFilter<StringSignal>.Filter(StringSignal signal)

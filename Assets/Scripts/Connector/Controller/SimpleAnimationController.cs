@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UniFlow.Utility;
-using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
 
@@ -25,22 +23,22 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private AnimatorCullingMode cullingMode = AnimatorCullingMode.AlwaysAnimate;
         [SerializeField] private AnimatorUpdateMode updateMode = AnimatorUpdateMode.Normal;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public string TransformPath
+        public string TransformPath
         {
             get => transformPath;
-            set => transformPath = value;
+            private set => transformPath = value;
         }
-        [ValueReceiver] public Animator Animator
+        private Animator Animator
         {
             get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        [ValueReceiver] public SimpleAnimation SimpleAnimation
+        private SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -52,26 +50,14 @@ namespace UniFlow.Connector.Controller
             ;
             set => simpleAnimation = value;
         }
-        [UsedImplicitly] public SimpleAnimationControlMethod SimpleAnimationControlMethod
-        {
-            get => simpleAnimationControlMethod;
-            set => simpleAnimationControlMethod = value;
-        }
-        [ValueReceiver] public AnimationClip AnimationClip
+        private SimpleAnimationControlMethod SimpleAnimationControlMethod => simpleAnimationControlMethod;
+        private AnimationClip AnimationClip
         {
             get => animationClip;
             set => animationClip = value;
         }
-        [ValueReceiver] public AnimatorCullingMode CullingMode
-        {
-            get => cullingMode;
-            set => cullingMode = value;
-        }
-        [ValueReceiver] public AnimatorUpdateMode UpdateMode
-        {
-            get => updateMode;
-            set => updateMode = value;
-        }
+        private AnimatorCullingMode CullingMode => cullingMode;
+        private AnimatorUpdateMode UpdateMode => updateMode;
 
         [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
         [SerializeField] private StringCollector transformPathCollector = default;

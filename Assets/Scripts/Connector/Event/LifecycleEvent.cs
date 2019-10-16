@@ -1,6 +1,4 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -13,16 +11,8 @@ namespace UniFlow.Connector.Event
         [SerializeField] private Component component = default;
         [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
 
-        [ValuePublisher] public Component Component
-        {
-            get => component ? component : component = this;
-            set => component = value;
-        }
-        [UsedImplicitly] public LifecycleEventType LifecycleEventType
-        {
-            get => lifecycleEventType;
-            set => lifecycleEventType = value;
-        }
+        private Component Component => component ? component : component = this;
+        private LifecycleEventType LifecycleEventType => lifecycleEventType;
 
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);

@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,21 +7,20 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/CameraEvent", (int) ConnectorType.CameraEvent)]
-    public class CameraEvent : ConnectorBase
+    public class CameraEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private CameraEventType cameraEventType = CameraEventType.BecomeVisible;
 
-        [ValueReceiver] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public CameraEventType CameraEventType
-        {
-            get => cameraEventType;
-            set => cameraEventType = value;
-        }
+        private CameraEventType CameraEventType => cameraEventType;
+
+        [SerializeField] private ComponentCollector componentCollector = default;
+        private ComponentCollector ComponentCollector => componentCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -41,6 +39,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum CameraEventType

@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UniRx;
 using UnityEditor;
-using UnityEditor.Events;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -17,11 +15,10 @@ namespace UniFlow.Editor
 {
     public class FlowNode : Node, IRemovableElement
     {
-        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener, ValueInjectionConnectorListener valueInjectionConnectorListener, IEdgeConnectorListener messageConnectorListener)
+        public FlowNode(ConnectorInfo connectorInfo, IEdgeConnectorListener edgeConnectorListener, IEdgeConnectorListener messageConnectorListener)
         {
             ConnectorInfo = connectorInfo;
             EdgeConnectorListener = edgeConnectorListener;
-            ValueInjectionConnectorListener = valueInjectionConnectorListener;
             MessageConnectorListener = messageConnectorListener;
         }
 
@@ -70,15 +67,12 @@ namespace UniFlow.Editor
         public Port InputPort { get; private set; }
         public Port OutputPort { get; private set; }
 
-        public IList<FlowValueReceivePort> ValueReceivePorts { get; } = new List<FlowValueReceivePort>();
-        public IList<FlowValuePublishPort> ValuePublishPorts { get; } = new List<FlowValuePublishPort>();
         public IList<FlowMessageComposePort> MessageComposePorts { get; } = new List<FlowMessageComposePort>();
         public IList<FlowMessageCollectPort> MessageCollectPorts { get; } = new List<FlowMessageCollectPort>();
 
         internal ConnectorInfo ConnectorInfo { get; }
 
         private IEdgeConnectorListener EdgeConnectorListener { get; }
-        private IEdgeConnectorListener ValueInjectionConnectorListener { get; }
         private IEdgeConnectorListener MessageConnectorListener { get; }
 
         private const string DefaultTargetGameObjectName = "UniFlowController";
@@ -159,30 +153,6 @@ namespace UniFlow.Editor
                 .Select(x => x.ConnectorInfo.Connector)
                 .OfType<ConnectorBase>();
             EditorUtility.SetDirty(connector);
-        }
-
-        public void ApplyValuePublishers()
-        {
-            foreach (var valuePublishPort in ValuePublishPorts)
-            {
-                if (!(valuePublishPort.ValuePublisherInfo.PropertyInfo.GetValue(ConnectorInfo.Connector) is UnityEventBase unityEvent))
-                {
-                    continue;
-                }
-                // Preserve count before remove item from list
-                var count = unityEvent.GetPersistentEventCount();
-                for (var i = 0; i < count; i++)
-                {
-                    // Rebuild index every time, so remove first element
-                    UnityEventTools.RemovePersistentListener(unityEvent, 0);
-                }
-                valuePublishPort
-                    .connections
-                    .Select(x => x.input as FlowValueReceivePort)
-                    .Where(x => x?.node != default)
-                    .ToList()
-                    .ForEach(valuePublishPort.AddPersistentListener);
-            }
         }
 
         private void AddParameters()
@@ -393,40 +363,6 @@ namespace UniFlow.Editor
             InputPort = FlowPort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
-
-#region Will be removed
-
-            if (ConnectorInfo.ValuePublishers.Any())
-            {
-                var divider = new VisualElement {name = "divider"};
-                divider.AddToClassList("horizontal");
-                outputContainer.Add(divider);
-
-                foreach (var publisher in ConnectorInfo.ValuePublishers)
-                {
-                    var port = FlowValuePublishPort.Create(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, publisher, ValueInjectionConnectorListener);
-                    port.portName = publisher.Name;
-                    outputContainer.Add(port);
-                    ValuePublishPorts.Add(port as FlowValuePublishPort);
-                }
-            }
-
-            if (ConnectorInfo.ValueReceivers.Any())
-            {
-                var divider = new VisualElement {name = "divider"};
-                divider.AddToClassList("horizontal");
-                inputContainer.Add(divider);
-
-                foreach (var receiver in ConnectorInfo.ValueReceivers)
-                {
-                    var port = FlowValueReceivePort.Create(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, receiver, ValueInjectionConnectorListener);
-                    port.portName = receiver.Name;
-                    inputContainer.Add(port);
-                    ValueReceivePorts.Add(port as FlowValueReceivePort);
-                }
-            }
-
-#endregion
 
             if (ConnectorInfo.ComposableMessageAnnotations.Any())
             {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -19,7 +18,7 @@ namespace UniFlow.Connector.ValueProvider
         private IList<TKey> Keys => keys;
         private IList<TValue> Values => values;
 
-        [ValueReceiver] public TKey Key { get; set; }
+        public TKey Key { get; set; }
 
         [SerializeField] private TKeyCollector keyCollector = default;
         private TKeyCollector KeyCollector => keyCollector;

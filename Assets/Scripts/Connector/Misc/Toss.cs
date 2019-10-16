@@ -1,23 +1,23 @@
 using System;
 using System.Collections.Generic;
 using UniFlow.Utility;
-using UniFlow.Attribute;
-using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Misc
 {
     [AddComponentMenu("UniFlow/Misc/Toss", (int) ConnectorType.Toss)]
-    public class Toss : ConnectorBase
+    public class Toss : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private List<GameObject> targets = default;
         private IList<GameObject> Targets => targets;
 
-        [ValueReceiver] public GameObject TargetGameObject
+        private GameObject TargetGameObject
         {
-            get => null;
             set => Targets.Add(value);
         }
+
+        [SerializeField] private GameObjectCollector targetGameObjectCollector = default;
+        private GameObjectCollector TargetGameObjectCollector => targetGameObjectCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -30,5 +30,11 @@ namespace UniFlow.Connector.Misc
             }
             return ObservableFactory.ReturnMessage(this);
         }
+
+        public IEnumerable<ICollectableMessageAnnotation> GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<GameObject>(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
+            };
     }
 }

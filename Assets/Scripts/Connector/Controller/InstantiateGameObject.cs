@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UniFlow.Attribute;
 using UniFlow.Utility;
 using UnityEngine;
 
@@ -14,12 +13,12 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private GameObject source = default;
         [SerializeField] private Transform parent = default;
 
-        [ValueReceiver] public GameObject Source
+        public GameObject Source
         {
             get => source == default ? gameObject : source;
-            set => source = value;
+            private set => source = value;
         }
-        [ValueReceiver] public Transform Parent
+        private Transform Parent
         {
             get => parent == default ? transform : parent;
             set => parent = value;
