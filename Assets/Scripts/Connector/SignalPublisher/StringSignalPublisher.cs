@@ -53,6 +53,7 @@ namespace UniFlow.Connector.SignalPublisher
             set => scriptableObjectParameter = value;
         }
 
+        [SerializeField] private StringCollector signalNameCollector = default;
         [SerializeField] private BoolCollector boolCollector = default;
         [SerializeField] private IntCollector intCollector = default;
         [SerializeField] private FloatCollector floatCollector = default;
@@ -60,6 +61,7 @@ namespace UniFlow.Connector.SignalPublisher
         [SerializeField] private ObjectCollector objectCollector = default;
         [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = default;
 
+        private StringCollector SignalNameCollector => signalNameCollector;
         private BoolCollector BoolCollector => boolCollector;
         private IntCollector IntCollector => intCollector;
         private FloatCollector FloatCollector => floatCollector;
@@ -87,6 +89,7 @@ namespace UniFlow.Connector.SignalPublisher
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
+                new CollectableMessageAnnotation<string>(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
                 new CollectableMessageAnnotation<bool>(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
                 new CollectableMessageAnnotation<int>(IntCollector, x => IntParameter = x, nameof(IntParameter)),
                 new CollectableMessageAnnotation<float>(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
