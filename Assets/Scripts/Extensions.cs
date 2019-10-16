@@ -85,7 +85,7 @@ namespace UniFlow
 
         public static Message FindMessage(this IEnumerable<Message> messages, IConnector connector)
         {
-            return messages.Last(x => x.Connector == connector);
+            return connector == default ? default : messages.Last(x => x.Connector == connector);
         }
     }
 }
