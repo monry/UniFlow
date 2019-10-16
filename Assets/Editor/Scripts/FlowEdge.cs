@@ -25,6 +25,9 @@ namespace UniFlow.Editor
             {
                 case FlowMessageCollectPort messageCollectPort:
                     messageCollectPort.CollectableMessageAnnotation.ValueCollector.SourceConnector = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.TargetConnector = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.TypeString = default;
+                    messageCollectPort.CollectableMessageAnnotation.ValueCollector.CollectorKey = default;
                     messageCollectPort.CollectableMessageAnnotation.ValueCollector.ComposerKey = default;
                     break;
             }
