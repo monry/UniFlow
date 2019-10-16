@@ -166,6 +166,11 @@ namespace UniFlow.Editor
             Undo.CollapseUndoOperations(groupId);
         }
 
+        public void CollectConnectorsForSearchTree()
+        {
+            SearchWindowProvider.CalculateSearchTree();
+        }
+
         internal Vector2 NormalizeMousePosition(Vector2 mousePosition)
         {
             return contentViewContainer
