@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace UniFlow
@@ -45,49 +44,64 @@ namespace UniFlow
 
         public Message AddParameter<T>(T value)
         {
-            GetOrCreateParameterDictionary<T>()[string.Empty] = value;
+            SetValue(string.Empty, value);
             return this;
         }
 
         public Message AddParameter<T>(T value, string key)
         {
-            GetOrCreateParameterDictionary<T>()[key] = value;
+            SetValue(key, value);
             return this;
         }
 
         public bool HasParameter<T>()
         {
-            return GetOrCreateParameterDictionary<T>().ContainsKey(string.Empty);
+            return HasValue<T>(string.Empty);
         }
 
         public bool HasParameter<T>(string key)
         {
-            return GetOrCreateParameterDictionary<T>().ContainsKey(key);
-        }
-
-        public IDictionary<string, T> GetParameters<T>()
-        {
-            return GetOrCreateParameterDictionary<T>();
+            return HasValue<T>(key);
         }
 
         public T GetParameter<T>()
         {
-            return GetOrCreateParameterDictionary<T>()[string.Empty];
+            return GetValue<T>(string.Empty);
         }
 
         public T GetParameter<T>(string key)
         {
-            return GetOrCreateParameterDictionary<T>()[key];
+            return GetValue<T>(key);
         }
 
-        private IDictionary<string, T> GetOrCreateParameterDictionary<T>()
+        private bool HasValue<T>(string key)
+        {
+            return Parameters.ContainsKey(typeof(T)) && Parameters[typeof(T)].ContainsKey(key);
+        }
+
+        private T GetValue<T>(string key)
         {
             if (!Parameters.ContainsKey(typeof(T)))
             {
                 Parameters.Add(typeof(T), new Dictionary<string, object>());
             }
 
-            return Parameters[typeof(T)].ToDictionary(x => x.Key, x => (T) x.Value);
+            if (!Parameters[typeof(T)].ContainsKey(key))
+            {
+                return default;
+            }
+
+            return (T) Parameters[typeof(T)][key];
+        }
+
+        private void SetValue<T>(string key, T value)
+        {
+            if (!Parameters.ContainsKey(typeof(T)))
+            {
+                Parameters.Add(typeof(T), new Dictionary<string, object>());
+            }
+
+            Parameters[typeof(T)][key] = value;
         }
     }
 }
