@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,26 +7,26 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/PhysicsTriggerEvent", (int) ConnectorType.PhysicsTriggerEvent)]
-    public class PhysicsTriggerEvent : ConnectorBase
+    public class PhysicsTriggerEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private PhysicsTriggerEventType physicsTriggerEventType = PhysicsTriggerEventType.TriggerEnter;
 
-        [ValuePublisher] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public PhysicsTriggerEventType PhysicsTriggerEventType
-        {
-            get => physicsTriggerEventType;
-            set => physicsTriggerEventType = value;
-        }
+        private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private ComponentCollector componentCollector = default;
+
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<Collider> OnEventAsObservable()
@@ -44,6 +43,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum PhysicsTriggerEventType

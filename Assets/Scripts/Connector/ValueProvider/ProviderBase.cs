@@ -1,22 +1,26 @@
 using System;
-using UniFlow.Attribute;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ProviderBase<TValue, TPublishEvent> : ConnectorBase where TPublishEvent : UnityEvent<TValue>, new()
+    public abstract class ProviderBase<TValue> : ConnectorBase, IInjectable<TValue>
     {
-        [SerializeField] private TPublishEvent publisher = new TPublishEvent();
-        [ValuePublisher("Value")] public TPublishEvent Publisher => publisher;
-
-        protected abstract TValue Provide();
-
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private TValue value = default;
+        public TValue Value
         {
-            Publisher.Invoke(Provide());
-            return Observable.ReturnUnit();
+            get => value;
+            set => this.value = value;
+        }
+
+        public override IObservable<Message> OnConnectAsObservable()
+        {
+            return Observable.Return(this.CreateMessage());
+        }
+
+        void IInjectable<TValue>.Inject(TValue v)
+        {
+            Value = v;
         }
     }
 }

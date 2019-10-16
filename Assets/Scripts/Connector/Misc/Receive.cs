@@ -1,5 +1,5 @@
 using System;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Misc
@@ -16,9 +16,9 @@ namespace UniFlow.Connector.Misc
             }
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

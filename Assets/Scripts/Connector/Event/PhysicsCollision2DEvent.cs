@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,26 +7,26 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/PhysicsCollision2DEvent", (int) ConnectorType.PhysicsCollision2DEvent)]
-    public class PhysicsCollision2DEvent : ConnectorBase
+    public class PhysicsCollision2DEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private PhysicsCollision2DEventType physicsCollision2DEventType = PhysicsCollision2DEventType.CollisionEnter2D;
 
-        [ValuePublisher] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public PhysicsCollision2DEventType PhysicsCollision2DEventType
-        {
-            get => physicsCollision2DEventType;
-            set => physicsCollision2DEventType = value;
-        }
+        private PhysicsCollision2DEventType PhysicsCollision2DEventType => physicsCollision2DEventType;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private ComponentCollector componentCollector = default;
+
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<Collision2D> OnEventAsObservable()
@@ -44,6 +43,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum PhysicsCollision2DEventType

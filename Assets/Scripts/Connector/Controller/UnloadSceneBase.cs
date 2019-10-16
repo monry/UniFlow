@@ -12,11 +12,11 @@ namespace UniFlow.Connector.Controller
         [UsedImplicitly]
         public abstract IEnumerable<string> SceneNames { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return UnloadScenes()
                 .ToObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private async UniTask UnloadScenes()

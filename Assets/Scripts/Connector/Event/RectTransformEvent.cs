@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,25 +7,25 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/RectTransformEvent", (int) ConnectorType.RectTransformEvent)]
-    public class RectTransformEvent : ConnectorBase
+    public class RectTransformEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private RectTransformEventType rectTransformEventType = RectTransformEventType.CanvasGroupChanged;
 
-        [ValuePublisher] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public RectTransformEventType RectTransformEventType
-        {
-            get => rectTransformEventType;
-            set => rectTransformEventType = value;
-        }
+        private RectTransformEventType RectTransformEventType => rectTransformEventType;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private ComponentCollector componentCollector = default;
+
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().Select(this.CreateMessage);
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -43,6 +42,12 @@ namespace UniFlow.Connector.Event
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum RectTransformEventType

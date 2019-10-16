@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UniRx;
+using UniFlow.Utility;
 
 namespace UniFlow
 {
@@ -8,10 +8,10 @@ namespace UniFlow
     {
         protected override IEnumerable<IConnector> TargetConnectors { get; } = new List<IConnector>();
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             OnReceive();
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
 
         public abstract void OnReceive();

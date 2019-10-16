@@ -1,54 +1,59 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/AudioEvent", (int) ConnectorType.AudioEvent)]
-    public class AudioEvent : ConnectorBase
+    public class AudioEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioEventType audioEventType = AudioEventType.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public AudioSource AudioSource
+        public string TransformPath
         {
-            get =>
-                audioSource != default
-                    ? audioSource
-                    : audioSource =
-                        BaseGameObject.GetComponent<AudioSource>() != default
-                            ? BaseGameObject.GetComponent<AudioSource>()
-                            : BaseGameObject.AddComponent<AudioSource>();
+            get => transformPath;
+            private set => transformPath = value;
+        }
+        private AudioSource AudioSource
+        {
+            get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
-        [UsedImplicitly] public AudioEventType AudioEventType
-        {
-            get => audioEventType;
-            set => audioEventType = value;
-        }
-        [ValueReceiver] public AudioClip AudioClip
+        private AudioEventType AudioEventType => audioEventType;
+        private AudioClip AudioClip
         {
             get => audioClip;
             set => audioClip = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AudioSourceCollector audioSourceCollector = default;
+        [SerializeField] private AudioClipCollector audioClipCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
+        private AudioClipCollector AudioClipCollector => audioClipCollector;
+
         private IReadOnlyReactiveProperty<Pair<float>> TimePair { get; set; }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return OnAudioEventAsObservable()
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private IObservable<AudioEventType> OnAudioEventAsObservable()
@@ -107,6 +112,15 @@ namespace UniFlow.Connector.Event
 
             return (AudioEventType) -1;
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<AudioSource>(AudioSourceCollector, x => AudioSource = x),
+                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x),
+            };
     }
 
     public enum AudioEventType

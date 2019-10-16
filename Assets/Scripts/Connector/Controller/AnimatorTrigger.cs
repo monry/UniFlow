@@ -1,41 +1,68 @@
 using System;
-using UniFlow.Attribute;
-using UniRx;
+using System.Collections.Generic;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/AnimatorTrigger", (int) ConnectorType.AnimatorTrigger)]
-    public class AnimatorTrigger : ConnectorBase
+    public class AnimatorTrigger : ConnectorBase,
+        IBaseGameObjectSpecifyable,
+        IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by GameObject.GetComponent<Animator>()")]
         private Animator animator = default;
         [SerializeField] private string triggerName = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValueReceiver] public Animator Animator
+        public string TransformPath
         {
-            get => animator ? animator : animator = BaseGameObject.GetComponent<Animator>();
+            get => transformPath;
+            private set => transformPath = value;
+        }
+        private Animator Animator
+        {
+            get => animator ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        [ValueReceiver] public string TriggerName
+        private string TriggerName
         {
             get => triggerName;
             set => triggerName = value;
         }
 
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private AnimatorCollector animatorCollector = default;
+        [SerializeField] private StringCollector triggerNameCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private AnimatorCollector AnimatorCollector => animatorCollector;
+        private StringCollector TriggerNameCollector => triggerNameCollector;
+
         private int TriggerId => Animator.StringToHash(TriggerName);
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             Animator.SetTrigger(TriggerId);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
+                new CollectableMessageAnnotation<string>(TriggerNameCollector, x => TriggerName = x, nameof(TriggerName)),
+            };
     }
 }

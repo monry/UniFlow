@@ -1,6 +1,5 @@
 using System;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
+using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -8,25 +7,25 @@ using UnityEngine;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/MouseEvent", (int) ConnectorType.MouseEvent)]
-    public class MouseEvent : ConnectorBase
+    public class MouseEvent : ConnectorBase, IMessageCollectable
     {
         [SerializeField] private Component component = default;
         [SerializeField] private MouseEventType mouseEventType = MouseEventType.MouseDown;
 
-        [ValuePublisher] public Component Component
+        private Component Component
         {
             get => component ? component : component = this;
             set => component = value;
         }
-        [UsedImplicitly] public MouseEventType MouseEventType
-        {
-            get => mouseEventType;
-            set => mouseEventType = value;
-        }
+        private MouseEventType MouseEventType => mouseEventType;
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private ComponentCollector componentCollector = default;
+
+        private ComponentCollector ComponentCollector => componentCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
-            return OnEventAsObservable();
+            return OnEventAsObservable().Select(this.CreateMessage);
         }
 
         private IObservable<Unit> OnEventAsObservable()
@@ -55,6 +54,12 @@ namespace UniFlow.Connector.Event
             throw new PlatformNotSupportedException("MouseEvent does not support mobile platform");
 #endif
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+            };
     }
 
     public enum MouseEventType

@@ -1,7 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
-using UniFlow.Attribute;
 using UniFlow.TimelineSignal;
 using UniRx;
 using UnityEngine;
@@ -12,39 +11,51 @@ using UnityEngine.Timeline;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/TimelineEvent", (int) ConnectorType.TimelineEvent)]
-    public class TimelineEvent : ConnectorBase
+    public class TimelineEvent : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
     {
         [SerializeField] private GameObject baseGameObject = default;
+        [SerializeField] private string transformPath = default;
         [SerializeField] private PlayableDirector playableDirector = default;
         [SerializeField] private TimelineEventType timelineEventType = TimelineEventType.Play;
         [SerializeField] private TimelineAsset timelineAsset = default;
 
-        [ValueReceiver] public GameObject BaseGameObject
+        public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            set => baseGameObject = value;
+            private set => baseGameObject = value;
         }
-        [ValuePublisher] public PlayableDirector PlayableDirector
+        public string TransformPath
+        {
+            get => transformPath;
+            private set => transformPath = value;
+        }
+        private PlayableDirector PlayableDirector
         {
             get =>
                 playableDirector != default
                     ? playableDirector
                     : playableDirector =
-                        BaseGameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.AddComponent<PlayableDirector>();
+                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>() != default
+                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>()
+                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<PlayableDirector>();
             set => playableDirector = value;
         }
-        [UsedImplicitly] public TimelineEventType TimelineEventType
-        {
-            get => timelineEventType;
-            set => timelineEventType = value;
-        }
-        [ValuePublisher] public TimelineAsset TimelineAsset
+        private TimelineEventType TimelineEventType => timelineEventType;
+        private TimelineAsset TimelineAsset
         {
             get => timelineAsset;
             set => timelineAsset = value;
         }
+
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
+        [SerializeField] private StringCollector transformPathCollector = default;
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
+        [SerializeField] private TimelineAssetCollector timelineAssetCollector = default;
+
+        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
+        private StringCollector TransformPathCollector => transformPathCollector;
+        private PlayableDirectorCollector PlayableDirectorCollector => playableDirectorCollector;
+        private TimelineAssetCollector TimelineAssetCollector => timelineAssetCollector;
 
         private static Begin beginSignal = default;
         private static End endSignal = default;
@@ -98,10 +109,10 @@ namespace UniFlow.Connector.Event
             }
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             return SignalEmittedSubject
-                .AsUnitObservable();
+                .Select(this.CreateMessage);
         }
 
         private void RegisterSignal()
@@ -152,6 +163,15 @@ namespace UniFlow.Connector.Event
         {
             SignalEmittedSubject.OnNext(TimelineEventType.Stop);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x),
+                new CollectableMessageAnnotation<TimelineAsset>(TimelineAssetCollector, x => TimelineAsset = x),
+            };
     }
 
     public enum TimelineEventType

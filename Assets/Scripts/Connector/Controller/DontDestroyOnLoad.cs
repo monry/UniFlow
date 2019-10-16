@@ -1,5 +1,5 @@
 using System;
-using UniRx;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
@@ -7,10 +7,10 @@ namespace UniFlow.Connector.Controller
     [AddComponentMenu("UniFlow/Controller/DontDestroyOnLoad", (int) ConnectorType.DontDestroyOnLoad)]
     public class DontDestroyOnLoad : ConnectorBase
     {
-        public override IObservable<Unit> OnConnectAsObservable()
+        public override IObservable<Message> OnConnectAsObservable()
         {
             DontDestroyOnLoad(gameObject);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
     }
 }

@@ -1,40 +1,57 @@
 using System;
-using UniFlow.Attribute;
-using UniRx;
+using System.Collections.Generic;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/MoveParentTransform", (int) ConnectorType.MoveParentTransform)]
-    public class MoveParentTransform : ConnectorBase
+    public class MoveParentTransform : ConnectorBase,
+        IMessageCollectable
     {
         // ReSharper disable once InconsistentNaming
         [SerializeField] private Transform targetTransform = default;
         [SerializeField] private Transform parentTransform = default;
         [SerializeField] private bool worldPositionStays = true;
 
-        [ValueReceiver] public Transform TargetTransform
+        private Transform TargetTransform
         {
             get => targetTransform != default
                 ? targetTransform
                 : targetTransform = transform;
             set => targetTransform = value;
         }
-        [ValueReceiver] public Transform ParentTransform
+        private Transform ParentTransform
         {
             get => parentTransform;
             set => parentTransform = value;
         }
-        [ValueReceiver] public bool WorldPositionStays
+        private bool WorldPositionStays
         {
             get => worldPositionStays;
             set => worldPositionStays = value;
         }
 
-        public override IObservable<Unit> OnConnectAsObservable()
+        [SerializeField] private TransformCollector targetTransformCollector = default;
+        [SerializeField] private TransformCollector parentTransformCollector = default;
+        [SerializeField] private BoolCollector worldPositionStaysCollector = default;
+
+        private TransformCollector TargetTransformCollector => targetTransformCollector;
+        private TransformCollector ParentTransformCollector => parentTransformCollector;
+        private BoolCollector WorldPositionStaysCollector => worldPositionStaysCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             TargetTransform.SetParent(ParentTransform, WorldPositionStays);
-            return Observable.ReturnUnit();
+            return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                new CollectableMessageAnnotation<Transform>(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                new CollectableMessageAnnotation<Transform>(ParentTransformCollector, x => ParentTransform = x, nameof(ParentTransform)),
+                new CollectableMessageAnnotation<bool>(WorldPositionStaysCollector, x => WorldPositionStays = x, nameof(WorldPositionStays)),
+            };
     }
 }

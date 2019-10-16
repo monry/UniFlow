@@ -29,8 +29,6 @@ namespace UniFlow.Editor
             "Misc",
             "ValueProvider",
             "ValueComparer",
-            "ValueExtractor",
-            "ValueCombiner",
             "ValueInjector",
             "SignalPublisher",
             "SignalReceiver",
@@ -44,11 +42,16 @@ namespace UniFlow.Editor
             DummyIcon.SetPixel(0, 0, new Color(0, 0, 0, 0));
             DummyIcon.Apply();
 
+            CalculateSearchTree();
+        }
+
+        public void CalculateSearchTree()
+        {
+            SearchTreeGroupEntries.Clear();
             SearchTreeEntries = new List<SearchTreeEntry>
             {
                 new SearchTreeGroupEntry(new GUIContent("Add Node"))
             };
-
             AppDomain
                 .CurrentDomain
                 .GetAssemblies()
