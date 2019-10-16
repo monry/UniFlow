@@ -18,7 +18,7 @@ namespace UniFlow.Connector.ValueComparer
             get => expect;
             private set => expect = value;
         }
-        protected TValue Actual { get; set; }
+        private TValue Actual { get; set; }
 
         [SerializeField] private TCollector expectCollector = default;
         [SerializeField] private TCollector actualCollector = default;
@@ -46,7 +46,7 @@ namespace UniFlow.Connector.ValueComparer
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<bool>(() => Result, nameof(Result)),
+                new ComposableMessageAnnotation<bool>(() => Result, MessageParameterKey),
             };
     }
 

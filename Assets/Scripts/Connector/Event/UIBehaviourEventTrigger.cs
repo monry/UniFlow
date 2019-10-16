@@ -140,8 +140,8 @@ namespace UniFlow.Connector.Event
                 new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
                 new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
                 new CollectableMessageAnnotation<UIBehaviour>(UIBehaviourCollector, x => UIBehaviour = x),
-                new CollectableMessageAnnotation<bool>(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x),
-                new CollectableMessageAnnotation<bool>(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x),
+                new CollectableMessageAnnotation<bool>(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
+                new CollectableMessageAnnotation<bool>(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
             };
     }
 }
