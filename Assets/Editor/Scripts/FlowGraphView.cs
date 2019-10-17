@@ -325,8 +325,20 @@ namespace UniFlow.Editor
 
                     var messageComposeNode = RenderedNodes[valueCollector.SourceConnector];
                     var messageCollectNode = RenderedNodes[connector];
-                    var messageComposePort = messageComposeNode.MessageComposePorts.FirstOrDefault(x => x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey);
-                    var messageCollectPort = messageCollectNode.MessageCollectPorts.FirstOrDefault(x => x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString && x.CollectableMessageAnnotation.Key == valueCollector.CollectorKey);
+                    var messageComposePort = messageComposeNode
+                        .MessageComposePorts
+                        .FirstOrDefault(
+                            x =>
+                                x.ComposableMessageAnnotation.Key == valueCollector.ComposerKey
+//                                && x.ComposableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString
+                        );
+                    var messageCollectPort = messageCollectNode
+                        .MessageCollectPorts
+                        .FirstOrDefault(
+                            x =>
+                                x.CollectableMessageAnnotation.Key == valueCollector.CollectorKey
+//                                && x.CollectableMessageAnnotation.Type.AssemblyQualifiedName == valueCollector.TypeString
+                        );
                     if (messageComposePort != null && messageCollectPort != null)
                     {
                         AddEdge(messageComposePort, messageCollectPort);
@@ -372,6 +384,8 @@ namespace UniFlow.Editor
                                 && (
                                     flowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type)
                                     || typeof(ScriptableObject).IsAssignableFrom(startFlowMessageComposePort.ComposableMessageAnnotation.Type) && typeof(ScriptableObject).IsAssignableFrom(flowMessageCollectPort.CollectableMessageAnnotation.Type)
+                                    || flowMessageCollectPort.CollectableMessageAnnotation.Type == typeof(int) && startFlowMessageComposePort.ComposableMessageAnnotation.Type.IsEnum
+                                    || startFlowMessageComposePort.ComposableMessageAnnotation.Type == typeof(int) && flowMessageCollectPort.CollectableMessageAnnotation.Type.IsEnum
                                 )
                                 && x.direction != startPort.direction
                                 && x.node != startPort.node
@@ -383,6 +397,12 @@ namespace UniFlow.Editor
                         .Where(
                             x =>
                                 x is FlowMessageComposePort flowMessageComposePort
+                                && (
+                                    startFlowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(flowMessageComposePort.ComposableMessageAnnotation.Type)
+                                    || typeof(ScriptableObject).IsAssignableFrom(flowMessageComposePort.ComposableMessageAnnotation.Type) && typeof(ScriptableObject).IsAssignableFrom(startFlowMessageCollectPort.CollectableMessageAnnotation.Type)
+                                    || startFlowMessageCollectPort.CollectableMessageAnnotation.Type == typeof(int) && flowMessageComposePort.ComposableMessageAnnotation.Type.IsEnum
+                                    || flowMessageComposePort.ComposableMessageAnnotation.Type == typeof(int) && startFlowMessageCollectPort.CollectableMessageAnnotation.Type.IsEnum
+                                )
                                 && startFlowMessageCollectPort.CollectableMessageAnnotation.Type.IsAssignableFrom(flowMessageComposePort.ComposableMessageAnnotation.Type)
                                 && x.direction != startPort.direction
                                 && x.node != startPort.node
