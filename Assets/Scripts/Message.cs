@@ -77,13 +77,13 @@ namespace UniFlow
 
         private bool HasValue<T>(string key)
         {
-            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+            var type = DeterminateType<T>();
             return Parameters.ContainsKey(type) && Parameters[type].ContainsKey(key);
         }
 
         private T GetValue<T>(string key)
         {
-            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+            var type = DeterminateType<T>();
 
             if (!Parameters.ContainsKey(type))
             {
@@ -100,7 +100,7 @@ namespace UniFlow
 
         private void SetValue<T>(string key, T value)
         {
-            var type = typeof(ScriptableObject).IsAssignableFrom(typeof(T)) ? typeof(ScriptableObject) : typeof(T);
+            var type = DeterminateType<T>();
 
             if (!Parameters.ContainsKey(type))
             {
@@ -108,6 +108,21 @@ namespace UniFlow
             }
 
             Parameters[type][key] = value;
+        }
+
+        private static Type DeterminateType<T>()
+        {
+            if (typeof(ScriptableObject).IsAssignableFrom(typeof(T)))
+            {
+                return typeof(ScriptableObject);
+            }
+
+            if (typeof(T).IsEnum)
+            {
+                return typeof(int);
+            }
+
+            return typeof(T);
         }
     }
 }
