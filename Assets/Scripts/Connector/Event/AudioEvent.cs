@@ -38,10 +38,10 @@ namespace UniFlow.Connector.Event
             set => audioClip = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private AudioSourceCollector audioSourceCollector = default;
-        [SerializeField] private AudioClipCollector audioClipCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private AudioSourceCollector audioSourceCollector = new AudioSourceCollector();
+        [SerializeField] private AudioClipCollector audioClipCollector = new AudioClipCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

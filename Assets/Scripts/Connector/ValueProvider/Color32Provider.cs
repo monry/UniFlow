@@ -6,10 +6,10 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Color32", (int) ConnectorType.ValueProviderColor32)]
     public class Color32Provider : ProviderBase<Color32>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private ByteCollector rCollector = default;
-        [SerializeField] private ByteCollector gCollector = default;
-        [SerializeField] private ByteCollector bCollector = default;
-        [SerializeField] private ByteCollector aCollector = default;
+        [SerializeField] private ByteCollector rCollector = new ByteCollector();
+        [SerializeField] private ByteCollector gCollector = new ByteCollector();
+        [SerializeField] private ByteCollector bCollector = new ByteCollector();
+        [SerializeField] private ByteCollector aCollector = new ByteCollector();
 
         private ByteCollector RCollector => rCollector;
         private ByteCollector GCollector => gCollector;

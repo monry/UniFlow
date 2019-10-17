@@ -19,7 +19,7 @@ namespace UniFlow.Connector.Event
         }
         private CameraEventType CameraEventType => cameraEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
         private ComponentCollector ComponentCollector => componentCollector;
 
         public override IObservable<Message> OnConnectAsObservable()

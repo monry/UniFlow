@@ -26,8 +26,8 @@ namespace UniFlow.Connector.Controller
             set => index = value;
         }
 
-        [SerializeField] private TransformCollector targetTransformCollector = default;
-        [SerializeField] private IntCollector indexCollector = default;
+        [SerializeField] private TransformCollector targetTransformCollector = new TransformCollector();
+        [SerializeField] private IntCollector indexCollector = new IntCollector();
         private TransformCollector TargetTransformCollector => targetTransformCollector;
         private IntCollector IndexCollector => indexCollector;
 

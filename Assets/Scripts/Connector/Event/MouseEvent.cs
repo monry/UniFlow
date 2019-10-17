@@ -19,7 +19,7 @@ namespace UniFlow.Connector.Event
         }
         private MouseEventType MouseEventType => mouseEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
 
         private ComponentCollector ComponentCollector => componentCollector;
 

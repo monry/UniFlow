@@ -20,8 +20,8 @@ namespace UniFlow.Connector.ValueComparer
         }
         private TValue Actual { get; set; }
 
-        [SerializeField] private TCollector expectCollector = default;
-        [SerializeField] private TCollector actualCollector = default;
+        [SerializeField] private TCollector expectCollector = new TCollector();
+        [SerializeField] private TCollector actualCollector = new TCollector();
 
         private TCollector ExpectCollector => expectCollector;
         private TCollector ActualCollector => actualCollector;

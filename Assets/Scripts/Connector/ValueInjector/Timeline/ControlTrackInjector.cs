@@ -54,13 +54,13 @@ namespace UniFlow.Connector.ValueInjector.Timeline
             set => prefabGameObject = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
-        [SerializeField] private StringCollector trackNameCollector = default;
-        [SerializeField] private StringCollector clipNameCollector = default;
-        [SerializeField] private GameObjectCollector sourceGameObjectCollector = default;
-        [SerializeField] private GameObjectCollector prefabGameObjectCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = new PlayableDirectorCollector();
+        [SerializeField] private StringCollector trackNameCollector = new StringCollector();
+        [SerializeField] private StringCollector clipNameCollector = new StringCollector();
+        [SerializeField] private GameObjectCollector sourceGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private GameObjectCollector prefabGameObjectCollector = new GameObjectCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

@@ -6,10 +6,10 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Color", (int) ConnectorType.ValueProviderColor)]
     public class ColorProvider : ProviderBase<Color>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private FloatCollector rCollector = default;
-        [SerializeField] private FloatCollector gCollector = default;
-        [SerializeField] private FloatCollector bCollector = default;
-        [SerializeField] private FloatCollector aCollector = default;
+        [SerializeField] private FloatCollector rCollector = new FloatCollector();
+        [SerializeField] private FloatCollector gCollector = new FloatCollector();
+        [SerializeField] private FloatCollector bCollector = new FloatCollector();
+        [SerializeField] private FloatCollector aCollector = new FloatCollector();
 
         private FloatCollector RCollector => rCollector;
         private FloatCollector GCollector => gCollector;

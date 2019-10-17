@@ -19,7 +19,7 @@ namespace UniFlow.Connector.ValueProvider
             set => values = value.ToList();
         }
 
-        [SerializeField] private TValueCollector valuesCollector = default;
+        [SerializeField] private TValueCollector valuesCollector = new TValueCollector();
         private TValueCollector ValuesCollector => valuesCollector;
 
         public override IObservable<Message> OnConnectAsObservable()

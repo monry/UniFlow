@@ -21,7 +21,7 @@ namespace UniFlow.Connector.ValueProvider
 
         public TKey Key { get; set; }
 
-        [SerializeField] private TKeyCollector keyCollector = default;
+        [SerializeField] private TKeyCollector keyCollector = new TKeyCollector();
         private TKeyCollector KeyCollector => keyCollector;
 
         public override IObservable<Message> OnConnectAsObservable()

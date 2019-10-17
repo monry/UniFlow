@@ -28,9 +28,9 @@ namespace UniFlow.Connector.Controller
             set => easeType = value;
         }
 
-        [SerializeField] private FloatCollector timeScaleCollector = default;
-        [SerializeField] private FloatCollector durationCollector = default;
-        [SerializeField] private EaseTypeCollector easeTypeCollector = default;
+        [SerializeField] private FloatCollector timeScaleCollector = new FloatCollector();
+        [SerializeField] private FloatCollector durationCollector = new FloatCollector();
+        [SerializeField] private EaseTypeCollector easeTypeCollector = new EaseTypeCollector();
 
         private FloatCollector TimeScaleCollector => timeScaleCollector;
         private FloatCollector DurationCollector => durationCollector;
