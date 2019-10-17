@@ -107,17 +107,17 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
-                new CollectableMessageAnnotation<SimpleAnimation>(SimpleAnimationCollector, x => SimpleAnimation = x),
-                new CollectableMessageAnnotation<AnimationClip>(AnimationClipCollector, x => AnimationClip = x),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<Animator>.Create(AnimatorCollector, x => Animator = x),
+                CollectableMessageAnnotation<SimpleAnimation>.Create(SimpleAnimationCollector, x => SimpleAnimation = x),
+                CollectableMessageAnnotation<AnimationClip>.Create(AnimationClipCollector, x => AnimationClip = x),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<UnityEngine.AnimationEvent>(() => LatestAnimationEvent),
+                ComposableMessageAnnotation<UnityEngine.AnimationEvent>.Create(() => LatestAnimationEvent),
             };
     }
 }

@@ -85,10 +85,10 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<AudioSource>(AudioSourceCollector, x => AudioSource = x),
-                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
+                CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
             };
     }
 

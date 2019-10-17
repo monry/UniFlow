@@ -19,16 +19,16 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<float>(XCollector, v => Value = new Vector4(v, Value.y, Value.z, Value.w), "X"),
-                new CollectableMessageAnnotation<float>(YCollector, v => Value = new Vector4(Value.x, v, Value.z, Value.w), "Y"),
-                new CollectableMessageAnnotation<float>(ZCollector, v => Value = new Vector4(Value.x, Value.y, v, Value.w), "Z"),
-                new CollectableMessageAnnotation<float>(WCollector, v => Value = new Vector4(Value.x, Value.y, Value.z, v), "W"),
+                CollectableMessageAnnotation<float>.Create(XCollector, v => Value = new Vector4(v, Value.y, Value.z, Value.w), "X"),
+                CollectableMessageAnnotation<float>.Create(YCollector, v => Value = new Vector4(Value.x, v, Value.z, Value.w), "Y"),
+                CollectableMessageAnnotation<float>.Create(ZCollector, v => Value = new Vector4(Value.x, Value.y, v, Value.w), "Z"),
+                CollectableMessageAnnotation<float>.Create(WCollector, v => Value = new Vector4(Value.x, Value.y, Value.z, v), "W"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<Vector4>(() => Value),
+                ComposableMessageAnnotation<Vector4>.Create(() => Value),
             };
     }
 }

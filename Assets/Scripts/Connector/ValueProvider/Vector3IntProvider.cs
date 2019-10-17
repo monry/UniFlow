@@ -17,15 +17,15 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<int>(XCollector, v => Value = new Vector3Int(v, Value.y, Value.z), "X"),
-                new CollectableMessageAnnotation<int>(YCollector, v => Value = new Vector3Int(Value.x, v, Value.z), "Y"),
-                new CollectableMessageAnnotation<int>(ZCollector, v => Value = new Vector3Int(Value.x, Value.y, v), "Z"),
+                CollectableMessageAnnotation<int>.Create(XCollector, v => Value = new Vector3Int(v, Value.y, Value.z), "X"),
+                CollectableMessageAnnotation<int>.Create(YCollector, v => Value = new Vector3Int(Value.x, v, Value.z), "Y"),
+                CollectableMessageAnnotation<int>.Create(ZCollector, v => Value = new Vector3Int(Value.x, Value.y, v), "Z"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<Vector3Int>(() => Value),
+                ComposableMessageAnnotation<Vector3Int>.Create(() => Value),
             };
     }
 }

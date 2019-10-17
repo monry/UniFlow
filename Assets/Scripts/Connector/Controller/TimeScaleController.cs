@@ -70,9 +70,9 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<float>(TimeScaleCollector, x => TimeScale = x, nameof(TimeScale)),
-                new CollectableMessageAnnotation<float>(DurationCollector, x => Duration = x, nameof(Duration)),
-                new CollectableMessageAnnotation<ObservableTween.EaseType>(EaseTypeCollector, x => EaseType = x, nameof(EaseType)),
+                CollectableMessageAnnotation<float>.Create(TimeScaleCollector, x => TimeScale = x, nameof(TimeScale)),
+                CollectableMessageAnnotation<float>.Create(DurationCollector, x => Duration = x, nameof(Duration)),
+                CollectableMessageAnnotation<ObservableTween.EaseType>.Create(EaseTypeCollector, x => EaseType = x, nameof(EaseType)),
             };
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector.ValueComparer
 {
     public abstract class ComparerBase<TValue, TCollector> : ConnectorBase, IMessageCollectable, IMessageComposable
-        where TCollector : ValueCollectorBase<TValue>
+        where TCollector : ValueCollectorBase<TValue>, new()
     {
         private const string MessageParameterKey = "Result";
 
@@ -39,20 +39,20 @@ namespace UniFlow.Connector.ValueComparer
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<TValue>(ExpectCollector, x => Expect = x, nameof(Expect)),
-                new CollectableMessageAnnotation<TValue>(ActualCollector, x => Actual = x, nameof(Actual)),
+                CollectableMessageAnnotation<TValue>.Create(ExpectCollector, x => Expect = x, nameof(Expect)),
+                CollectableMessageAnnotation<TValue>.Create(ActualCollector, x => Actual = x, nameof(Actual)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<bool>(() => Result, MessageParameterKey),
+                ComposableMessageAnnotation<bool>.Create(() => Result, MessageParameterKey),
             };
     }
 
     public abstract class ComparerBase<TValue, TOperator, TCollector> : ComparerBase<TValue, TCollector>
         where TOperator : Enum
-        where TCollector : ValueCollectorBase<TValue>
+        where TCollector : ValueCollectorBase<TValue>, new()
     {
         [SerializeField] private TOperator @operator = default;
 

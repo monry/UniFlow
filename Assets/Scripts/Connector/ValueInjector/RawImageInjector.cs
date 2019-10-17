@@ -54,10 +54,10 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<RawImage>(RawImageCollector, x => RawImage = x, nameof(RawImage)),
-                new CollectableMessageAnnotation<Texture>(TextureCollector, x => Texture = x, nameof(Texture)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<RawImage>.Create(RawImageCollector, x => RawImage = x, nameof(RawImage)),
+                CollectableMessageAnnotation<Texture>.Create(TextureCollector, x => Texture = x, nameof(Texture)),
             };
     }
 }

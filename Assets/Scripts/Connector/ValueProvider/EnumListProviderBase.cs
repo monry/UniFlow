@@ -26,7 +26,7 @@ namespace UniFlow.Connector.ValueProvider
             new[]
             {
                 // Will compose parameter in OnConnectAsObservable()
-                new ComposableMessageAnnotation<TEnum>(null),
+                ComposableMessageAnnotation<TEnum>.Create(null),
             };
     }
 }

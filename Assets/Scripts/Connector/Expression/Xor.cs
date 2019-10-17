@@ -25,8 +25,8 @@ namespace UniFlow.Connector.Expression
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<bool>(LeftCollector, x => Left = x, nameof(Left)),
-                new CollectableMessageAnnotation<bool>(RightCollector, x => Right = x, nameof(Right)),
+                CollectableMessageAnnotation<bool>.Create(LeftCollector, x => Left = x, nameof(Left)),
+                CollectableMessageAnnotation<bool>.Create(RightCollector, x => Right = x, nameof(Right)),
             };
     }
 }

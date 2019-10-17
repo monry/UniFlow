@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+                CollectableMessageAnnotation<Component>.Create(ComponentCollector, x => Component = x),
             };
     }
 

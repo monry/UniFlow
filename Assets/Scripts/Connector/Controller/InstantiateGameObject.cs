@@ -44,14 +44,14 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(SourceCollector, x => Source = x, nameof(Source)),
-                new CollectableMessageAnnotation<Transform>(ParentCollector, x => Parent = x, nameof(Parent)),
+                CollectableMessageAnnotation<GameObject>.Create(SourceCollector, x => Source = x, nameof(Source)),
+                CollectableMessageAnnotation<Transform>.Create(ParentCollector, x => Parent = x, nameof(Parent)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<GameObject>(() => Instantiated, nameof(Instantiated)),
+                ComposableMessageAnnotation<GameObject>.Create(() => Instantiated, nameof(Instantiated)),
             };
     }
 }

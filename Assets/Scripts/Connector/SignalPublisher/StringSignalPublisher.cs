@@ -89,13 +89,13 @@ namespace UniFlow.Connector.SignalPublisher
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<string>(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
-                new CollectableMessageAnnotation<bool>(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
-                new CollectableMessageAnnotation<int>(IntCollector, x => IntParameter = x, nameof(IntParameter)),
-                new CollectableMessageAnnotation<float>(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
-                new CollectableMessageAnnotation<string>(StringCollector, x => StringParameter = x, nameof(StringParameter)),
-                new CollectableMessageAnnotation<Object>(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
-                new CollectableMessageAnnotation<ScriptableObject>(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
+                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotation<bool>.Create(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
+                CollectableMessageAnnotation<int>.Create(IntCollector, x => IntParameter = x, nameof(IntParameter)),
+                CollectableMessageAnnotation<float>.Create(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
+                CollectableMessageAnnotation<string>.Create(StringCollector, x => StringParameter = x, nameof(StringParameter)),
+                CollectableMessageAnnotation<Object>.Create(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
+                CollectableMessageAnnotation<ScriptableObject>.Create(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
             };
     }
 }
