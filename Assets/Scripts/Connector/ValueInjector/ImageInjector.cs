@@ -14,6 +14,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private string transformPath = default;
         [SerializeField] private Image image = default;
         [SerializeField] private Sprite sprite = default;
+        [SerializeField] private bool invokeSetNativeSize = default;
 
         public override GameObject BaseGameObject
         {
@@ -35,20 +36,31 @@ namespace UniFlow.Connector.Controller
             get => sprite;
             set => sprite = value;
         }
+        private bool InvokeSetNativeSize
+        {
+            get => invokeSetNativeSize;
+            set => invokeSetNativeSize = value;
+        }
 
         [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
         [SerializeField] private StringCollector transformPathCollector = new StringCollector();
         [SerializeField] private ImageCollector imageCollector = new ImageCollector();
         [SerializeField] private SpriteCollector spriteCollector = new SpriteCollector();
+        [SerializeField] private BoolCollector invokeSetNativeSizeCollector = new BoolCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
         private ImageCollector ImageCollector => imageCollector;
         private SpriteCollector SpriteCollector => spriteCollector;
+        private BoolCollector InvokeSetNativeSizeCollector => invokeSetNativeSizeCollector;
 
         protected override void Inject()
         {
             Image.sprite = Sprite;
+            if (InvokeSetNativeSize)
+            {
+                Image.SetNativeSize();
+            }
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
@@ -58,6 +70,7 @@ namespace UniFlow.Connector.Controller
                 CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
                 CollectableMessageAnnotation<Image>.Create(ImageCollector, x => Image = x, nameof(Image)),
                 CollectableMessageAnnotation<Sprite>.Create(SpriteCollector, x => Sprite = x, nameof(Sprite)),
+                CollectableMessageAnnotation<bool>.Create(InvokeSetNativeSizeCollector, x => InvokeSetNativeSize = x, nameof(InvokeSetNativeSize)),
             };
     }
 }
