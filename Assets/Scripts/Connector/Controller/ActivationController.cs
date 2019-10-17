@@ -39,9 +39,9 @@ namespace UniFlow.Connector.Controller
             set => activated = value;
         }
 
-        [SerializeField] private BoolCollector activatedCollector = default;
-        [SerializeField] private GameObjectCollector targetGameObjectCollector = default;
-        [SerializeField] private BehaviourCollector targetBehaviourCollector = default;
+        [SerializeField] private BoolCollector activatedCollector = new BoolCollector();
+        [SerializeField] private GameObjectCollector targetGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private BehaviourCollector targetBehaviourCollector = new BehaviourCollector();
 
         private BoolCollector ActivatedCollector => activatedCollector;
         private GameObjectCollector TargetGameObjectCollector => targetGameObjectCollector;
@@ -60,9 +60,9 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<bool>(ActivatedCollector, x => Activated = x, nameof(Activated)),
-                new CollectableMessageAnnotation<GameObject>(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
-                new CollectableMessageAnnotation<Behaviour>(TargetBehaviourCollector, x => TargetBehaviour = x, nameof(TargetBehaviour)),
+                CollectableMessageAnnotation<bool>.Create(ActivatedCollector, x => Activated = x, nameof(Activated)),
+                CollectableMessageAnnotation<GameObject>.Create(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
+                CollectableMessageAnnotation<Behaviour>.Create(TargetBehaviourCollector, x => TargetBehaviour = x, nameof(TargetBehaviour)),
             };
     }
 }

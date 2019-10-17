@@ -45,11 +45,11 @@ namespace UniFlow.Connector.Event
             set => deactivateAfterConnect = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private UIBehaviourCollector uiBehaviourCollector = default;
-        [SerializeField] private BoolCollector activateBeforeConnectCollector = default;
-        [SerializeField] private BoolCollector deactivateAfterConnectCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private UIBehaviourCollector uiBehaviourCollector = new UIBehaviourCollector();
+        [SerializeField] private BoolCollector activateBeforeConnectCollector = new BoolCollector();
+        [SerializeField] private BoolCollector deactivateAfterConnectCollector = new BoolCollector();
         // TODO: Implement EnumCollector
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
@@ -137,11 +137,11 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<UIBehaviour>(UIBehaviourCollector, x => UIBehaviour = x),
-                new CollectableMessageAnnotation<bool>(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
-                new CollectableMessageAnnotation<bool>(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<UIBehaviour>.Create(UIBehaviourCollector, x => UIBehaviour = x),
+                CollectableMessageAnnotation<bool>.Create(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
+                CollectableMessageAnnotation<bool>.Create(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
             };
     }
 }

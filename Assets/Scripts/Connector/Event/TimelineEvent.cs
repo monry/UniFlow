@@ -47,10 +47,10 @@ namespace UniFlow.Connector.Event
             set => timelineAsset = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
-        [SerializeField] private TimelineAssetCollector timelineAssetCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = new PlayableDirectorCollector();
+        [SerializeField] private TimelineAssetCollector timelineAssetCollector = new TimelineAssetCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
@@ -167,10 +167,10 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x),
-                new CollectableMessageAnnotation<TimelineAsset>(TimelineAssetCollector, x => TimelineAsset = x),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<PlayableDirector>.Create(PlayableDirectorCollector, x => PlayableDirector = x),
+                CollectableMessageAnnotation<TimelineAsset>.Create(TimelineAssetCollector, x => TimelineAsset = x),
             };
     }
 

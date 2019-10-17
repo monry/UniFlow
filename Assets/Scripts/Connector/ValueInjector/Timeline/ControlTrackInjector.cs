@@ -54,13 +54,13 @@ namespace UniFlow.Connector.ValueInjector.Timeline
             set => prefabGameObject = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
-        [SerializeField] private StringCollector trackNameCollector = default;
-        [SerializeField] private StringCollector clipNameCollector = default;
-        [SerializeField] private GameObjectCollector sourceGameObjectCollector = default;
-        [SerializeField] private GameObjectCollector prefabGameObjectCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = new PlayableDirectorCollector();
+        [SerializeField] private StringCollector trackNameCollector = new StringCollector();
+        [SerializeField] private StringCollector clipNameCollector = new StringCollector();
+        [SerializeField] private GameObjectCollector sourceGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private GameObjectCollector prefabGameObjectCollector = new GameObjectCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
@@ -85,13 +85,13 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
-                new CollectableMessageAnnotation<string>(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
-                new CollectableMessageAnnotation<string>(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
-                new CollectableMessageAnnotation<GameObject>(SourceGameObjectCollector, x => SourceGameObject = x, nameof(SourceGameObject)),
-                new CollectableMessageAnnotation<GameObject>(PrefabGameObjectCollector, x => PrefabGameObject = x, nameof(PrefabGameObject)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<PlayableDirector>.Create(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                CollectableMessageAnnotation<string>.Create(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                CollectableMessageAnnotation<string>.Create(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                CollectableMessageAnnotation<GameObject>.Create(SourceGameObjectCollector, x => SourceGameObject = x, nameof(SourceGameObject)),
+                CollectableMessageAnnotation<GameObject>.Create(PrefabGameObjectCollector, x => PrefabGameObject = x, nameof(PrefabGameObject)),
             };
     }
 }

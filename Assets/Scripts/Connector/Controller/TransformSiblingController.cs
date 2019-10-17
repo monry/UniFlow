@@ -26,8 +26,8 @@ namespace UniFlow.Connector.Controller
             set => index = value;
         }
 
-        [SerializeField] private TransformCollector targetTransformCollector = default;
-        [SerializeField] private IntCollector indexCollector = default;
+        [SerializeField] private TransformCollector targetTransformCollector = new TransformCollector();
+        [SerializeField] private IntCollector indexCollector = new IntCollector();
         private TransformCollector TargetTransformCollector => targetTransformCollector;
         private IntCollector IndexCollector => indexCollector;
 
@@ -53,8 +53,8 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<Transform>(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
-                new CollectableMessageAnnotation<int>(IndexCollector, x => Index = x, nameof(Index)),
+                CollectableMessageAnnotation<Transform>.Create(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                CollectableMessageAnnotation<int>.Create(IndexCollector, x => Index = x, nameof(Index)),
             };
     }
 

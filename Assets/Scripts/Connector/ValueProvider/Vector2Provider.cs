@@ -6,8 +6,8 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Vector2", (int) ConnectorType.ValueProviderVector2)]
     public class Vector2Provider : ProviderBase<Vector2>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private FloatCollector xCollector = default;
-        [SerializeField] private FloatCollector yCollector = default;
+        [SerializeField] private FloatCollector xCollector = new FloatCollector();
+        [SerializeField] private FloatCollector yCollector = new FloatCollector();
 
         private FloatCollector XCollector => xCollector;
         private FloatCollector YCollector => yCollector;
@@ -15,14 +15,14 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<float>(XCollector, v => Value = new Vector2(v, Value.y), "X"),
-                new CollectableMessageAnnotation<float>(YCollector, v => Value = new Vector2(Value.x, v), "Y"),
+                CollectableMessageAnnotation<float>.Create(XCollector, v => Value = new Vector2(v, Value.y), "X"),
+                CollectableMessageAnnotation<float>.Create(YCollector, v => Value = new Vector2(Value.x, v), "Y"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<Vector2>(() => Value),
+                ComposableMessageAnnotation<Vector2>.Create(() => Value),
             };
     }
 }

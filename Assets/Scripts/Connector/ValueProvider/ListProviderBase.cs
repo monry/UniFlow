@@ -19,7 +19,7 @@ namespace UniFlow.Connector.ValueProvider
             set => values = value.ToList();
         }
 
-        [SerializeField] private TValueCollector valuesCollector = default;
+        [SerializeField] private TValueCollector valuesCollector = new TValueCollector();
         private TValueCollector ValuesCollector => valuesCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
@@ -33,14 +33,14 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<IEnumerable<TValue>>(ValuesCollector, x => Values = x, $"{typeof(TValue).Name}List"),
+                CollectableMessageAnnotation<IEnumerable<TValue>>.Create(ValuesCollector, x => Values = x, $"{typeof(TValue).Name}List"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
                 // Will compose parameter in OnConnectAsObservable()
-                new ComposableMessageAnnotation<TValue>(null),
+                ComposableMessageAnnotation<TValue>.Create(null),
             };
     }
 

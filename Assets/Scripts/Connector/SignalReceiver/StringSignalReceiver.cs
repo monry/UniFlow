@@ -20,7 +20,7 @@ namespace UniFlow.Connector.SignalReceiver
             set => signalName = value;
         }
 
-        [SerializeField] private StringCollector signalNameCollector = default;
+        [SerializeField] private StringCollector signalNameCollector = new StringCollector();
 
         private StringCollector SignalNameCollector => signalNameCollector;
 
@@ -42,18 +42,18 @@ namespace UniFlow.Connector.SignalReceiver
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<string>(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<bool>(() => Signal.Parameter.BoolValue, "BoolParameter"),
-                new ComposableMessageAnnotation<int>(() => Signal.Parameter.IntValue, "IntParameter"),
-                new ComposableMessageAnnotation<float>(() => Signal.Parameter.FloatValue, "FloatParameter"),
-                new ComposableMessageAnnotation<string>(() => Signal.Parameter.StringValue, "StringParameter"),
-                new ComposableMessageAnnotation<Object>(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
-                new ComposableMessageAnnotation<ScriptableObject>(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
+                ComposableMessageAnnotation<bool>.Create(() => Signal.Parameter.BoolValue, "BoolParameter"),
+                ComposableMessageAnnotation<int>.Create(() => Signal.Parameter.IntValue, "IntParameter"),
+                ComposableMessageAnnotation<float>.Create(() => Signal.Parameter.FloatValue, "FloatParameter"),
+                ComposableMessageAnnotation<string>.Create(() => Signal.Parameter.StringValue, "StringParameter"),
+                ComposableMessageAnnotation<Object>.Create(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
+                ComposableMessageAnnotation<ScriptableObject>.Create(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
             };
     }
 }

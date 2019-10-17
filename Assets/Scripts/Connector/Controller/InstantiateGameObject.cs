@@ -25,8 +25,8 @@ namespace UniFlow.Connector.Controller
             set => parent = value;
         }
 
-        [SerializeField] private GameObjectCollector sourceCollector = default;
-        [SerializeField] private TransformCollector parentCollector = default;
+        [SerializeField] private GameObjectCollector sourceCollector = new GameObjectCollector();
+        [SerializeField] private TransformCollector parentCollector = new TransformCollector();
 
         private GameObjectCollector SourceCollector => sourceCollector;
         private TransformCollector ParentCollector => parentCollector;
@@ -44,14 +44,14 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(SourceCollector, x => Source = x, nameof(Source)),
-                new CollectableMessageAnnotation<Transform>(ParentCollector, x => Parent = x, nameof(Parent)),
+                CollectableMessageAnnotation<GameObject>.Create(SourceCollector, x => Source = x, nameof(Source)),
+                CollectableMessageAnnotation<Transform>.Create(ParentCollector, x => Parent = x, nameof(Parent)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[]
             {
-                new ComposableMessageAnnotation<GameObject>(() => Instantiated, nameof(Instantiated)),
+                ComposableMessageAnnotation<GameObject>.Create(() => Instantiated, nameof(Instantiated)),
             };
     }
 }

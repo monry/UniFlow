@@ -19,7 +19,7 @@ namespace UniFlow.Connector.Event
         }
         private MouseEventType MouseEventType => mouseEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
 
         private ComponentCollector ComponentCollector => componentCollector;
 
@@ -58,7 +58,7 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+                CollectableMessageAnnotation<Component>.Create(ComponentCollector, x => Component = x),
             };
     }
 

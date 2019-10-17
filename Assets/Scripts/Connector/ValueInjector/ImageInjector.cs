@@ -36,10 +36,10 @@ namespace UniFlow.Connector.Controller
             set => sprite = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private ImageCollector imageCollector = default;
-        [SerializeField] private SpriteCollector spriteCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private ImageCollector imageCollector = new ImageCollector();
+        [SerializeField] private SpriteCollector spriteCollector = new SpriteCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
@@ -54,10 +54,10 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<Image>(ImageCollector, x => Image = x, nameof(Image)),
-                new CollectableMessageAnnotation<Sprite>(SpriteCollector, x => Sprite = x, nameof(Sprite)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<Image>.Create(ImageCollector, x => Image = x, nameof(Image)),
+                CollectableMessageAnnotation<Sprite>.Create(SpriteCollector, x => Sprite = x, nameof(Sprite)),
             };
     }
 }

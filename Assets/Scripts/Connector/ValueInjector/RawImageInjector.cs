@@ -36,10 +36,10 @@ namespace UniFlow.Connector.Controller
             set => texture = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private RawImageCollector rawImageCollector = default;
-        [SerializeField] private TextureCollector textureCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private RawImageCollector rawImageCollector = new RawImageCollector();
+        [SerializeField] private TextureCollector textureCollector = new TextureCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector ?? (baseGameObjectCollector = new GameObjectCollector {TargetConnector = this});
         private StringCollector TransformPathCollector => transformPathCollector ?? (transformPathCollector = new StringCollector {TargetConnector = this});
@@ -54,10 +54,10 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<RawImage>(RawImageCollector, x => RawImage = x, nameof(RawImage)),
-                new CollectableMessageAnnotation<Texture>(TextureCollector, x => Texture = x, nameof(Texture)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<RawImage>.Create(RawImageCollector, x => RawImage = x, nameof(RawImage)),
+                CollectableMessageAnnotation<Texture>.Create(TextureCollector, x => Texture = x, nameof(Texture)),
             };
     }
 }

@@ -11,8 +11,8 @@ namespace UniFlow.Connector.Expression
         private bool Left { get; set; }
         private bool Right { get; set; }
 
-        [SerializeField] private BoolCollector leftCollector = default;
-        [SerializeField] private BoolCollector rightCollector = default;
+        [SerializeField] private BoolCollector leftCollector = new BoolCollector();
+        [SerializeField] private BoolCollector rightCollector = new BoolCollector();
 
         private BoolCollector LeftCollector => leftCollector;
         private BoolCollector RightCollector => rightCollector;
@@ -25,8 +25,8 @@ namespace UniFlow.Connector.Expression
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<bool>(LeftCollector, x => Left = x, nameof(Left)),
-                new CollectableMessageAnnotation<bool>(RightCollector, x => Right = x, nameof(Right)),
+                CollectableMessageAnnotation<bool>.Create(LeftCollector, x => Left = x, nameof(Left)),
+                CollectableMessageAnnotation<bool>.Create(RightCollector, x => Right = x, nameof(Right)),
             };
     }
 }

@@ -38,10 +38,10 @@ namespace UniFlow.Connector.Controller
             set => triggerName = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private AnimatorCollector animatorCollector = default;
-        [SerializeField] private StringCollector triggerNameCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private AnimatorCollector animatorCollector = new AnimatorCollector();
+        [SerializeField] private StringCollector triggerNameCollector = new StringCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
@@ -59,10 +59,10 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<Animator>(AnimatorCollector, x => Animator = x),
-                new CollectableMessageAnnotation<string>(TriggerNameCollector, x => TriggerName = x, nameof(TriggerName)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<Animator>.Create(AnimatorCollector, x => Animator = x),
+                CollectableMessageAnnotation<string>.Create(TriggerNameCollector, x => TriggerName = x, nameof(TriggerName)),
             };
     }
 }

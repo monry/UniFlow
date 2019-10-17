@@ -12,11 +12,7 @@ namespace UniFlow
 
     public class ComposableMessageAnnotation<TValue> : IComposableMessageAnnotation
     {
-        public ComposableMessageAnnotation(Func<TValue> callback) : this(callback, typeof(TValue).Name)
-        {
-        }
-
-        public ComposableMessageAnnotation(Func<TValue> callback, string key)
+        private ComposableMessageAnnotation(Func<TValue> callback, string key)
         {
             Type = typeof(TValue);
             Callback = callback;
@@ -36,6 +32,16 @@ namespace UniFlow
 
             return message;
         }
+
+        public static ComposableMessageAnnotation<TValue> Create(Func<TValue> callback)
+        {
+            return Create(callback, typeof(TValue).Name);
+        }
+
+        public static ComposableMessageAnnotation<TValue> Create(Func<TValue> callback, string key)
+        {
+            return new ComposableMessageAnnotation<TValue>(callback, key);
+        }
     }
 
     public interface ICollectableMessageAnnotation
@@ -49,11 +55,7 @@ namespace UniFlow
 
     public class CollectableMessageAnnotation<TValue> : ICollectableMessageAnnotation
     {
-        public CollectableMessageAnnotation(IValueCollector valueCollector, Action<TValue> callback) : this(valueCollector, callback, typeof(TValue).Name)
-        {
-        }
-
-        public CollectableMessageAnnotation(IValueCollector valueCollector, Action<TValue> callback, string key)
+        private CollectableMessageAnnotation(IValueCollector valueCollector, Action<TValue> callback, string key)
         {
             Type = typeof(TValue);
             ValueCollector = valueCollector;
@@ -88,6 +90,18 @@ namespace UniFlow
             }
 
             return result;
+        }
+
+        public static CollectableMessageAnnotation<TValue> Create<TValueCollector>(TValueCollector valueCollector, Action<TValue> callback)
+            where TValueCollector : ValueCollectorBase<TValue>, new()
+        {
+            return Create(valueCollector, callback, typeof(TValue).Name);
+        }
+
+        public static CollectableMessageAnnotation<TValue> Create<TValueCollector>(TValueCollector valueCollector, Action<TValue> callback, string key)
+            where TValueCollector : ValueCollectorBase<TValue>, new()
+        {
+            return new CollectableMessageAnnotation<TValue>(valueCollector ?? new TValueCollector(), callback, key);
         }
     }
 }

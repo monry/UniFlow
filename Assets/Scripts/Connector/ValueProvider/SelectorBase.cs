@@ -21,7 +21,7 @@ namespace UniFlow.Connector.ValueProvider
 
         public TKey Key { get; set; }
 
-        [SerializeField] private TKeyCollector keyCollector = default;
+        [SerializeField] private TKeyCollector keyCollector = new TKeyCollector();
         private TKeyCollector KeyCollector => keyCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
@@ -32,13 +32,13 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<TValue>(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
+                ComposableMessageAnnotation<TValue>.Create(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
             };
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<TKey>(KeyCollector, x => Key = x),
+                CollectableMessageAnnotation<TKey>.Create(KeyCollector, x => Key = x),
             };
     }
 

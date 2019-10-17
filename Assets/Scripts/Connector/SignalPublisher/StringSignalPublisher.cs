@@ -53,13 +53,13 @@ namespace UniFlow.Connector.SignalPublisher
             set => scriptableObjectParameter = value;
         }
 
-        [SerializeField] private StringCollector signalNameCollector = default;
-        [SerializeField] private BoolCollector boolCollector = default;
-        [SerializeField] private IntCollector intCollector = default;
-        [SerializeField] private FloatCollector floatCollector = default;
-        [SerializeField] private StringCollector stringCollector = default;
-        [SerializeField] private ObjectCollector objectCollector = default;
-        [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = default;
+        [SerializeField] private StringCollector signalNameCollector = new StringCollector();
+        [SerializeField] private BoolCollector boolCollector = new BoolCollector();
+        [SerializeField] private IntCollector intCollector = new IntCollector();
+        [SerializeField] private FloatCollector floatCollector = new FloatCollector();
+        [SerializeField] private StringCollector stringCollector = new StringCollector();
+        [SerializeField] private ObjectCollector objectCollector = new ObjectCollector();
+        [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = new ScriptableObjectCollector();
 
         private StringCollector SignalNameCollector => signalNameCollector;
         private BoolCollector BoolCollector => boolCollector;
@@ -89,13 +89,13 @@ namespace UniFlow.Connector.SignalPublisher
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<string>(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
-                new CollectableMessageAnnotation<bool>(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
-                new CollectableMessageAnnotation<int>(IntCollector, x => IntParameter = x, nameof(IntParameter)),
-                new CollectableMessageAnnotation<float>(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
-                new CollectableMessageAnnotation<string>(StringCollector, x => StringParameter = x, nameof(StringParameter)),
-                new CollectableMessageAnnotation<Object>(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
-                new CollectableMessageAnnotation<ScriptableObject>(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
+                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotation<bool>.Create(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
+                CollectableMessageAnnotation<int>.Create(IntCollector, x => IntParameter = x, nameof(IntParameter)),
+                CollectableMessageAnnotation<float>.Create(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
+                CollectableMessageAnnotation<string>.Create(StringCollector, x => StringParameter = x, nameof(StringParameter)),
+                CollectableMessageAnnotation<Object>.Create(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
+                CollectableMessageAnnotation<ScriptableObject>.Create(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
             };
     }
 }

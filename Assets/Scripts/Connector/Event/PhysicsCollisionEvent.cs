@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace UniFlow.Connector.Event
         }
         private PhysicsCollisionEventType PhysicsCollisionEventType => physicsCollisionEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
 
         private ComponentCollector ComponentCollector => componentCollector;
 
@@ -47,7 +48,7 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<Component>(ComponentCollector, x => Component = x),
+                CollectableMessageAnnotation<Component>.Create(ComponentCollector, x => Component = x),
             };
     }
 
