@@ -19,16 +19,16 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                new CollectableMessageAnnotation<byte>(RCollector, x => Value = new Color32(x, Value.g, Value.b, Value.a), "R"),
-                new CollectableMessageAnnotation<byte>(GCollector, x => Value = new Color32(Value.r, x, Value.b, Value.a), "G"),
-                new CollectableMessageAnnotation<byte>(BCollector, x => Value = new Color32(Value.r, Value.g, x, Value.a), "B"),
-                new CollectableMessageAnnotation<byte>(ACollector, x => Value = new Color32(Value.r, Value.g, Value.b, x), "A"),
+                CollectableMessageAnnotation<byte>.Create(RCollector, x => Value = new Color32(x, Value.g, Value.b, Value.a), "R"),
+                CollectableMessageAnnotation<byte>.Create(GCollector, x => Value = new Color32(Value.r, x, Value.b, Value.a), "G"),
+                CollectableMessageAnnotation<byte>.Create(BCollector, x => Value = new Color32(Value.r, Value.g, x, Value.a), "B"),
+                CollectableMessageAnnotation<byte>.Create(ACollector, x => Value = new Color32(Value.r, Value.g, Value.b, x), "A"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                new ComposableMessageAnnotation<Color32>(() => Value),
+                ComposableMessageAnnotation<Color32>.Create(() => Value),
             };
     }
 }

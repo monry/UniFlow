@@ -53,8 +53,8 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<Transform>(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
-                new CollectableMessageAnnotation<int>(IndexCollector, x => Index = x, nameof(Index)),
+                CollectableMessageAnnotation<Transform>.Create(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                CollectableMessageAnnotation<int>.Create(IndexCollector, x => Index = x, nameof(Index)),
             };
     }
 

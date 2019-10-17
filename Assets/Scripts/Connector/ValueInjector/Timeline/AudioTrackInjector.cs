@@ -70,12 +70,12 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                new CollectableMessageAnnotation<GameObject>(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                new CollectableMessageAnnotation<string>(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                new CollectableMessageAnnotation<PlayableDirector>(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
-                new CollectableMessageAnnotation<string>(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
-                new CollectableMessageAnnotation<string>(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
-                new CollectableMessageAnnotation<AudioClip>(AudioClipCollector, x => AudioClip = x, nameof(AudioClip)),
+                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotation<PlayableDirector>.Create(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                CollectableMessageAnnotation<string>.Create(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                CollectableMessageAnnotation<string>.Create(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x, nameof(AudioClip)),
             };
     }
 }
