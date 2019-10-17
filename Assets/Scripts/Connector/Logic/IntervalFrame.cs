@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace UniFlow.Connector.Logic
 {
     [AddComponentMenu("UniFlow/Logic/IntervalFrame", (int) ConnectorType.IntervalFrame)]
-    public class IntervalFrame : ConnectorBase
+    public class IntervalFrame : ConnectorBase, IMessageCollectable
     {
         private const string MessageParameterKey = "Count";
 
@@ -24,11 +25,24 @@ namespace UniFlow.Connector.Logic
             set => frameCountType = value;
         }
 
+        [SerializeField] private IntCollector framesCollector = new IntCollector();
+        [SerializeField] private FrameCountTypeCollector frameCountTypeCollector = new FrameCountTypeCollector();
+
+        private IntCollector FramesCollector => framesCollector;
+        private FrameCountTypeCollector FrameCountTypeCollector => frameCountTypeCollector;
+
         public override IObservable<Message> OnConnectAsObservable()
         {
             return Observable
                 .IntervalFrame(Frames, FrameCountType)
                 .AsMessageObservable(this, MessageParameterKey);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[]
+            {
+                CollectableMessageAnnotation<int>.Create(FramesCollector, x => Frames = x, nameof(Frames)),
+                CollectableMessageAnnotation<FrameCountType>.Create(FrameCountTypeCollector, x => FrameCountType = x, nameof(FrameCountType)),
+            };
     }
 }

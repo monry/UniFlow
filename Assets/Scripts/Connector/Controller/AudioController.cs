@@ -17,6 +17,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
+        [SerializeField] private bool ignorePlayWhenPlaying = default;
 
         public GameObject BaseGameObject
         {
@@ -39,16 +40,23 @@ namespace UniFlow.Connector.Controller
             get => audioClip;
             set => audioClip = value;
         }
+        private bool IgnorePlayWhenPlaying
+        {
+            get => ignorePlayWhenPlaying;
+            set => ignorePlayWhenPlaying = value;
+        }
 
         [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
         [SerializeField] private StringCollector transformPathCollector = new StringCollector();
         [SerializeField] private AudioSourceCollector audioSourceCollector = new AudioSourceCollector();
         [SerializeField] private AudioClipCollector audioClipCollector = new AudioClipCollector();
+        [SerializeField] private BoolCollector ignorePlayWhenPlayingCollector = new BoolCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
         private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
         private AudioClipCollector AudioClipCollector => audioClipCollector;
+        private BoolCollector IgnorePlayWhenPlayingCollector => ignorePlayWhenPlayingCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -60,13 +68,17 @@ namespace UniFlow.Connector.Controller
         {
             if (AudioClip != default)
             {
+                AudioSource.playOnAwake = false;
                 AudioSource.clip = AudioClip;
             }
 
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:
-                    AudioSource.Play();
+                    if (!IgnorePlayWhenPlaying || !AudioSource.isPlaying)
+                    {
+                        AudioSource.Play();
+                    }
                     break;
                 case AudioControlMethod.Stop:
                     AudioSource.Stop();
@@ -89,6 +101,7 @@ namespace UniFlow.Connector.Controller
                 CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
                 CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
                 CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
+                CollectableMessageAnnotation<bool>.Create(IgnorePlayWhenPlayingCollector, x => IgnorePlayWhenPlaying = x, nameof(IgnorePlayWhenPlaying)),
             };
     }
 
