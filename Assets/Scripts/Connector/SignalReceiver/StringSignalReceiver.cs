@@ -20,7 +20,7 @@ namespace UniFlow.Connector.SignalReceiver
             set => signalName = value;
         }
 
-        [SerializeField] private StringCollector signalNameCollector = default;
+        [SerializeField] private StringCollector signalNameCollector = new StringCollector();
 
         private StringCollector SignalNameCollector => signalNameCollector;
 

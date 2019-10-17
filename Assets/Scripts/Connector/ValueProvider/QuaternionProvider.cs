@@ -6,11 +6,11 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Quaternion", (int) ConnectorType.ValueProviderQuaternion)]
     public class QuaternionProvider : ProviderBase<Quaternion>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private FloatCollector xCollector = default;
-        [SerializeField] private FloatCollector yCollector = default;
-        [SerializeField] private FloatCollector zCollector = default;
-        [SerializeField] private FloatCollector wCollector = default;
-        [SerializeField] private Vector3Collector eulerAngleCollector = default;
+        [SerializeField] private FloatCollector xCollector = new FloatCollector();
+        [SerializeField] private FloatCollector yCollector = new FloatCollector();
+        [SerializeField] private FloatCollector zCollector = new FloatCollector();
+        [SerializeField] private FloatCollector wCollector = new FloatCollector();
+        [SerializeField] private Vector3Collector eulerAngleCollector = new Vector3Collector();
 
         private FloatCollector XCollector => xCollector;
         private FloatCollector YCollector => yCollector;

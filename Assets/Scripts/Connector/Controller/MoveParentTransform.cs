@@ -32,9 +32,9 @@ namespace UniFlow.Connector.Controller
             set => worldPositionStays = value;
         }
 
-        [SerializeField] private TransformCollector targetTransformCollector = default;
-        [SerializeField] private TransformCollector parentTransformCollector = default;
-        [SerializeField] private BoolCollector worldPositionStaysCollector = default;
+        [SerializeField] private TransformCollector targetTransformCollector = new TransformCollector();
+        [SerializeField] private TransformCollector parentTransformCollector = new TransformCollector();
+        [SerializeField] private BoolCollector worldPositionStaysCollector = new BoolCollector();
 
         private TransformCollector TargetTransformCollector => targetTransformCollector;
         private TransformCollector ParentTransformCollector => parentTransformCollector;

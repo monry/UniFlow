@@ -39,9 +39,9 @@ namespace UniFlow.Connector.Controller
             set => activated = value;
         }
 
-        [SerializeField] private BoolCollector activatedCollector = default;
-        [SerializeField] private GameObjectCollector targetGameObjectCollector = default;
-        [SerializeField] private BehaviourCollector targetBehaviourCollector = default;
+        [SerializeField] private BoolCollector activatedCollector = new BoolCollector();
+        [SerializeField] private GameObjectCollector targetGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private BehaviourCollector targetBehaviourCollector = new BehaviourCollector();
 
         private BoolCollector ActivatedCollector => activatedCollector;
         private GameObjectCollector TargetGameObjectCollector => targetGameObjectCollector;

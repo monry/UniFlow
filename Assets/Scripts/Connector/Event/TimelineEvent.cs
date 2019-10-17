@@ -47,10 +47,10 @@ namespace UniFlow.Connector.Event
             set => timelineAsset = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
-        [SerializeField] private TimelineAssetCollector timelineAssetCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = new PlayableDirectorCollector();
+        [SerializeField] private TimelineAssetCollector timelineAssetCollector = new TimelineAssetCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

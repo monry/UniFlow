@@ -16,7 +16,7 @@ namespace UniFlow.Connector.Misc
             set => Targets.Add(value);
         }
 
-        [SerializeField] private GameObjectCollector targetGameObjectCollector = default;
+        [SerializeField] private GameObjectCollector targetGameObjectCollector = new GameObjectCollector();
         private GameObjectCollector TargetGameObjectCollector => targetGameObjectCollector;
 
         public override IObservable<Message> OnConnectAsObservable()

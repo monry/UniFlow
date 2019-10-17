@@ -6,8 +6,8 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Vector2", (int) ConnectorType.ValueProviderVector2)]
     public class Vector2Provider : ProviderBase<Vector2>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private FloatCollector xCollector = default;
-        [SerializeField] private FloatCollector yCollector = default;
+        [SerializeField] private FloatCollector xCollector = new FloatCollector();
+        [SerializeField] private FloatCollector yCollector = new FloatCollector();
 
         private FloatCollector XCollector => xCollector;
         private FloatCollector YCollector => yCollector;

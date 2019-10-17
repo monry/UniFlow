@@ -48,12 +48,12 @@ namespace UniFlow.Connector.ValueInjector.Timeline
             set => animationClip = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = default;
-        [SerializeField] private StringCollector trackNameCollector = default;
-        [SerializeField] private StringCollector clipNameCollector = default;
-        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private PlayableDirectorCollector playableDirectorCollector = new PlayableDirectorCollector();
+        [SerializeField] private StringCollector trackNameCollector = new StringCollector();
+        [SerializeField] private StringCollector clipNameCollector = new StringCollector();
+        [SerializeField] private AnimationClipCollector animationClipCollector = new AnimationClipCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

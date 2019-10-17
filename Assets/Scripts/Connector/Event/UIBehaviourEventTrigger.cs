@@ -45,11 +45,11 @@ namespace UniFlow.Connector.Event
             set => deactivateAfterConnect = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private UIBehaviourCollector uiBehaviourCollector = default;
-        [SerializeField] private BoolCollector activateBeforeConnectCollector = default;
-        [SerializeField] private BoolCollector deactivateAfterConnectCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private UIBehaviourCollector uiBehaviourCollector = new UIBehaviourCollector();
+        [SerializeField] private BoolCollector activateBeforeConnectCollector = new BoolCollector();
+        [SerializeField] private BoolCollector deactivateAfterConnectCollector = new BoolCollector();
         // TODO: Implement EnumCollector
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;

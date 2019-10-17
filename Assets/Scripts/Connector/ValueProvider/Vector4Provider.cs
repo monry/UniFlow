@@ -6,10 +6,10 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Vector4", (int) ConnectorType.ValueProviderVector4)]
     public class Vector4Provider : ProviderBase<Vector4>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private FloatCollector xCollector = default;
-        [SerializeField] private FloatCollector yCollector = default;
-        [SerializeField] private FloatCollector zCollector = default;
-        [SerializeField] private FloatCollector wCollector = default;
+        [SerializeField] private FloatCollector xCollector = new FloatCollector();
+        [SerializeField] private FloatCollector yCollector = new FloatCollector();
+        [SerializeField] private FloatCollector zCollector = new FloatCollector();
+        [SerializeField] private FloatCollector wCollector = new FloatCollector();
 
         private FloatCollector XCollector => xCollector;
         private FloatCollector YCollector => yCollector;

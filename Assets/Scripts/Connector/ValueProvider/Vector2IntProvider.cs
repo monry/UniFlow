@@ -6,8 +6,8 @@ namespace UniFlow.Connector.ValueProvider
     [AddComponentMenu("UniFlow/ValueProvider/Vector2Int", (int) ConnectorType.ValueProviderVector2Int)]
     public class Vector2IntProvider : ProviderBase<Vector2Int>, IMessageCollectable, IMessageComposable
     {
-        [SerializeField] private IntCollector xCollector = default;
-        [SerializeField] private IntCollector yCollector = default;
+        [SerializeField] private IntCollector xCollector = new IntCollector();
+        [SerializeField] private IntCollector yCollector = new IntCollector();
 
         private IntCollector XCollector => xCollector;
         private IntCollector YCollector => yCollector;

@@ -36,10 +36,10 @@ namespace UniFlow.Connector.Controller
             set => sprite = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private ImageCollector imageCollector = default;
-        [SerializeField] private SpriteCollector spriteCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private ImageCollector imageCollector = new ImageCollector();
+        [SerializeField] private SpriteCollector spriteCollector = new SpriteCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

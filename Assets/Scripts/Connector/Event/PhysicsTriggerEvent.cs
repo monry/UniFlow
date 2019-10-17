@@ -19,7 +19,7 @@ namespace UniFlow.Connector.Event
         }
         private PhysicsTriggerEventType PhysicsTriggerEventType => physicsTriggerEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
 
         private ComponentCollector ComponentCollector => componentCollector;
 

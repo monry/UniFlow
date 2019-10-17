@@ -20,7 +20,7 @@ namespace UniFlow.Connector.Event
         }
         private PhysicsCollisionEventType PhysicsCollisionEventType => physicsCollisionEventType;
 
-        [SerializeField] private ComponentCollector componentCollector = default;
+        [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
 
         private ComponentCollector ComponentCollector => componentCollector;
 

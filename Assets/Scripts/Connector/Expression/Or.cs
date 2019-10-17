@@ -17,7 +17,7 @@ namespace UniFlow.Connector.Expression
             set => Conditions.Add(value);
         }
 
-        [SerializeField] private BoolCollector valueCollector = default;
+        [SerializeField] private BoolCollector valueCollector = new BoolCollector();
         private BoolCollector ValueCollector => valueCollector;
 
         public override IObservable<Message> OnConnectAsObservable()

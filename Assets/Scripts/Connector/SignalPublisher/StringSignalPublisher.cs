@@ -53,13 +53,13 @@ namespace UniFlow.Connector.SignalPublisher
             set => scriptableObjectParameter = value;
         }
 
-        [SerializeField] private StringCollector signalNameCollector = default;
-        [SerializeField] private BoolCollector boolCollector = default;
-        [SerializeField] private IntCollector intCollector = default;
-        [SerializeField] private FloatCollector floatCollector = default;
-        [SerializeField] private StringCollector stringCollector = default;
-        [SerializeField] private ObjectCollector objectCollector = default;
-        [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = default;
+        [SerializeField] private StringCollector signalNameCollector = new StringCollector();
+        [SerializeField] private BoolCollector boolCollector = new BoolCollector();
+        [SerializeField] private IntCollector intCollector = new IntCollector();
+        [SerializeField] private FloatCollector floatCollector = new FloatCollector();
+        [SerializeField] private StringCollector stringCollector = new StringCollector();
+        [SerializeField] private ObjectCollector objectCollector = new ObjectCollector();
+        [SerializeField] private ScriptableObjectCollector scriptableObjectCollector = new ScriptableObjectCollector();
 
         private StringCollector SignalNameCollector => signalNameCollector;
         private BoolCollector BoolCollector => boolCollector;

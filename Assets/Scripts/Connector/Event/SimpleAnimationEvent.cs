@@ -53,11 +53,11 @@ namespace UniFlow.Connector.Event
             set => animationClip = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private AnimatorCollector animatorCollector = default;
-        [SerializeField] private SimpleAnimationCollector simpleAnimationCollector = default;
-        [SerializeField] private AnimationClipCollector animationClipCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private AnimatorCollector animatorCollector = new AnimatorCollector();
+        [SerializeField] private SimpleAnimationCollector simpleAnimationCollector = new SimpleAnimationCollector();
+        [SerializeField] private AnimationClipCollector animationClipCollector = new AnimationClipCollector();
         // TODO: Implement EnumCollector
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;

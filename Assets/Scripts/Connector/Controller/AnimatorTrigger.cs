@@ -38,10 +38,10 @@ namespace UniFlow.Connector.Controller
             set => triggerName = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private AnimatorCollector animatorCollector = default;
-        [SerializeField] private StringCollector triggerNameCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private AnimatorCollector animatorCollector = new AnimatorCollector();
+        [SerializeField] private StringCollector triggerNameCollector = new StringCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;

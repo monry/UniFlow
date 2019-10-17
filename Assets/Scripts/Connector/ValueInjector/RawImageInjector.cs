@@ -36,10 +36,10 @@ namespace UniFlow.Connector.Controller
             set => texture = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = default;
-        [SerializeField] private StringCollector transformPathCollector = default;
-        [SerializeField] private RawImageCollector rawImageCollector = default;
-        [SerializeField] private TextureCollector textureCollector = default;
+        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
+        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
+        [SerializeField] private RawImageCollector rawImageCollector = new RawImageCollector();
+        [SerializeField] private TextureCollector textureCollector = new TextureCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector ?? (baseGameObjectCollector = new GameObjectCollector {TargetConnector = this});
         private StringCollector TransformPathCollector => transformPathCollector ?? (transformPathCollector = new StringCollector {TargetConnector = this});

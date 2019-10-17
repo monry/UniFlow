@@ -25,8 +25,8 @@ namespace UniFlow.Connector.Controller
             set => parent = value;
         }
 
-        [SerializeField] private GameObjectCollector sourceCollector = default;
-        [SerializeField] private TransformCollector parentCollector = default;
+        [SerializeField] private GameObjectCollector sourceCollector = new GameObjectCollector();
+        [SerializeField] private TransformCollector parentCollector = new TransformCollector();
 
         private GameObjectCollector SourceCollector => sourceCollector;
         private TransformCollector ParentCollector => parentCollector;
