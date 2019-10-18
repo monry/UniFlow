@@ -76,6 +76,7 @@ namespace UniFlow.Editor
                 case PlayModeStateChange.ExitingEditMode:
                     break;
                 case PlayModeStateChange.EnteredPlayMode:
+                    Reload();
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
                     break;
