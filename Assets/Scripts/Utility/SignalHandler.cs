@@ -1,9 +1,30 @@
 using System;
+using JetBrains.Annotations;
 using UniFlow.Signal;
 using UniRx;
 
 namespace UniFlow.Utility
 {
+    [PublicAPI]
+    public static class SignalHandler
+    {
+        public static void PublishString(string signalName)
+        {
+            SignalHandler<StringSignal>.Publish(new StringSignal(signalName));
+        }
+
+        public static void PublishString(string signalName, StringSignal.SignalParameter signalParameter)
+        {
+            SignalHandler<StringSignal>.Publish(new StringSignal(signalName, signalParameter));
+        }
+
+        public static IObservable<StringSignal> OnReceiveStringAsObservable(string signalName)
+        {
+            return SignalHandler<StringSignal>.OnReceiveAsObservable().Where(x => x.Name == signalName);
+        }
+    }
+
+    [PublicAPI]
     public static class SignalHandler<TSignal> where TSignal : ISignal
     {
         public static void Publish(TSignal signal)
