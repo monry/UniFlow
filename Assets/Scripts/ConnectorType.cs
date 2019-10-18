@@ -26,6 +26,7 @@ namespace UniFlow
         AnimatorTrigger,
         AnimationEvent,
         AudioController,
+        MusicPlayer,
         AudioEvent,
         PlayableController,
         TimelineEvent,
