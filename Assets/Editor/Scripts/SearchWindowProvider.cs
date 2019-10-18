@@ -26,6 +26,7 @@ namespace UniFlow.Editor
             "Logic",
             "Expression",
             "Receiver",
+            "Complex",
             "Misc",
             "ValueProvider",
             "ValueComparer",
