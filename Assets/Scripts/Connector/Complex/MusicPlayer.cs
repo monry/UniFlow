@@ -1,38 +1,30 @@
 using System;
 using System.Collections.Generic;
+using UniFlow;
+using UniFlow.Connector.Controller;
 using UniFlow.Utility;
 using UnityEngine;
 
-namespace UniFlow.Connector.Controller
+namespace PretendLand.Edwin.Scripts.Connector.Complex
 {
-    [AddComponentMenu("UniFlow/Controller/AudioController", (int) ConnectorType.AudioController)]
-    public class AudioController : ConnectorBase,
-        IBaseGameObjectSpecifyable,
-        IMessageCollectable
+    [AddComponentMenu("UniFlow/Controller/MusicPlayer", (int) ConnectorType.MusicPlayer)]
+    public class MusicPlayer : ConnectorBase, IMessageCollectable
     {
-        [SerializeField] private GameObject baseGameObject = default;
-        [SerializeField] private string transformPath = default;
+        private static GameObject baseGameObject;
+
+        private static GameObject BaseGameObject => baseGameObject != default ? baseGameObject : baseGameObject = CreatePersistentGameObject();
+
         [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioControlMethod audioControlMethod = AudioControlMethod.Play;
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
-        [SerializeField] private bool loop = default;
-        [SerializeField] private bool ignorePlayWhenPlaying = default;
+        [SerializeField] private bool loop = true;
+        [SerializeField] private bool rewindSameClip = default;
 
-        public GameObject BaseGameObject
-        {
-            get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            private set => baseGameObject = value;
-        }
-        public string TransformPath
-        {
-            get => transformPath;
-            private set => transformPath = value;
-        }
         private AudioSource AudioSource
         {
-            get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
+            get => audioSource != default ? audioSource : audioSource = BaseGameObject.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
         private AudioControlMethod AudioControlMethod => audioControlMethod;
@@ -46,25 +38,21 @@ namespace UniFlow.Connector.Controller
             get => loop;
             set => loop = value;
         }
-        private bool IgnorePlayWhenPlaying
+        private bool RewindSameClip
         {
-            get => ignorePlayWhenPlaying;
-            set => ignorePlayWhenPlaying = value;
+            get => rewindSameClip;
+            set => rewindSameClip = value;
         }
 
-        [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
-        [SerializeField] private StringCollector transformPathCollector = new StringCollector();
         [SerializeField] private AudioSourceCollector audioSourceCollector = new AudioSourceCollector();
         [SerializeField] private AudioClipCollector audioClipCollector = new AudioClipCollector();
         [SerializeField] private BoolCollector loopCollector = default;
-        [SerializeField] private BoolCollector ignorePlayWhenPlayingCollector = new BoolCollector();
-
-        private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
-        private StringCollector TransformPathCollector => transformPathCollector;
+        [SerializeField] private BoolCollector rewindSameClipCollector = new BoolCollector();
         private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
         private AudioClipCollector AudioClipCollector => audioClipCollector;
         private BoolCollector LoopCollector => loopCollector;
-        private BoolCollector IgnorePlayWhenPlayingCollector => ignorePlayWhenPlayingCollector;
+        private BoolCollector RewindSameClipCollector => rewindSameClipCollector;
+
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -74,18 +62,13 @@ namespace UniFlow.Connector.Controller
 
         private void InvokeAudioSourceMethod()
         {
-            if (AudioClip != default)
-            {
-                AudioSource.playOnAwake = false;
-                AudioSource.loop = Loop;
-                AudioSource.clip = AudioClip;
-            }
-
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:
-                    if (!IgnorePlayWhenPlaying || !AudioSource.isPlaying)
+                    if (!AudioSource.isPlaying || AudioSource.clip != AudioClip || RewindSameClip)
                     {
+                        AudioSource.clip = AudioClip;
+                        AudioSource.loop = Loop;
                         AudioSource.Play();
                     }
                     break;
@@ -106,20 +89,17 @@ namespace UniFlow.Connector.Controller
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new ICollectableMessageAnnotation[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
                 CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
                 CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
                 CollectableMessageAnnotation<bool>.Create(LoopCollector, x => Loop = x, nameof(Loop)),
-                CollectableMessageAnnotation<bool>.Create(IgnorePlayWhenPlayingCollector, x => IgnorePlayWhenPlaying = x, nameof(IgnorePlayWhenPlaying)),
+                CollectableMessageAnnotation<bool>.Create(RewindSameClipCollector, x => RewindSameClip = x, nameof(RewindSameClip)),
             };
-    }
 
-    public enum AudioControlMethod
-    {
-        Play,
-        Stop,
-        Pause,
-        UnPause,
+        private static GameObject CreatePersistentGameObject()
+        {
+            var go = new GameObject("MusicPlayer");
+            DontDestroyOnLoad(go);
+            return go;
+        }
     }
 }

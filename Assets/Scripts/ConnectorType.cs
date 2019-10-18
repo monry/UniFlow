@@ -65,6 +65,15 @@ namespace UniFlow
         ValueProviderRuntimePlatform,
         CustomValueProvider,
 
+        ObjectSelectorByInt       = 1500,
+        GameObjectSelectorByInt,
+        ComponentSelectorByInt,
+        TransformSelectorByInt,
+        AudioClipSelectorByInt,
+        AnimationClipSelectorByInt,
+        TimelineAssetSelectorByInt,
+        CustomValueSelector,
+
         ValueComparerBool         = 2000,
         ValueComparerByte,
         ValueComparerInt,
@@ -93,7 +102,8 @@ namespace UniFlow
         ValueInjectorTimelineAudioTrack,
         ValueInjectorTimelineAnimationTrack,
 
-        NumberImageRenderer       = 4000,
+        MusicPlayer               = 4000,
+        NumberImageRenderer,
 
         SignalPublisher           = 6000,
         StringSignalPublisher,
@@ -113,6 +123,8 @@ namespace UniFlow
         Interval,
         IntervalFrame,
         TimeScaleController,
+        RandomInt,
+        RandomFloat,
         Empty,
 
         Toss                      = 9100,

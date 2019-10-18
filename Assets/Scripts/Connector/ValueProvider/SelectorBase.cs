@@ -19,7 +19,7 @@ namespace UniFlow.Connector.ValueProvider
         private IList<TKey> Keys => keys;
         private IList<TValue> Values => values;
 
-        public TKey Key { get; set; }
+        private TKey Key { get; set; }
 
         [SerializeField] private TKeyCollector keyCollector = new TKeyCollector();
         private TKeyCollector KeyCollector => keyCollector;
@@ -29,16 +29,16 @@ namespace UniFlow.Connector.ValueProvider
             return Observable.Return(this.CreateMessage());
         }
 
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                CollectableMessageAnnotation<TKey>.Create(KeyCollector, x => Key = x, nameof(Key)),
+            };
+
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
                 ComposableMessageAnnotation<TValue>.Create(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
-            };
-
-        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new[]
-            {
-                CollectableMessageAnnotation<TKey>.Create(KeyCollector, x => Key = x),
             };
     }
 

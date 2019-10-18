@@ -21,16 +21,8 @@ namespace UniFlow.Editor
                     GUILayout.BeginHorizontal(EditorStyles.toolbar);
                     if (GUILayout.Button("Load", EditorStyles.toolbarButton))
                     {
+                        FlowGraphView.CollectConnectorsForSearchTree();
                         UniFlowSettings.instance.SelectedGameObject = Selection.activeGameObject;
-                        if (Contains(Content))
-                        {
-                            Remove(Content);
-                        }
-                        Load();
-                    }
-                    if (GUILayout.Button("Load All in Scene", EditorStyles.toolbarButton))
-                    {
-                        UniFlowSettings.instance.SelectedGameObject = null;
                         if (Contains(Content))
                         {
                             Remove(Content);
@@ -69,10 +61,6 @@ namespace UniFlow.Editor
                         }
                         Load();
                         Observable.TimerFrame(1).Subscribe(_ => FlowGraphView.Relocation(true));
-                    }
-                    if (GUILayout.Button("Refresh Connector List", EditorStyles.toolbarButton))
-                    {
-                        FlowGraphView.CollectConnectorsForSearchTree();
                     }
 
                     if (UniFlowSettings.instance.SelectedGameObject != default)
@@ -116,6 +104,7 @@ namespace UniFlow.Editor
             {
                 name = typeof(FlowGraphView).Name,
             };
+
             FlowGraphView.Initialize();
             Content = new VisualElement
             {
