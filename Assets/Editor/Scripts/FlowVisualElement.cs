@@ -21,6 +21,7 @@ namespace UniFlow.Editor
                     GUILayout.BeginHorizontal(EditorStyles.toolbar);
                     if (GUILayout.Button("Load", EditorStyles.toolbarButton))
                     {
+                        FlowGraphView.CollectConnectorsForSearchTree();
                         UniFlowSettings.instance.SelectedGameObject = Selection.activeGameObject;
                         if (Contains(Content))
                         {
@@ -69,10 +70,6 @@ namespace UniFlow.Editor
                         }
                         Load();
                         Observable.TimerFrame(1).Subscribe(_ => FlowGraphView.Relocation(true));
-                    }
-                    if (GUILayout.Button("Refresh Connector List", EditorStyles.toolbarButton))
-                    {
-                        FlowGraphView.CollectConnectorsForSearchTree();
                     }
 
                     if (UniFlowSettings.instance.SelectedGameObject != default)
