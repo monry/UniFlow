@@ -29,15 +29,6 @@ namespace UniFlow.Editor
                         }
                         Load();
                     }
-                    if (GUILayout.Button("Load All in Scene", EditorStyles.toolbarButton))
-                    {
-                        UniFlowSettings.instance.SelectedGameObject = null;
-                        if (Contains(Content))
-                        {
-                            Remove(Content);
-                        }
-                        Load();
-                    }
 
                     GUILayout.Space(6);
 
@@ -113,6 +104,7 @@ namespace UniFlow.Editor
             {
                 name = typeof(FlowGraphView).Name,
             };
+
             FlowGraphView.Initialize();
             Content = new VisualElement
             {
