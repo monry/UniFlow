@@ -93,7 +93,8 @@ namespace UniFlow
         ValueInjectorTimelineAudioTrack,
         ValueInjectorTimelineAnimationTrack,
 
-        NumberImageRenderer       = 4000,
+        MusicPlayer               = 4000,
+        NumberImageRenderer,
 
         SignalPublisher           = 6000,
         StringSignalPublisher,
