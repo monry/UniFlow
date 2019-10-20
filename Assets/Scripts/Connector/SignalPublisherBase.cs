@@ -1,35 +1,47 @@
 using System;
-using UniFlow.Connector.SignalPublisher;
+using System.Collections.Generic;
 using UniFlow.Utility;
 using UnityEngine;
+using Zenject;
 
 namespace UniFlow.Connector
 {
-    public abstract class SignalPublisherBase<TSignal> : ConnectorBase, ISignalPublisher<TSignal> where TSignal : ISignal
+    public abstract class SignalPublisherBase<TSignal> : ConnectorBase
     {
-        private const string MessageParameterKey = "Signal";
-
         [SerializeField] private TSignal signal = default;
 
+        [Inject] private ISignalPublisher<TSignal> Publisher { get; }
+
+        // ReSharper disable once ConvertToAutoPropertyWhenPossible
         protected TSignal Signal
         {
             get => signal;
-            private set => signal = value;
+            set => signal = value;
+        }
+
+        protected virtual TSignal GetSignal()
+        {
+            return Signal;
         }
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            if (this is ISignalCreator<TSignal> signalCreator)
-            {
-                Signal = signalCreator.CreateSignal();
-            }
-            ((ISignalPublisher<TSignal>) this).Publish(Signal);
-            return ObservableFactory.ReturnMessage(this, MessageParameterKey, Signal);
+            Publisher.Publish(GetSignal());
+            return ObservableFactory.ReturnMessage(this, nameof(Signal), GetSignal());
         }
+    }
 
-        void ISignalPublisher<TSignal>.Publish(TSignal value)
-        {
-            SignalHandler<TSignal>.Publish(value);
-        }
+    public abstract class SignalPublisherBase<TSignal, TSignalCollector> : SignalPublisherBase<TSignal>, IMessageCollectable
+        where TSignalCollector : ValueCollectorBase<TSignal>, new()
+    {
+        [SerializeField] private TSignalCollector enumCollector = new TSignalCollector();
+
+        private TSignalCollector EnumCollector => enumCollector;
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                CollectableMessageAnnotationFactory.Create(EnumCollector, x => Signal = x, nameof(Signal)),
+            };
     }
 }

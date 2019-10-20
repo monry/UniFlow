@@ -1,54 +1,45 @@
 using System;
 using JetBrains.Annotations;
-using UniFlow.Signal;
 using UniRx;
+using Zenject;
 
 namespace UniFlow.Utility
 {
-    [PublicAPI]
-    public static class SignalHandler
+    public interface ISignalPublisher<in TSignal>
     {
-        public static void PublishString(string signalName)
-        {
-            SignalHandler<StringSignal>.Publish(new StringSignal(signalName));
-        }
+        void Publish(TSignal signal);
+    }
 
-        public static void PublishString(string signalName, StringSignal.SignalParameter signalParameter)
-        {
-            SignalHandler<StringSignal>.Publish(new StringSignal(signalName, signalParameter));
-        }
+    public interface ISignalReceiver<out TSignal>
+    {
+        IObservable<TSignal> OnReceiveAsObservable();
+    }
 
-        public static IObservable<StringSignal> OnReceiveStringAsObservable(string signalName)
-        {
-            return SignalHandler<StringSignal>.OnReceiveAsObservable().Where(x => x.Name == signalName);
-        }
+    public interface ISignalHandler<TSignal> : ISignalPublisher<TSignal>, ISignalReceiver<TSignal>
+    {
     }
 
     [PublicAPI]
-    public static class SignalHandler<TSignal> where TSignal : ISignal
+    public class SignalHandler<TSignal> : ISignalHandler<TSignal>
     {
-        public static void Publish(TSignal signal)
+        [Inject] private SignalBus SignalBus { get; }
+
+        public void Publish(TSignal signal)
         {
-            if (typeof(ScriptableObjectSignal).IsAssignableFrom(typeof(TSignal)))
-            {
-                MessageBroker.Default.Publish(signal as ScriptableObjectSignal);
-            }
-            else
-            {
-                MessageBroker.Default.Publish(signal);
-            }
+            SignalBus.Fire(signal);
         }
 
-        public static IObservable<TSignal> OnReceiveAsObservable()
+        public IObservable<TSignal> OnReceiveAsObservable()
         {
-            return typeof(ScriptableObjectSignal).IsAssignableFrom(typeof(TSignal))
-                ? MessageBroker.Default.Receive<ScriptableObjectSignal>().Where(x => x is TSignal).Select(x => (TSignal) (ISignal) x)
-                : MessageBroker.Default.Receive<TSignal>();
+            return SignalBus.GetStream<TSignal>();
         }
+    }
 
-        public static IObservable<TSignal> OnReceiveAsObservable(TSignal signal)
+    public static class SignalHandlerExtensions
+    {
+        public static IObservable<TSignal> OnReceiveAsObservable<TSignal>(this ISignalReceiver<TSignal> signalReceiver, TSignal signal)
         {
-            return OnReceiveAsObservable().Where(x => !(x is IEquatableSignal<TSignal> valueSignal) || valueSignal.Equals(signal));
+            return signalReceiver.OnReceiveAsObservable().Where(x => Equals(x, signal));
         }
     }
 }
