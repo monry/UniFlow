@@ -1,17 +1,17 @@
 using System;
-using UniFlow.Connector.SignalPublisher;
-using UniFlow.Connector.SignalReceiver;
+using System.Collections.Generic;
 using UniFlow.Utility;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace UniFlow.Connector
 {
-    public abstract class SignalReceiverBase<TSignal> : ConnectorBase, ISignalReceiver<TSignal> where TSignal : ISignal
+    public abstract class SignalReceiverBase<TSignal> : ConnectorBase
     {
-        private const string MessageParameterKey = "Signal";
-
         [SerializeField] private TSignal signal = default;
+
+        [Inject] private ISignalReceiver<TSignal> SignalReceiver { get; }
 
         protected TSignal Signal
         {
@@ -19,30 +19,30 @@ namespace UniFlow.Connector
             set => signal = value;
         }
 
+        protected TSignal ReceivedSignal { get; private set; }
+
+        protected virtual TSignal GetSignal()
+        {
+            return Signal;
+        }
+
         public override IObservable<Message> OnConnectAsObservable()
         {
-            if (this is ISignalCreator<TSignal> signalCreator)
-            {
-                Signal = signalCreator.CreateSignal();
-            }
-            return ((ISignalReceiver<TSignal>) this)
-                .OnReceiveAsObservable()
-                .Do(OnReceive)
-                .Select(x => this.CreateMessage(x, MessageParameterKey));
+            return SignalReceiver.OnReceiveAsObservable(GetSignal()).Do(x => ReceivedSignal = x).AsMessageObservable(this, "Signal");
         }
+    }
 
-        protected virtual void OnReceive(TSignal receivedSignal)
-        {
-        }
+    public abstract class SignalReceiverBase<TSignal, TSignalCollector> : SignalReceiverBase<TSignal>, IMessageCollectable
+        where TSignalCollector : ValueCollectorBase<TSignal>, new()
+    {
+        [SerializeField] private TSignalCollector signalCollector = new TSignalCollector();
 
-        IObservable<TSignal> ISignalReceiver<TSignal>.OnReceiveAsObservable()
-        {
-            var observable = SignalHandler<TSignal>.OnReceiveAsObservable(Signal);
-            if (this is ISignalFilter<TSignal> signalFilter)
+        private TSignalCollector SignalCollector => signalCollector;
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
             {
-                observable = observable.Where(signalFilter.Filter);
-            }
-            return observable;
-        }
+                CollectableMessageAnnotationFactory.Create(SignalCollector, x => Signal = x, "Signal"),
+            };
     }
 }

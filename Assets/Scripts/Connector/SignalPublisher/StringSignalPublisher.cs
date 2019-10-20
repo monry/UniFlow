@@ -5,8 +5,7 @@ using UnityEngine;
 namespace UniFlow.Connector.SignalPublisher
 {
     [AddComponentMenu("UniFlow/SignalPublisher/String", (int) ConnectorType.StringSignalPublisher)]
-    public class StringSignalPublisher : SignalPublisherBase<StringSignal>,
-        ISignalCreator<StringSignal>,
+    public class StringSignalPublisher : SignalPublisherBase<StringSignal, StringSignalCollector>,
         IMessageCollectable
     {
         [SerializeField] private string signalName = default;
@@ -69,11 +68,10 @@ namespace UniFlow.Connector.SignalPublisher
         private ObjectCollector ObjectCollector => objectCollector;
         private ScriptableObjectCollector ScriptableObjectCollector => scriptableObjectCollector;
 
-        StringSignal ISignalCreator<StringSignal>.CreateSignal()
+        protected override StringSignal GetSignal()
         {
-            return string.IsNullOrEmpty(SignalName)
-                ? Signal
-                : new StringSignal(
+            return StringSignal
+                .Create(
                     SignalName,
                     new StringSignal.SignalParameter(
                         BoolParameter,
