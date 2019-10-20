@@ -128,20 +128,20 @@ namespace UniFlow.Connector.Complex
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<int>.Create(CurrentCollector, x => Current = x, nameof(Current)),
-                CollectableMessageAnnotation<GameObject>.Create(DigitPrefabCollector, x => DigitPrefab = x, nameof(DigitPrefab)),
-                CollectableMessageAnnotation<float>.Create(DelaySecondsCollector, x => DelaySeconds = x, nameof(DelaySeconds)),
-                CollectableMessageAnnotation<int>.Create(DelayFramesCollector, x => DelayFrames = x, nameof(DelayFrames)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(CurrentCollector, x => Current = x, nameof(Current)),
+                CollectableMessageAnnotationFactory.Create(DigitPrefabCollector, x => DigitPrefab = x, nameof(DigitPrefab)),
+                CollectableMessageAnnotationFactory.Create(DelaySecondsCollector, x => DelaySeconds = x, nameof(DelaySeconds)),
+                CollectableMessageAnnotationFactory.Create(DelayFramesCollector, x => DelayFrames = x, nameof(DelayFrames)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotation<int>.Create(null, "Current"),
+                ComposableMessageAnnotationFactory.Create<int>(null, "Current"),
             };
     }
 

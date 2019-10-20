@@ -39,10 +39,10 @@ namespace UniFlow.Connector.Logic
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<int>.Create(FramesCollector, x => Frames = x, nameof(Frames)),
-                CollectableMessageAnnotation<FrameCountType>.Create(FrameCountTypeCollector, x => FrameCountType = x, nameof(FrameCountType)),
+                CollectableMessageAnnotationFactory.Create(FramesCollector, x => Frames = x, nameof(Frames)),
+                CollectableMessageAnnotationFactory.Create(FrameCountTypeCollector, x => FrameCountType = x, nameof(FrameCountType)),
             };
     }
 

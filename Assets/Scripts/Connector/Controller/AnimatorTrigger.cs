@@ -57,12 +57,12 @@ namespace UniFlow.Connector.Controller
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<Animator>.Create(AnimatorCollector, x => Animator = x),
-                CollectableMessageAnnotation<string>.Create(TriggerNameCollector, x => TriggerName = x, nameof(TriggerName)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(AnimatorCollector, x => Animator = x),
+                CollectableMessageAnnotationFactory.Create(TriggerNameCollector, x => TriggerName = x, nameof(TriggerName)),
             };
     }
 }

@@ -34,7 +34,7 @@ namespace UniFlow.Connector.Misc
         public IEnumerable<ICollectableMessageAnnotation> GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
+                CollectableMessageAnnotationFactory.Create(TargetGameObjectCollector, x => TargetGameObject = x, nameof(TargetGameObject)),
             };
     }
 }

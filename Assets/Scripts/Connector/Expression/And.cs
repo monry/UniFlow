@@ -28,7 +28,7 @@ namespace UniFlow.Connector.Expression
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<bool>.Create(ValueCollector, x => Value = x, nameof(Value)),
+                CollectableMessageAnnotationFactory.Create(ValueCollector, x => Value = x, nameof(Value)),
             };
     }
 }

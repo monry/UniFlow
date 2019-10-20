@@ -39,10 +39,10 @@ namespace UniFlow.Connector.Logic
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<float>.Create(SecondsCollector, x => Seconds = x, nameof(Seconds)),
-                CollectableMessageAnnotation<bool>.Create(IgnoreTimeScaleCollector, x => IgnoreTimeScale = x, nameof(IgnoreTimeScale)),
+                CollectableMessageAnnotationFactory.Create(SecondsCollector, x => Seconds = x, nameof(Seconds)),
+                CollectableMessageAnnotationFactory.Create(IgnoreTimeScaleCollector, x => IgnoreTimeScale = x, nameof(IgnoreTimeScale)),
             };
     }
 }

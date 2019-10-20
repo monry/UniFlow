@@ -104,14 +104,14 @@ namespace UniFlow.Connector.Controller
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
-                CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
-                CollectableMessageAnnotation<bool>.Create(LoopCollector, x => Loop = x, nameof(Loop)),
-                CollectableMessageAnnotation<bool>.Create(IgnorePlayWhenPlayingCollector, x => IgnorePlayWhenPlaying = x, nameof(IgnorePlayWhenPlaying)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(AudioSourceCollector, x => AudioSource = x),
+                CollectableMessageAnnotationFactory.Create(AudioClipCollector, x => AudioClip = x),
+                CollectableMessageAnnotationFactory.Create(LoopCollector, x => Loop = x, nameof(Loop)),
+                CollectableMessageAnnotationFactory.Create(IgnorePlayWhenPlayingCollector, x => IgnorePlayWhenPlaying = x, nameof(IgnorePlayWhenPlaying)),
             };
     }
 

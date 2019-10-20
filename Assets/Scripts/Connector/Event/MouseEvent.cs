@@ -58,7 +58,7 @@ namespace UniFlow.Connector.Event
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<Component>.Create(ComponentCollector, x => Component = x),
+                CollectableMessageAnnotationFactory.Create(ComponentCollector, x => Component = x),
             };
     }
 

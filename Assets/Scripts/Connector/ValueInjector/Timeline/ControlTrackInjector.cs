@@ -83,15 +83,15 @@ namespace UniFlow.Connector.ValueInjector.Timeline
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<PlayableDirector>.Create(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
-                CollectableMessageAnnotation<string>.Create(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
-                CollectableMessageAnnotation<string>.Create(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
-                CollectableMessageAnnotation<GameObject>.Create(SourceGameObjectCollector, x => SourceGameObject = x, nameof(SourceGameObject)),
-                CollectableMessageAnnotation<GameObject>.Create(PrefabGameObjectCollector, x => PrefabGameObject = x, nameof(PrefabGameObject)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(PlayableDirectorCollector, x => PlayableDirector = x, nameof(PlayableDirector)),
+                CollectableMessageAnnotationFactory.Create(TrackNameCollector, x => TrackName = x, nameof(TrackName)),
+                CollectableMessageAnnotationFactory.Create(ClipNameCollector, x => ClipName = x, nameof(ClipName)),
+                CollectableMessageAnnotationFactory.Create(SourceGameObjectCollector, x => SourceGameObject = x, nameof(SourceGameObject)),
+                CollectableMessageAnnotationFactory.Create(PrefabGameObjectCollector, x => PrefabGameObject = x, nameof(PrefabGameObject)),
             };
     }
 }

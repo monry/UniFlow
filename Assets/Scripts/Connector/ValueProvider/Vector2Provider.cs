@@ -13,16 +13,16 @@ namespace UniFlow.Connector.ValueProvider
         private FloatCollector YCollector => yCollector;
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<float>.Create(XCollector, v => Value = new Vector2(v, Value.y), "X"),
-                CollectableMessageAnnotation<float>.Create(YCollector, v => Value = new Vector2(Value.x, v), "Y"),
+                CollectableMessageAnnotationFactory.Create(XCollector, v => Value = new Vector2(v, Value.y), "X"),
+                CollectableMessageAnnotationFactory.Create(YCollector, v => Value = new Vector2(Value.x, v), "Y"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new IComposableMessageAnnotation[]
+            new[]
             {
-                ComposableMessageAnnotation<Vector2>.Create(() => Value),
+                ComposableMessageAnnotationFactory.Create(() => Value),
             };
     }
 }
