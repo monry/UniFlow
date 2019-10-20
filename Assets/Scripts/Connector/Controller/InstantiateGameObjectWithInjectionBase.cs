@@ -44,10 +44,10 @@ namespace UniFlow.Connector.Controller
         }
 
         protected virtual IEnumerable<ICollectableMessageAnnotation> GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(SourceCollector, x => Source = x, nameof(Source)),
-                CollectableMessageAnnotation<Transform>.Create(ParentCollector, x => Parent = x, nameof(Parent)),
+                CollectableMessageAnnotationFactory.Create(SourceCollector, x => Source = x, nameof(Source)),
+                CollectableMessageAnnotationFactory.Create(ParentCollector, x => Parent = x, nameof(Parent)),
             };
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
@@ -56,7 +56,7 @@ namespace UniFlow.Connector.Controller
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotation<GameObject>.Create(() => Instantiated),
+                ComposableMessageAnnotationFactory.Create(() => Instantiated),
             };
     }
 }

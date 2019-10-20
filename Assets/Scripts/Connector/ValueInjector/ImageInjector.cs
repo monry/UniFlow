@@ -64,13 +64,13 @@ namespace UniFlow.Connector.Controller
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<Image>.Create(ImageCollector, x => Image = x, nameof(Image)),
-                CollectableMessageAnnotation<Sprite>.Create(SpriteCollector, x => Sprite = x, nameof(Sprite)),
-                CollectableMessageAnnotation<bool>.Create(InvokeSetNativeSizeCollector, x => InvokeSetNativeSize = x, nameof(InvokeSetNativeSize)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(ImageCollector, x => Image = x, nameof(Image)),
+                CollectableMessageAnnotationFactory.Create(SpriteCollector, x => Sprite = x, nameof(Sprite)),
+                CollectableMessageAnnotationFactory.Create(InvokeSetNativeSizeCollector, x => InvokeSetNativeSize = x, nameof(InvokeSetNativeSize)),
             };
     }
 }

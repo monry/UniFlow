@@ -32,7 +32,7 @@ namespace UniFlow.Connector.Misc
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<TBoundarySignal>.Create(EnumCollector, x => boundarySignal = x),
+                CollectableMessageAnnotationFactory.Create(EnumCollector, x => boundarySignal = x),
             };
     }
 

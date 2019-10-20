@@ -40,14 +40,14 @@ namespace UniFlow.Connector.Logic
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<float>.Create(MinCollector, x => Min = x, nameof(Min)),
-                CollectableMessageAnnotation<float>.Create(MaxCollector, x => Max = x, nameof(Max)),
+                CollectableMessageAnnotationFactory.Create(MinCollector, x => Min = x, nameof(Min)),
+                CollectableMessageAnnotationFactory.Create(MaxCollector, x => Max = x, nameof(Max)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotation<float>.Create(null, nameof(Value)),
+                ComposableMessageAnnotationFactory.Create<float>(nameof(Value)),
             };
     }
 }

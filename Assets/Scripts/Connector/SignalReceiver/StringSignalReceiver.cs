@@ -42,18 +42,18 @@ namespace UniFlow.Connector.SignalReceiver
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotationFactory.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new IComposableMessageAnnotation[]
+            new[]
             {
-                ComposableMessageAnnotation<bool>.Create(() => Signal.Parameter.BoolValue, "BoolParameter"),
-                ComposableMessageAnnotation<int>.Create(() => Signal.Parameter.IntValue, "IntParameter"),
-                ComposableMessageAnnotation<float>.Create(() => Signal.Parameter.FloatValue, "FloatParameter"),
-                ComposableMessageAnnotation<string>.Create(() => Signal.Parameter.StringValue, "StringParameter"),
-                ComposableMessageAnnotation<Object>.Create(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
-                ComposableMessageAnnotation<ScriptableObject>.Create(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.BoolValue, "BoolParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.IntValue, "IntParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.FloatValue, "FloatParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.StringValue, "StringParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
+                ComposableMessageAnnotationFactory.Create(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
             };
     }
 }

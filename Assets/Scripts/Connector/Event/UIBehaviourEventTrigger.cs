@@ -135,13 +135,13 @@ namespace UniFlow.Connector.Event
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<UIBehaviour>.Create(UIBehaviourCollector, x => UIBehaviour = x),
-                CollectableMessageAnnotation<bool>.Create(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
-                CollectableMessageAnnotation<bool>.Create(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(UIBehaviourCollector, x => UIBehaviour = x),
+                CollectableMessageAnnotationFactory.Create(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
+                CollectableMessageAnnotationFactory.Create(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
             };
     }
 }

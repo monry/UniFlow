@@ -114,12 +114,12 @@ namespace UniFlow.Connector.Event
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<GameObject>.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
-                CollectableMessageAnnotation<string>.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
-                CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
-                CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
+                CollectableMessageAnnotationFactory.Create(BaseGameObjectCollector, x => BaseGameObject = x, nameof(BaseGameObject)),
+                CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
+                CollectableMessageAnnotationFactory.Create(AudioSourceCollector, x => AudioSource = x),
+                CollectableMessageAnnotationFactory.Create(AudioClipCollector, x => AudioClip = x),
             };
     }
 

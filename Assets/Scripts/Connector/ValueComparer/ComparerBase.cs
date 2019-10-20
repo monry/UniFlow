@@ -39,14 +39,14 @@ namespace UniFlow.Connector.ValueComparer
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<TValue>.Create(ExpectCollector, x => Expect = x, nameof(Expect)),
-                CollectableMessageAnnotation<TValue>.Create(ActualCollector, x => Actual = x, nameof(Actual)),
+                CollectableMessageAnnotationFactory.Create(ExpectCollector, x => Expect = x, nameof(Expect)),
+                CollectableMessageAnnotationFactory.Create(ActualCollector, x => Actual = x, nameof(Actual)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotation<bool>.Create(() => Result, MessageParameterKey),
+                ComposableMessageAnnotationFactory.Create(() => Result, MessageParameterKey),
             };
     }
 

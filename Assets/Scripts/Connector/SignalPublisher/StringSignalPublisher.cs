@@ -87,15 +87,15 @@ namespace UniFlow.Connector.SignalPublisher
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
-                CollectableMessageAnnotation<bool>.Create(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
-                CollectableMessageAnnotation<int>.Create(IntCollector, x => IntParameter = x, nameof(IntParameter)),
-                CollectableMessageAnnotation<float>.Create(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
-                CollectableMessageAnnotation<string>.Create(StringCollector, x => StringParameter = x, nameof(StringParameter)),
-                CollectableMessageAnnotation<Object>.Create(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
-                CollectableMessageAnnotation<ScriptableObject>.Create(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
+                CollectableMessageAnnotationFactory.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotationFactory.Create(BoolCollector, x => BoolParameter = x, nameof(BoolParameter)),
+                CollectableMessageAnnotationFactory.Create(IntCollector, x => IntParameter = x, nameof(IntParameter)),
+                CollectableMessageAnnotationFactory.Create(FloatCollector, x => FloatParameter = x, nameof(FloatParameter)),
+                CollectableMessageAnnotationFactory.Create(StringCollector, x => StringParameter = x, nameof(StringParameter)),
+                CollectableMessageAnnotationFactory.Create(ObjectCollector, x => ObjectParameter = x, nameof(ObjectParameter)),
+                CollectableMessageAnnotationFactory.Create(ScriptableObjectCollector, x => ScriptableObjectParameter = x, nameof(ScriptableObjectParameter)),
             };
     }
 }
