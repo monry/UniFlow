@@ -129,6 +129,7 @@ namespace UniFlow
         TimeScaleController,
         RandomInt,
         RandomFloat,
+        Counter,
         Empty,
 
         Toss                      = 9100,
