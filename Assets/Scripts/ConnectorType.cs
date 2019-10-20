@@ -117,6 +117,10 @@ namespace UniFlow
         Or,
         Xor,
         Not,
+        ExpressionBool,
+        ExpressionInt,
+        ExpressionFloat,
+        ExpressionString,
 
         Timer                     = 9000,
         TimerFrame,
