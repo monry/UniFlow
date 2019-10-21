@@ -7,27 +7,15 @@ namespace UniFlow.Signal
 {
     [Serializable]
     [PublicAPI]
-    public struct StringSignal : IEquatableSignal<StringSignal>
+    public class StringSignal : SignalBase<StringSignal, string>
     {
-        public StringSignal(string name)
-        {
-            this.name = name;
-            parameter = default;
-        }
-
-        public StringSignal(string name, SignalParameter parameter)
-        {
-            this.name = name;
-            this.parameter = parameter;
-        }
-
-        [SerializeField] private string name;
+        [SerializeField] private string signalName;
         [SerializeField] private SignalParameter parameter;
 
-        public string Name
+        public string SignalName
         {
-            get => name;
-            set => name = value;
+            get => signalName;
+            set => signalName = value;
         }
         public SignalParameter Parameter
         {
@@ -35,19 +23,18 @@ namespace UniFlow.Signal
             set => parameter = value;
         }
 
-        public bool Equals(StringSignal other)
+        protected override string CreateComparableValue()
         {
-            return Name == other.Name;
+            return SignalName;
         }
 
-        public override bool Equals(object obj)
+        public static StringSignal Create(string signalName, SignalParameter signalParameter = default)
         {
-            return obj is StringSignal other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return Name != null ? Name.GetHashCode() : 0;
+            return new StringSignal
+            {
+                SignalName = signalName,
+                Parameter = signalParameter,
+            };
         }
 
         [Serializable]
@@ -102,5 +89,10 @@ namespace UniFlow.Signal
                 set => scriptableObjectValue = value;
             }
         }
+    }
+
+    [Serializable]
+    public class StringSignalCollector : ValueCollectorBase<StringSignal>
+    {
     }
 }

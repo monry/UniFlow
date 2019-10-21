@@ -87,12 +87,12 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<AudioSource>.Create(AudioSourceCollector, x => AudioSource = x),
-                CollectableMessageAnnotation<AudioClip>.Create(AudioClipCollector, x => AudioClip = x),
-                CollectableMessageAnnotation<bool>.Create(LoopCollector, x => Loop = x, nameof(Loop)),
-                CollectableMessageAnnotation<bool>.Create(RewindSameClipCollector, x => RewindSameClip = x, nameof(RewindSameClip)),
+                CollectableMessageAnnotationFactory.Create(AudioSourceCollector, x => AudioSource = x),
+                CollectableMessageAnnotationFactory.Create(AudioClipCollector, x => AudioClip = x),
+                CollectableMessageAnnotationFactory.Create(LoopCollector, x => Loop = x, nameof(Loop)),
+                CollectableMessageAnnotationFactory.Create(RewindSameClipCollector, x => RewindSameClip = x, nameof(RewindSameClip)),
             };
 
         private static GameObject CreatePersistentGameObject()

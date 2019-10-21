@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UniFlow.Utility;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -95,10 +96,10 @@ namespace UniFlow
 
     public static class ZenjectExtensions
     {
-        public static DeclareSignalAsyncTickPriorityCopyBinder DeclareBoundarySignal<T>(this DiContainer container)
+        public static DeclareSignalAsyncTickPriorityCopyBinder DeclareUniFlowSignal<TSignal>(this DiContainer container)
         {
-            container.BindInterfacesTo<BoundarySignalCoordinator<T>>().AsCached();
-            return container.DeclareSignal<T>().OptionalSubscriber();
+            container.BindInterfacesTo<SignalHandler<TSignal>>().AsCached();
+            return container.DeclareSignal<TSignal>().OptionalSubscriber();
         }
     }
 }

@@ -32,13 +32,13 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<TKey>.Create(KeyCollector, x => Key = x, nameof(Key)),
+                CollectableMessageAnnotationFactory.Create(KeyCollector, x => Key = x, nameof(Key)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotation<TValue>.Create(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
+                ComposableMessageAnnotationFactory.Create(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
             };
     }
 

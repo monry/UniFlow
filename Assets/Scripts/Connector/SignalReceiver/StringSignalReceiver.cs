@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using UniFlow.Connector.SignalPublisher;
 using UniFlow.Signal;
 using UnityEngine;
 
 namespace UniFlow.Connector.SignalReceiver
 {
     [AddComponentMenu("UniFlow/SignalReceiver/String", (int) ConnectorType.StringSignalReceiver)]
-    public class StringSignalReceiver : SignalReceiverBase<StringSignal>,
-        ISignalCreator<StringSignal>,
-        ISignalFilter<StringSignal>,
+    public class StringSignalReceiver : SignalReceiverBase<StringSignal, StringSignalCollector>,
         IMessageCollectable,
         IMessageComposable
     {
@@ -24,36 +21,26 @@ namespace UniFlow.Connector.SignalReceiver
 
         private StringCollector SignalNameCollector => signalNameCollector;
 
-        bool ISignalFilter<StringSignal>.Filter(StringSignal signal)
-        {
-            return signal.Name == SignalName;
-        }
-
-        StringSignal ISignalCreator<StringSignal>.CreateSignal()
-        {
-            return string.IsNullOrEmpty(SignalName) ? Signal : new StringSignal(SignalName);
-        }
-
-        protected override void OnReceive(StringSignal receivedSignal)
-        {
-            Signal = receivedSignal;
-        }
-
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<string>.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
+                CollectableMessageAnnotationFactory.Create(SignalNameCollector, x => SignalName = x, nameof(SignalName)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new IComposableMessageAnnotation[]
+            new[]
             {
-                ComposableMessageAnnotation<bool>.Create(() => Signal.Parameter.BoolValue, "BoolParameter"),
-                ComposableMessageAnnotation<int>.Create(() => Signal.Parameter.IntValue, "IntParameter"),
-                ComposableMessageAnnotation<float>.Create(() => Signal.Parameter.FloatValue, "FloatParameter"),
-                ComposableMessageAnnotation<string>.Create(() => Signal.Parameter.StringValue, "StringParameter"),
-                ComposableMessageAnnotation<Object>.Create(() => Signal.Parameter.ObjectValue, "ObjectParameter"),
-                ComposableMessageAnnotation<ScriptableObject>.Create(() => Signal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.BoolValue, "BoolParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.IntValue, "IntParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.FloatValue, "FloatParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.StringValue, "StringParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.ObjectValue, "ObjectParameter"),
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal.Parameter.ScriptableObjectValue, "ScriptableObjectParameter"),
             };
+
+        protected override StringSignal GetSignal()
+        {
+            return StringSignal.Create(SignalName);
+        }
     }
 }

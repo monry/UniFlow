@@ -47,11 +47,11 @@ namespace UniFlow.Connector.Controller
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<Transform>.Create(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
-                CollectableMessageAnnotation<Transform>.Create(ParentTransformCollector, x => ParentTransform = x, nameof(ParentTransform)),
-                CollectableMessageAnnotation<bool>.Create(WorldPositionStaysCollector, x => WorldPositionStays = x, nameof(WorldPositionStays)),
+                CollectableMessageAnnotationFactory.Create(TargetTransformCollector, x => TargetTransform = x, nameof(TargetTransform)),
+                CollectableMessageAnnotationFactory.Create(ParentTransformCollector, x => ParentTransform = x, nameof(ParentTransform)),
+                CollectableMessageAnnotationFactory.Create(WorldPositionStaysCollector, x => WorldPositionStays = x, nameof(WorldPositionStays)),
             };
     }
 }

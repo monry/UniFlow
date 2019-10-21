@@ -29,6 +29,7 @@ namespace UniFlow.Editor
             "Complex",
             "Misc",
             "ValueProvider",
+            "ValueSelector",
             "ValueComparer",
             "ValueInjector",
             "SignalPublisher",

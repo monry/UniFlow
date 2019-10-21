@@ -19,20 +19,20 @@ namespace UniFlow.Connector.ValueProvider
         private Vector3Collector EulerAngleCollector => eulerAngleCollector;
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new ICollectableMessageAnnotation[]
+            new[]
             {
-                CollectableMessageAnnotation<float>.Create(XCollector, v => Value = new Quaternion(v, Value.y, Value.z, Value.w), "X"),
-                CollectableMessageAnnotation<float>.Create(YCollector, v => Value = new Quaternion(Value.x, v, Value.z, Value.w), "Y"),
-                CollectableMessageAnnotation<float>.Create(ZCollector, v => Value = new Quaternion(Value.x, Value.y, v, Value.w), "Z"),
-                CollectableMessageAnnotation<float>.Create(WCollector, v => Value = new Quaternion(Value.x, Value.y, Value.z, v), "W"),
-                CollectableMessageAnnotation<Vector3>.Create(EulerAngleCollector, v => Value = Quaternion.Euler(v), "EulerAngle"),
+                CollectableMessageAnnotationFactory.Create(XCollector, v => Value = new Quaternion(v, Value.y, Value.z, Value.w), "X"),
+                CollectableMessageAnnotationFactory.Create(YCollector, v => Value = new Quaternion(Value.x, v, Value.z, Value.w), "Y"),
+                CollectableMessageAnnotationFactory.Create(ZCollector, v => Value = new Quaternion(Value.x, Value.y, v, Value.w), "Z"),
+                CollectableMessageAnnotationFactory.Create(WCollector, v => Value = new Quaternion(Value.x, Value.y, Value.z, v), "W"),
+                CollectableMessageAnnotationFactory.Create(EulerAngleCollector, v => Value = Quaternion.Euler(v), "EulerAngle"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new IComposableMessageAnnotation[]
+            new[]
             {
-                ComposableMessageAnnotation<Quaternion>.Create(() => Value),
-                ComposableMessageAnnotation<Vector3>.Create(() => Value.eulerAngles),
+                ComposableMessageAnnotationFactory.Create(() => Value),
+                ComposableMessageAnnotationFactory.Create(() => Value.eulerAngles),
             };
     }
 }

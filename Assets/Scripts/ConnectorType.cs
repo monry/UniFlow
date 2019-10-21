@@ -117,6 +117,10 @@ namespace UniFlow
         Or,
         Xor,
         Not,
+        ExpressionBool,
+        ExpressionInt,
+        ExpressionFloat,
+        ExpressionString,
 
         Timer                     = 9000,
         TimerFrame,
@@ -125,6 +129,7 @@ namespace UniFlow
         TimeScaleController,
         RandomInt,
         RandomFloat,
+        Counter,
         Empty,
 
         Toss                      = 9100,

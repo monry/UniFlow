@@ -33,14 +33,14 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
-                CollectableMessageAnnotation<IEnumerable<TValue>>.Create(ValuesCollector, x => Values = x, $"{typeof(TValue).Name}List"),
+                CollectableMessageAnnotationFactory.Create(ValuesCollector, x => Values = x, $"{typeof(TValue).Name}List"),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
                 // Will compose parameter in OnConnectAsObservable()
-                ComposableMessageAnnotation<TValue>.Create(null),
+                ComposableMessageAnnotationFactory.Create<TValue>(),
             };
     }
 
