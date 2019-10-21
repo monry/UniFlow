@@ -9,27 +9,29 @@ using Object = UnityEngine.Object;
 namespace UniFlow.Connector.Controller
 {
     [AddComponentMenu("UniFlow/Controller/DestroyInstance", (int) ConnectorType.LoadScene)]
-    public class DestroyInstance : ConnectorBase
+    public class DestroyInstance : ConnectorBase, IMessageCollectable
     {
-        [SerializeField] private List<Component> targetComponents = default;
-        [SerializeField] private List<GameObject> targetGameObjects = default;
+        [SerializeField] private List<Object> objects = new List<Object>();
 
-        [UsedImplicitly] public IEnumerable<Component> Components
+        [UsedImplicitly] public IList<Object> Objects
         {
-            get => targetComponents;
-            set => targetComponents = value.ToList();
+            get => objects;
+            set => objects = value.ToList();
         }
-        [UsedImplicitly] public IEnumerable<GameObject> GameObjects
-        {
-            get => targetGameObjects;
-            set => targetGameObjects = value.ToList();
-        }
+
+        [SerializeField] private ObjectCollector objectCollector = new ObjectCollector();
+        private ObjectCollector ObjectCollector => objectCollector;
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            var targets = Components.Concat<Object>(GameObjects).ToList();
-            targets.ToList().ForEach(Destroy);
+            Objects.ToList().ForEach(Destroy);
             return ObservableFactory.ReturnMessage(this);
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                CollectableMessageAnnotationFactory.Create(ObjectCollector, Objects.Add, "Object"),
+            };
     }
 }
