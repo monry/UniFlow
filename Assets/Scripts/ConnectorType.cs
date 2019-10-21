@@ -104,6 +104,8 @@ namespace UniFlow
 
         MusicPlayer               = 4000,
         NumberImageRenderer,
+        GaugeImageRenderer,
+        ProgressiveTimer,
 
         SignalPublisher           = 6000,
         StringSignalPublisher,
