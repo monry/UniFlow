@@ -243,4 +243,18 @@ namespace UniFlow
     }
 
 #endregion
+
+#region IObservable<T>
+
+    [Serializable]
+    public class IntObservableCollector : ValueCollectorBase<IObservable<int>>
+    {
+    }
+
+    [Serializable]
+    public class FloatObservableCollector : ValueCollectorBase<IObservable<float>>
+    {
+    }
+
+#endregion
 }

@@ -6,7 +6,7 @@ using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
-    [AddComponentMenu("UniFlow/Controller/InstantiateObject", (int) ConnectorType.InstantiateGameObject)]
+    [AddComponentMenu("UniFlow/Controller/InstantiateGameObject", (int) ConnectorType.InstantiateGameObject)]
     public class InstantiateGameObject : ConnectorBase,
         IMessageCollectable,
         IMessageComposable
@@ -38,7 +38,7 @@ namespace UniFlow.Connector.Controller
         public override IObservable<Message> OnConnectAsObservable()
         {
             Instantiated = DiContainer.InstantiatePrefab(Source, Parent);
-            return ObservableFactory.ReturnMessage(this);
+            return ObservableFactory.ReturnMessage(this, nameof(Instantiated), Instantiated);
         }
 
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
@@ -51,7 +51,7 @@ namespace UniFlow.Connector.Controller
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotationFactory.Create(() => Instantiated, nameof(Instantiated)),
+                ComposableMessageAnnotationFactory.Create<GameObject>(nameof(Instantiated)),
             };
     }
 }

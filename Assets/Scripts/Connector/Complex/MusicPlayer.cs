@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace PretendLand.Edwin.Scripts.Connector.Complex
 {
-    [AddComponentMenu("UniFlow/Controller/MusicPlayer", (int) ConnectorType.MusicPlayer)]
+    [AddComponentMenu("UniFlow/Complex/MusicPlayer", (int) ConnectorType.MusicPlayer)]
     public class MusicPlayer : ConnectorBase, IMessageCollectable
     {
         private static GameObject baseGameObject;
