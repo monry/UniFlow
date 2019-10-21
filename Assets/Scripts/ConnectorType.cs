@@ -110,10 +110,12 @@ namespace UniFlow
         SignalPublisher           = 6000,
         StringSignalPublisher,
         ScriptableObjectSignalPublisher,
+        HandleEventSignalPublisher,
 
         SignalReceiver            = 6500,
         StringSignalReceiver,
         ScriptableObjectSignalReceiver,
+        HandleEventSignalReceiver,
 
         And                       = 8000,
         Or,
