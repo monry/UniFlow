@@ -31,7 +31,13 @@ namespace UniFlow.Utility
 
         public IObservable<TSignal> OnReceiveAsObservable()
         {
+#if ZEN_SIGNALS_ADD_UNIRX
             return SignalBus.GetStream<TSignal>();
+#else
+            var subject = new Subject<TSignal>();
+            SignalBus.Subscribe<TSignal>(subject.OnNext);
+            return subject;
+#endif
         }
     }
 
