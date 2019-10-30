@@ -6,6 +6,37 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
+    public abstract class ListProviderBase<TValue> : ConnectorBase, IInjectable<IEnumerable<TValue>>, IMessageComposable
+    {
+        [SerializeField] private List<TValue> values = default;
+
+        public IEnumerable<TValue> Values
+        {
+            get => values;
+            set => values = value.ToList();
+        }
+
+        public override IObservable<Message> OnConnectAsObservable()
+        {
+            return Values
+                .ToList()
+                .ToObservable()
+                .AsMessageObservable(this, typeof(TValue).Name);
+        }
+
+        void IInjectable<IEnumerable<TValue>>.Inject(IEnumerable<TValue> value)
+        {
+            Values = value;
+        }
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                // Will compose parameter in OnConnectAsObservable()
+                ComposableMessageAnnotationFactory.Create<TValue>(),
+            };
+    }
+
     public abstract class ListProviderBase<TValue, TValueCollector> : ConnectorBase,
         IMessageCollectable,
         IMessageComposable
