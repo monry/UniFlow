@@ -122,4 +122,9 @@ namespace UniFlow.Connector.Controller
         Pause,
         UnPause,
     }
+
+    [Serializable]
+    public class AudioControlMethodCollector : ValueCollectorBase<AudioControlMethod>
+    {
+    }
 }

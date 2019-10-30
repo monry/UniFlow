@@ -103,6 +103,7 @@ namespace UniFlow
         ValueInjectorTimelineAnimationTrack,
 
         MusicPlayer               = 4000,
+        MusicDuckingController,
         NumberImageRenderer,
         GaugeImageRenderer,
         ProgressiveTimer,
@@ -111,11 +112,15 @@ namespace UniFlow
         StringSignalPublisher,
         ScriptableObjectSignalPublisher,
         HandleEventSignalPublisher,
+        MusicControlSignalPublisher,
+        MusicDuckingSignalPublisher,
 
         SignalReceiver            = 6500,
         StringSignalReceiver,
         ScriptableObjectSignalReceiver,
         HandleEventSignalReceiver,
+        MusicControlSignalReceiver,
+        MusicDuckingSignalReceiver,
 
         And                       = 8000,
         Or,
