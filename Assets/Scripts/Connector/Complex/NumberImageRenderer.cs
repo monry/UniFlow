@@ -18,6 +18,8 @@ namespace UniFlow.Connector.Complex
         [SerializeField] private GameObject digitPrefab = default;
         [SerializeField] private float delaySeconds = default;
         [SerializeField] private int delayFrames = default;
+        [SerializeField] private int minimumValue = 0;
+        [SerializeField] private int maximumValue = int.MaxValue;
         [SerializeField] private List<GameObject> digitGameObjects = default;
         [SerializeField] private List<Sprite> numberImages = default;
 
@@ -51,6 +53,16 @@ namespace UniFlow.Connector.Complex
             get => delayFrames;
             set => delayFrames = value;
         }
+        private int MinimumValue
+        {
+            get => minimumValue;
+            set => minimumValue = value;
+        }
+        private int MaximumValue
+        {
+            get => maximumValue;
+            set => maximumValue = value;
+        }
         private IList<GameObject> DigitGameObjects => digitGameObjects;
         private IList<Sprite> NumberImages => numberImages;
 
@@ -60,6 +72,8 @@ namespace UniFlow.Connector.Complex
         [SerializeField] private GameObjectCollector digitPrefabCollector = new GameObjectCollector();
         [SerializeField] private FloatCollector delaySecondsCollector = new FloatCollector();
         [SerializeField] private IntCollector delayFramesCollector = new IntCollector();
+        [SerializeField] private IntCollector minimumValueCollector = new IntCollector();
+        [SerializeField] private IntCollector maximumValueCollector = new IntCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
@@ -67,12 +81,14 @@ namespace UniFlow.Connector.Complex
         private GameObjectCollector DigitPrefabCollector => digitPrefabCollector;
         private FloatCollector DelaySecondsCollector => delaySecondsCollector;
         private IntCollector DelayFramesCollector => delayFramesCollector;
+        private IntCollector MinimumValueCollector => minimumValueCollector;
+        private IntCollector MaximumValueCollector => maximumValueCollector;
 
         private ISubject<int> OnRenderSubject { get; } = new Subject<int>();
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            ((INumberRenderer) this).Render(Current);
+            ((INumberRenderer) this).Render(Mathf.Clamp(Current, MinimumValue, MaximumValue));
             return OnRenderSubject.AsMessageObservable(this, "Current");
         }
 
@@ -136,6 +152,8 @@ namespace UniFlow.Connector.Complex
                 CollectableMessageAnnotationFactory.Create(DigitPrefabCollector, x => DigitPrefab = x, nameof(DigitPrefab)),
                 CollectableMessageAnnotationFactory.Create(DelaySecondsCollector, x => DelaySeconds = x, nameof(DelaySeconds)),
                 CollectableMessageAnnotationFactory.Create(DelayFramesCollector, x => DelayFrames = x, nameof(DelayFrames)),
+                CollectableMessageAnnotationFactory.Create(MinimumValueCollector, x => MinimumValue = x, nameof(MinimumValue)),
+                CollectableMessageAnnotationFactory.Create(MaximumValueCollector, x => MaximumValue = x, nameof(MaximumValue)),
             };
 
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
