@@ -7,33 +7,29 @@ namespace UniFlow.Signal
 {
     [Serializable]
     [PublicAPI]
-    public class StringSignal : SignalBase<StringSignal, string>
+    public sealed class StringSignal : SignalBase<StringSignal, string>
     {
         [SerializeField] private string signalName;
         [SerializeField] private SignalParameter parameter;
 
-        public string SignalName
+        protected override string ComparableValue
         {
             get => signalName;
             set => signalName = value;
         }
+
         public SignalParameter Parameter
         {
             get => parameter;
             set => parameter = value;
         }
 
-        protected override string CreateComparableValue()
-        {
-            return SignalName;
-        }
-
         public static StringSignal Create(string signalName, SignalParameter signalParameter = default)
         {
             return new StringSignal
             {
-                SignalName = signalName,
-                Parameter = signalParameter,
+                signalName = signalName,
+                parameter = signalParameter,
             };
         }
 
@@ -92,7 +88,7 @@ namespace UniFlow.Signal
     }
 
     [Serializable]
-    public class StringSignalCollector : ValueCollectorBase<StringSignal>
+    public sealed class StringSignalCollector : ValueCollectorBase<StringSignal>
     {
     }
 }
