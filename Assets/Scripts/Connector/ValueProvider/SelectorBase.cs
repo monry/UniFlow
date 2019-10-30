@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,8 +17,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private List<TKey> keys = new List<TKey>();
         [SerializeField] private List<TValue> values = new List<TValue>();
 
-        private IList<TKey> Keys => keys;
-        private IList<TValue> Values => values;
+        protected virtual IList<TKey> Keys => keys;
+        protected virtual IEnumerable<TValue> Values => values;
 
         private TKey Key { get; set; }
 
@@ -29,6 +30,11 @@ namespace UniFlow.Connector.ValueProvider
             return Observable.Return(this.CreateMessage());
         }
 
+        protected virtual TValue FindValue(TKey key)
+        {
+            return Keys.Contains(key) && Values.Count() > Keys.IndexOf(key) ? Values.ElementAt(Keys.IndexOf(key)) : default;
+        }
+
         IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
             new[]
             {
@@ -38,8 +44,13 @@ namespace UniFlow.Connector.ValueProvider
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotationFactory.Create(() => Keys.Contains(Key) ? Values[Keys.IndexOf(Key)] : default),
+                ComposableMessageAnnotationFactory.Create(() => FindValue(Key)),
             };
+    }
+
+    public abstract class ListSelectorBase<TValue> : SelectorBase<int, TValue, IntCollector>
+    {
+        protected override IList<int> Keys => Enumerable.Range(0, Values.Count()).ToList();
     }
 
     public abstract class GameObjectSelectorBase<TKey, TKeyCollector> : SelectorBase<TKey, GameObject, TKeyCollector> where TKeyCollector : ValueCollectorBase<TKey>, new()
