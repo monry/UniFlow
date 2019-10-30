@@ -96,7 +96,9 @@ namespace UniFlow
         ValueComparerRuntimePlatform,
         CustomValueComparer,
 
-        ValueInjectorImage        = 3000,
+        ValueInjectorTransform    = 3000,
+        ValueInjectorRectTransform,
+        ValueInjectorImage,
         ValueInjectorRawImage,
         ValueInjectorTimelineControlTrack,
         ValueInjectorTimelineAudioTrack,
