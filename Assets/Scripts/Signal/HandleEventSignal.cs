@@ -1,22 +1,21 @@
 using System;
+using JetBrains.Annotations;
 
 namespace UniFlow.Signal
 {
+    [PublicAPI]
     public class HandleEventSignal : SignalBase<HandleEventSignal, HandleEventType>
     {
         public HandleEventType HandleEventType { get; private set; }
 
-        protected override HandleEventType CreateComparableValue()
+        protected override HandleEventType ComparableValue
         {
-            return HandleEventType;
-        }
-
-        public static HandleEventSignal Create(HandleEventType handleEventType)
-        {
-            return new HandleEventSignal {HandleEventType = handleEventType};
+            get => HandleEventType;
+            set => HandleEventType = value;
         }
     }
 
+    [PublicAPI]
     public enum HandleEventType
     {
         Activate,
