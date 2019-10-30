@@ -11,10 +11,10 @@ namespace UniFlow
 {
     public abstract class ConnectorBase : MonoBehaviour, IConnector
     {
-        [SerializeField] [Tooltip("Specify instances of IEventConnector directly")]
+        [SerializeField] [Tooltip("Specify instances of IConnector directly")]
         private List<ConnectorBase> targetComponents = new List<ConnectorBase>();
 
-        [SerializeField] [Tooltip("Specify identifiers of IEventConnector that resolve from Zenject.DiContainer")]
+        [SerializeField] [Tooltip("Specify identifiers of IConnector that resolve from Zenject.DiContainer")]
         private List<string> targetIds = new List<string>();
 
         [SerializeField] [Tooltip("Set true to allow to act as the entry point of events")]
