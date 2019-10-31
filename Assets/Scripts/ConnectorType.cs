@@ -106,6 +106,7 @@ namespace UniFlow
 
         MusicPlayer               = 4000,
         MusicDuckingController,
+        MusicPitchController,
         NumberImageRenderer,
         GaugeImageRenderer,
         ProgressiveTimer,
@@ -116,6 +117,7 @@ namespace UniFlow
         HandleEventSignalPublisher,
         MusicControlSignalPublisher,
         MusicDuckingSignalPublisher,
+        MusicPitchSignalPublisher,
 
         SignalReceiver            = 6500,
         StringSignalReceiver,
@@ -123,6 +125,7 @@ namespace UniFlow
         HandleEventSignalReceiver,
         MusicControlSignalReceiver,
         MusicDuckingSignalReceiver,
+        MusicPitchSignalReceiver,
 
         And                       = 8000,
         Or,
