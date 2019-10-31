@@ -28,7 +28,7 @@ namespace UniFlow.Connector.Logic
         IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
             new[]
             {
-                ComposableMessageAnnotationFactory.Create<int>("Count"),
+                ComposableMessageAnnotationFactory.Create(() => CounterProperty.Value, "Count"),
             };
     }
 }
