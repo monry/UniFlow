@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/String", (int) ConnectorType.ValueProviderString)]
+    [AddComponentMenu("UniFlow/ValueProvider/StringProvider", (int) ConnectorType.ValueProviderString)]
     public class StringProvider : ProviderBase<string>
     {
     }

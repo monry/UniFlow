@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UniFlow.Signal;
 using UniFlow.Utility;
 using UniRx;
 using UnityEngine;
@@ -7,7 +8,7 @@ using Zenject;
 
 namespace UniFlow.Connector
 {
-    public abstract class SignalReceiverBase<TSignal> : ConnectorBase
+    public abstract class SignalReceiverBase<TSignal> : ConnectorBase, IMessageComposable
     {
         [SerializeField] private TSignal signal = default;
 
@@ -30,6 +31,12 @@ namespace UniFlow.Connector
         {
             return SignalReceiver.OnReceiveAsObservable(GetSignal()).Do(x => ReceivedSignal = x).AsMessageObservable(this, "Signal");
         }
+
+        public virtual IEnumerable<IComposableMessageAnnotation> GetMessageComposableAnnotations() =>
+            new[]
+            {
+                ComposableMessageAnnotationFactory.Create(() => ReceivedSignal, "Signal"),
+            };
     }
 
     public abstract class SignalReceiverBase<TSignal, TSignalCollector> : SignalReceiverBase<TSignal>, IMessageCollectable
@@ -44,5 +51,19 @@ namespace UniFlow.Connector
             {
                 CollectableMessageAnnotationFactory.Create(SignalCollector, x => Signal = x, "Signal"),
             };
+    }
+
+
+    public abstract class SignalReceiverWithParameterBase<TSignal, TParameter> : SignalPublisherBase<TSignal>
+        where TSignal : SignalBase<TSignal, TParameter>, new()
+        where TParameter : Enum
+    {
+        [SerializeField] private TParameter enumValue = default;
+        private TParameter EnumValue => enumValue;
+
+        protected override TSignal GetSignal()
+        {
+            return SignalBase<TSignal, TParameter>.Create(EnumValue);
+        }
     }
 }

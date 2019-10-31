@@ -5,7 +5,6 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace UniFlow.Editor
@@ -193,19 +192,29 @@ namespace UniFlow.Editor
                 .ForEach(x => ((ConnectorBase) x.ConnectorInfo.Connector).ActAsTrigger = (x.InputPort.connections == null || !x.InputPort.connections.Any()));
         }
 
+        private IEnumerable<IConnector> CollectConnectors()
+        {
+            if (UniFlowSettings.instance.IsPrefabMode)
+            {
+                return UniFlowSettings.instance.SelectedGameObject
+                    .GetComponentsInChildren<ConnectorBase>(true);
+            }
+
+            if (UniFlowSettings.instance.SelectedGameObject != null)
+            {
+                return UniFlowSettings.instance
+                    .SelectedGameObject
+                    .scene
+                    .GetRootGameObjects()
+                    .SelectMany(x => x.GetComponentsInChildren<ConnectorBase>(true));
+            }
+
+            return new IConnector[0];
+        }
+
         private void CreateNodesFromInstance()
         {
-            Connectors = UniFlowSettings.instance.IsPrefabMode
-                ? UniFlowSettings.instance.SelectedGameObject
-                    .GetComponentsInChildren<ConnectorBase>(true)
-                    .OfType<IConnector>()
-                    .ToList()
-                : (UniFlowSettings.instance.SelectedGameObject == default ? SceneManager.GetActiveScene() : UniFlowSettings.instance.SelectedGameObject.scene)
-                    .GetRootGameObjects()
-                    .SelectMany(x => x.GetComponentsInChildren<ConnectorBase>(true))
-                    .OfType<IConnector>()
-                    .ToList();
-
+            Connectors = CollectConnectors().ToList();
 
             foreach (var connector in Connectors)
             {
@@ -318,7 +327,7 @@ namespace UniFlow.Editor
                     .ToArray();
                 foreach (var valueCollector in valueCollectors)
                 {
-                    if (!(valueCollector?.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
+                    if (!(valueCollector?.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(connector) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
                     {
                         continue;
                     }

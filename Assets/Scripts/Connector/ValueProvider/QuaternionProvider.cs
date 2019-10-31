@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/Quaternion", (int) ConnectorType.ValueProviderQuaternion)]
+    [AddComponentMenu("UniFlow/ValueProvider/QuaternionProvider", (int) ConnectorType.ValueProviderQuaternion)]
     public class QuaternionProvider : ProviderBase<Quaternion>, IMessageCollectable, IMessageComposable
     {
         [SerializeField] private FloatCollector xCollector = new FloatCollector();

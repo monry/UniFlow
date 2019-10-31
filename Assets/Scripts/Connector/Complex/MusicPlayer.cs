@@ -10,9 +10,7 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
     [AddComponentMenu("UniFlow/Complex/MusicPlayer", (int) ConnectorType.MusicPlayer)]
     public class MusicPlayer : ConnectorBase, IMessageCollectable
     {
-        private static GameObject baseGameObject;
-
-        private static GameObject BaseGameObject => baseGameObject != default ? baseGameObject : baseGameObject = CreatePersistentGameObject();
+        internal static GameObject BaseGameObject { get; private set; }
 
         [SerializeField] private AudioSource audioSource = default;
         [SerializeField] private AudioControlMethod audioControlMethod = AudioControlMethod.Play;
@@ -27,7 +25,11 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
             get => audioSource != default ? audioSource : audioSource = BaseGameObject.GetOrAddComponent<AudioSource>();
             set => audioSource = value;
         }
-        private AudioControlMethod AudioControlMethod => audioControlMethod;
+        private AudioControlMethod AudioControlMethod
+        {
+            get => audioControlMethod;
+            set => audioControlMethod = value;
+        }
         private AudioClip AudioClip
         {
             get => audioClip;
@@ -45,14 +47,21 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
         }
 
         [SerializeField] private AudioSourceCollector audioSourceCollector = new AudioSourceCollector();
+        [SerializeField] private AudioControlMethodCollector audioControlMethodCollector = new AudioControlMethodCollector();
         [SerializeField] private AudioClipCollector audioClipCollector = new AudioClipCollector();
         [SerializeField] private BoolCollector loopCollector = default;
         [SerializeField] private BoolCollector rewindSameClipCollector = new BoolCollector();
+
         private AudioSourceCollector AudioSourceCollector => audioSourceCollector;
+        private AudioControlMethodCollector AudioControlMethodCollector => audioControlMethodCollector;
         private AudioClipCollector AudioClipCollector => audioClipCollector;
         private BoolCollector LoopCollector => loopCollector;
         private BoolCollector RewindSameClipCollector => rewindSameClipCollector;
 
+        private void Awake()
+        {
+            BaseGameObject = gameObject;
+        }
 
         public override IObservable<Message> OnConnectAsObservable()
         {
@@ -90,16 +99,10 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
             new[]
             {
                 CollectableMessageAnnotationFactory.Create(AudioSourceCollector, x => AudioSource = x),
+                CollectableMessageAnnotationFactory.Create(AudioControlMethodCollector, x => AudioControlMethod = x),
                 CollectableMessageAnnotationFactory.Create(AudioClipCollector, x => AudioClip = x),
                 CollectableMessageAnnotationFactory.Create(LoopCollector, x => Loop = x, nameof(Loop)),
                 CollectableMessageAnnotationFactory.Create(RewindSameClipCollector, x => RewindSameClip = x, nameof(RewindSameClip)),
             };
-
-        private static GameObject CreatePersistentGameObject()
-        {
-            var go = new GameObject("MusicPlayer");
-            DontDestroyOnLoad(go);
-            return go;
-        }
     }
 }

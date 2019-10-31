@@ -22,29 +22,56 @@ namespace UniFlow.Connector.Event
         public GameObject BaseGameObject
         {
             get => baseGameObject == default ? baseGameObject = gameObject : baseGameObject;
-            private set => baseGameObject = value;
+            private set
+            {
+                baseGameObject = value;
+                transformPath = default;
+                playableDirector = default;
+                timelineAsset = default;
+                // Try to re-register when TimelineAsset may change
+                // Note: Marker is ignored if Playable has already been played, so a hack such as delaying playback by 1 frame is required
+                RegisterSignal();
+            }
         }
+
         public string TransformPath
         {
             get => transformPath;
-            private set => transformPath = value;
+            private set
+            {
+                transformPath = value;
+                playableDirector = default;
+                timelineAsset = default;
+                // Try to re-register when TimelineAsset may change
+                // Note: Marker is ignored if Playable has already been played, so a hack such as delaying playback by 1 frame is required
+                RegisterSignal();
+            }
         }
+
         private PlayableDirector PlayableDirector
         {
-            get =>
-                playableDirector != default
-                    ? playableDirector
-                    : playableDirector =
-                        BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>() != default
-                            ? BaseGameObject.transform.Find(TransformPath).gameObject.GetComponent<PlayableDirector>()
-                            : BaseGameObject.transform.Find(TransformPath).gameObject.AddComponent<PlayableDirector>();
-            set => playableDirector = value;
+            get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
+            set
+            {
+                playableDirector = value;
+                timelineAsset = default;
+                // Try to re-register when TimelineAsset may change
+                // Note: Marker is ignored if Playable has already been played, so a hack such as delaying playback by 1 frame is required
+                RegisterSignal();
+            }
         }
+
         private TimelineEventType TimelineEventType => timelineEventType;
         private TimelineAsset TimelineAsset
         {
-            get => timelineAsset;
-            set => timelineAsset = value;
+            get => timelineAsset != default ? timelineAsset : PlayableDirector.playableAsset as TimelineAsset;
+            set
+            {
+                timelineAsset = value;
+                // Try to re-register when TimelineAsset may change
+                // Note: Marker is ignored if Playable has already been played, so a hack such as delaying playback by 1 frame is required
+                RegisterSignal();
+            }
         }
 
         [SerializeField] private GameObjectCollector baseGameObjectCollector = new GameObjectCollector();
@@ -117,7 +144,7 @@ namespace UniFlow.Connector.Event
 
         private void RegisterSignal()
         {
-            if (!(PlayableDirector.playableAsset is TimelineAsset timeline))
+            if (!(TimelineAsset is TimelineAsset timeline))
             {
                 return;
             }
