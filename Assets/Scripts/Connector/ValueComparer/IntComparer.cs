@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    [AddComponentMenu("UniFlow/ValueComparer/Int", (int) ConnectorType.ValueComparerInt)]
+    [AddComponentMenu("UniFlow/ValueComparer/IntComparer", (int) ConnectorType.ValueComparerInt)]
     public class IntComparer : ComparerBase<int, IntComparer.OperatorType, IntCollector>
     {
         protected override bool Compare(int actual)

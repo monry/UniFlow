@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/Vector2Int", (int) ConnectorType.ValueProviderVector2Int)]
+    [AddComponentMenu("UniFlow/ValueProvider/Vector2IntProvider", (int) ConnectorType.ValueProviderVector2Int)]
     public class Vector2IntProvider : ProviderBase<Vector2Int>, IMessageCollectable, IMessageComposable
     {
         [SerializeField] private IntCollector xCollector = new IntCollector();

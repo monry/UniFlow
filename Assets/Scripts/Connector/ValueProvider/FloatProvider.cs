@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/Float", (int) ConnectorType.ValueProviderFloat)]
+    [AddComponentMenu("UniFlow/ValueProvider/FloatProvider", (int) ConnectorType.ValueProviderFloat)]
     public class FloatProvider : ProviderBase<float>
     {
     }

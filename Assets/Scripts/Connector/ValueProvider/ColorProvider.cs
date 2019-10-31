@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/Color", (int) ConnectorType.ValueProviderColor)]
+    [AddComponentMenu("UniFlow/ValueProvider/ColorProvider", (int) ConnectorType.ValueProviderColor)]
     public class ColorProvider : ProviderBase<Color>, IMessageCollectable, IMessageComposable
     {
         [SerializeField] private FloatCollector rCollector = new FloatCollector();

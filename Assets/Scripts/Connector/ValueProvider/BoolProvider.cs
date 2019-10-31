@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    [AddComponentMenu("UniFlow/ValueProvider/Bool", (int) ConnectorType.ValueProviderBool)]
+    [AddComponentMenu("UniFlow/ValueProvider/BoolProvider", (int) ConnectorType.ValueProviderBool)]
     public class BoolProvider : ProviderBase<bool>
     {
     }
