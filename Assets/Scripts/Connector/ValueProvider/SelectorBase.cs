@@ -17,8 +17,8 @@ namespace UniFlow.Connector.ValueProvider
         [SerializeField] private List<TKey> keys = new List<TKey>();
         [SerializeField] private List<TValue> values = new List<TValue>();
 
-        protected virtual IList<TKey> Keys => keys;
-        protected virtual IEnumerable<TValue> Values => values;
+        protected IList<TKey> Keys => keys != default && keys.Any() ? keys : keys = GetKeys().ToList();
+        protected IEnumerable<TValue> Values => values != default && values.Any() ? values : values = GetValues().ToList();
 
         private TKey Key { get; set; }
 
@@ -28,6 +28,16 @@ namespace UniFlow.Connector.ValueProvider
         public override IObservable<Message> OnConnectAsObservable()
         {
             return Observable.Return(this.CreateMessage());
+        }
+
+        protected virtual IEnumerable<TKey> GetKeys()
+        {
+            return keys;
+        }
+
+        protected virtual IEnumerable<TValue> GetValues()
+        {
+            return values;
         }
 
         protected virtual TValue FindValue(TKey key)
@@ -50,7 +60,10 @@ namespace UniFlow.Connector.ValueProvider
 
     public abstract class ListSelectorBase<TValue> : SelectorBase<int, TValue, IntCollector>
     {
-        protected override IList<int> Keys => Enumerable.Range(0, Values.Count()).ToList();
+        protected override IEnumerable<int> GetKeys()
+        {
+            return Enumerable.Range(0, Values.Count());
+        }
     }
 
     public abstract class GameObjectSelectorBase<TKey, TKeyCollector> : SelectorBase<TKey, GameObject, TKeyCollector> where TKeyCollector : ValueCollectorBase<TKey>, new()
