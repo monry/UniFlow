@@ -327,7 +327,7 @@ namespace UniFlow.Editor
                     .ToArray();
                 foreach (var valueCollector in valueCollectors)
                 {
-                    if (!(valueCollector?.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
+                    if (!(valueCollector?.SourceConnector is IMessageComposable) || !RenderedNodes.ContainsKey(connector) || !RenderedNodes.ContainsKey(valueCollector.SourceConnector) || !(connector is IMessageCollectable))
                     {
                         continue;
                     }

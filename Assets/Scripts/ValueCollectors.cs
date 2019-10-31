@@ -244,6 +244,20 @@ namespace UniFlow
 
 #endregion
 
+#region EventData
+
+    [Serializable]
+    public class PointerEventDataCollector : ValueCollectorBase<PointerEventData>
+    {
+    }
+
+    [Serializable]
+    public class BaseEventDataCollector : ValueCollectorBase<BaseEventData>
+    {
+    }
+
+#endregion
+
 #region IObservable<T>
 
     [Serializable]

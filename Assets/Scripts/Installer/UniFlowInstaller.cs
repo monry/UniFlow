@@ -16,6 +16,7 @@ namespace UniFlow.Installer
             Container.DeclareUniFlowSignal<HandleEventSignal>();
             Container.DeclareUniFlowSignal<MusicControlSignal>();
             Container.DeclareUniFlowSignal<MusicDuckingSignal>();
+            Container.DeclareUniFlowSignal<MusicPitchSignal>();
         }
 
         [UsedImplicitly]
@@ -26,6 +27,7 @@ namespace UniFlow.Installer
             new SignalHandler<HandleEventSignal>();
             new SignalHandler<MusicControlSignal>();
             new SignalHandler<MusicDuckingSignal>();
+            new SignalHandler<MusicPitchSignal>();
         }
     }
 }

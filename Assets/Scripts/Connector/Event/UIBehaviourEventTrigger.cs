@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/UIBehaviourEventTrigger", (int) ConnectorType.UIBehaviourEventTrigger)]
-    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable
+    public class UIBehaviourEventTrigger : ConnectorBase, IBaseGameObjectSpecifyable, IMessageCollectable, IMessageComposable
     {
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
@@ -83,7 +83,7 @@ namespace UniFlow.Connector.Event
                         }
                     }
                 )
-                .AsMessageObservable(this);
+                .AsMessageObservable(this, "EventData");
         }
 
         private IObservable<BaseEventData> OnEventTriggerAsObservable()
@@ -142,6 +142,12 @@ namespace UniFlow.Connector.Event
                 CollectableMessageAnnotationFactory.Create(UIBehaviourCollector, x => UIBehaviour = x),
                 CollectableMessageAnnotationFactory.Create(ActivateBeforeConnectCollector, x => ActivateBeforeConnect = x, nameof(ActivateBeforeConnect)),
                 CollectableMessageAnnotationFactory.Create(DeactivateAfterConnectCollector, x => DeactivateAfterConnect = x, nameof(DeactivateAfterConnect)),
+            };
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                ComposableMessageAnnotationFactory.Create<PointerEventData>(null, "EventData"),
             };
     }
 }
