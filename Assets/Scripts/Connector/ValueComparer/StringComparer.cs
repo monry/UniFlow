@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.ValueComparer
 {
-    [AddComponentMenu("UniFlow/ValueComparer/String", (int) ConnectorType.ValueComparerString)]
+    [AddComponentMenu("UniFlow/ValueComparer/StringComparer", (int) ConnectorType.ValueComparerString)]
     public class StringComparer : ComparerBase<string, StringComparer.OperatorType, StringCollector>
     {
         protected override bool Compare(string actual)

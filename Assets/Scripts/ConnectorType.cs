@@ -128,10 +128,11 @@ namespace UniFlow
         Or,
         Xor,
         Not,
-        ExpressionBool,
-        ExpressionInt,
-        ExpressionFloat,
-        ExpressionString,
+
+        BoolCalculator            = 8500,
+        IntCalculator,
+        FloatCalculator,
+        StringCalculator,
 
         Timer                     = 9000,
         TimerFrame,

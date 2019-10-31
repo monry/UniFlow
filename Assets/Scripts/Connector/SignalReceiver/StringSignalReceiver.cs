@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniFlow.Connector.SignalReceiver
 {
-    [AddComponentMenu("UniFlow/SignalReceiver/String", (int) ConnectorType.StringSignalReceiver)]
+    [AddComponentMenu("UniFlow/SignalReceiver/StringSignalReceiver", (int) ConnectorType.StringSignalReceiver)]
     public class StringSignalReceiver : SignalReceiverBase<StringSignal, StringSignalCollector>,
         IMessageCollectable,
         IMessageComposable
