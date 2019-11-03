@@ -43,7 +43,7 @@ namespace UniFlow.Signal
     public abstract class SignalBase<TSignal, TParameter> : ISignal<TSignal>
         where TSignal : SignalBase<TSignal, TParameter>, new()
     {
-        protected abstract TParameter ComparableValue { get; set; }
+        public abstract TParameter ComparableValue { get; set; }
 
         public override bool Equals(object obj)
         {

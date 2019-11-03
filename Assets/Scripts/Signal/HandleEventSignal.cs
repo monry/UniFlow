@@ -8,7 +8,7 @@ namespace UniFlow.Signal
     {
         public HandleEventType HandleEventType { get; private set; }
 
-        protected override HandleEventType ComparableValue
+        public override HandleEventType ComparableValue
         {
             get => HandleEventType;
             set => HandleEventType = value;
