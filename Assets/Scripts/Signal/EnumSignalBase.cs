@@ -12,7 +12,7 @@ namespace UniFlow.Signal
     {
         [SerializeField] private TEnum enumValue = default;
 
-        protected override TEnum ComparableValue
+        public override TEnum ComparableValue
         {
             get => enumValue;
             set => enumValue = value;
