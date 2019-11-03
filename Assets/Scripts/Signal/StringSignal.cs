@@ -12,7 +12,7 @@ namespace UniFlow.Signal
         [SerializeField] private string signalName;
         [SerializeField] private SignalParameter parameter;
 
-        protected override string ComparableValue
+        public override string ComparableValue
         {
             get => signalName;
             set => signalName = value;
