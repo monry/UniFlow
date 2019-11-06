@@ -69,6 +69,7 @@ namespace UniFlow.Connector.Controller
             switch (PlayableControlMethod)
             {
                 case PlayableControlMethod.Play:
+                    PlayableDirector.time = 0;
                     PlayableDirector.Play();
                     break;
                 case PlayableControlMethod.Stop:
