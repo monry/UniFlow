@@ -1,94 +1,54 @@
 using System;
 using System.Collections.Generic;
-using UniRx;
-using UniRx.Triggers;
+using KeyEventHandler;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/KeyEvent", (int) ConnectorType.KeyEvent)]
-    public class KeyEvent : ConnectorBase
+    public class KeyEvent : ConnectorBase, IMessageCollectable
     {
-        [SerializeField] private string groupName = default;
-        [SerializeField] private KeyEventType keyEventType = KeyEventType.Down;
         [SerializeField] private KeyCode keyCode = default;
+        [SerializeField] private KeyEventType keyEventType = default;
 
-        private string GroupName => groupName;
-        private KeyEventType KeyEventType => keyEventType;
-        private KeyCode KeyCode => keyCode;
-
-        public override IObservable<Message> OnConnectAsObservable()
+        private KeyCode KeyCode
         {
-            return KeyEventAsObservable().Where(_ => RegisterCommandGroup(GroupName).Execute(Unit.Default)).Select(this.CreateMessage);
+            get => keyCode;
+            set => keyCode = value;
+        }
+        private KeyEventType KeyEventType
+        {
+            get => keyEventType;
+            set => keyEventType = value;
         }
 
-        private IObservable<Unit> KeyEventAsObservable()
+        [SerializeField] private KeyCodeCollector keyCodeCollector = new KeyCodeCollector();
+        [SerializeField] private KeyEventTypeCollector keyEventTypeCollector = new KeyEventTypeCollector();
+
+        private KeyCodeCollector KeyCodeCollector => keyCodeCollector;
+        private KeyEventTypeCollector KeyEventTypeCollector => keyEventTypeCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             switch (KeyEventType)
             {
                 case KeyEventType.Down:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKeyDown(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyDownAsObservable(KeyCode).AsMessageObservable(this);
                 case KeyEventType.Press:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKey(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyPressAsObservable(KeyCode).AsMessageObservable(this);
                 case KeyEventType.Up:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKeyUp(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyUpAsObservable(KeyCode).AsMessageObservable(this);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void OnDestroy()
-        {
-            UnregisterCommandGroup(GroupName);
-        }
-
-        internal static IReactiveProperty<bool> Gate { get; } = new BoolReactiveProperty(true);
-
-        private static IDictionary<string, ReactiveCommandReference> CommandGroups { get; } = new Dictionary<string, ReactiveCommandReference>();
-
-        private static IReactiveCommand<Unit> RegisterCommandGroup(string groupName)
-        {
-            if (!CommandGroups.ContainsKey(groupName) || CommandGroups[groupName] == default)
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
             {
-                CommandGroups[groupName] = new ReactiveCommandReference(Gate);
-            }
-
-            CommandGroups[groupName].ReferenceCount++;
-            return CommandGroups[groupName].Command;
-        }
-
-        private static void UnregisterCommandGroup(string groupName)
-        {
-            if (CommandGroups.ContainsKey(groupName) && CommandGroups[groupName] != default)
-            {
-                CommandGroups[groupName].ReferenceCount--;
-
-                if (CommandGroups[groupName].ReferenceCount <= 0)
-                {
-                    CommandGroups.Remove(groupName);
-                }
-            }
-        }
-
-        private class ReactiveCommandReference
-        {
-            internal ReactiveCommandReference(IObservable<bool> gate)
-            {
-                Command = gate.ToReactiveCommand();
-            }
-
-            internal IReactiveCommand<Unit> Command { get; }
-            internal int ReferenceCount { get; set; }
-        }
+                CollectableMessageAnnotationFactory.Create(KeyCodeCollector, x => KeyCode = x, nameof(KeyCode)),
+                CollectableMessageAnnotationFactory.Create(KeyEventTypeCollector, x => KeyEventType = x, nameof(KeyEventType)),
+            };
     }
 
     public enum KeyEventType
@@ -96,5 +56,15 @@ namespace UniFlow.Connector.Event
         Down,
         Press,
         Up,
+    }
+
+    [Serializable]
+    public class KeyCodeCollector : ValueCollectorBase<KeyCode>
+    {
+    }
+
+    [Serializable]
+    public class KeyEventTypeCollector : ValueCollectorBase<KeyEventType>
+    {
     }
 }
