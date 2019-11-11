@@ -77,7 +77,7 @@ namespace UniFlow.Tests.Runtime
             }
 
             {
-                var connector = connectors[4] as TimelineSignal;
+                var connector = connectors[4] as Connector.Event.TimelineSignal;
                 Assert.NotNull(connector);
             }
 

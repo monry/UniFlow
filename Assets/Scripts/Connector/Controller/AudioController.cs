@@ -30,10 +30,10 @@ namespace UniFlow.Connector.Controller
             get => transformPath;
             private set => transformPath = value;
         }
-        private AudioSource AudioSource
+        public AudioSource AudioSource
         {
             get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
-            set => audioSource = value;
+            private set => audioSource = value;
         }
         private AudioControlMethod AudioControlMethod => audioControlMethod;
         private AudioClip AudioClip

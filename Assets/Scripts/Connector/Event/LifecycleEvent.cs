@@ -12,7 +12,7 @@ namespace UniFlow.Connector.Event
         [SerializeField] private LifecycleEventType lifecycleEventType = LifecycleEventType.Start;
 
         private Component Component => component ? component : component = this;
-        private LifecycleEventType LifecycleEventType => lifecycleEventType;
+        public LifecycleEventType LifecycleEventType => lifecycleEventType;
 
         private IReactiveProperty<bool> StartProperty { get; } = new BoolReactiveProperty(false);
         private IReactiveProperty<bool> OnEnableProperty { get; } = new BoolReactiveProperty(false);
