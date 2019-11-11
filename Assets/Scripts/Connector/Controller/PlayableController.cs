@@ -26,10 +26,11 @@ namespace UniFlow.Connector.Controller
             get => transformPath;
             private set => transformPath = value;
         }
-        private PlayableDirector PlayableDirector
+
+        public PlayableDirector PlayableDirector
         {
             get => playableDirector != default ? playableDirector : playableDirector = this.GetOrAddComponent<PlayableDirector>();
-            set => playableDirector = value;
+            private set => playableDirector = value;
         }
         private PlayableControlMethod PlayableControlMethod => playableControlMethod;
         private TimelineAsset TimelineAsset

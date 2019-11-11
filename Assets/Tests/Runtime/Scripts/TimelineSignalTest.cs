@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using UniFlow.Connector.Event;
 using UnityEngine.TestTools;
 
 namespace UniFlow.Tests.Runtime
@@ -26,7 +25,7 @@ namespace UniFlow.Tests.Runtime
             var connectors = sentConnectors.ToList();
             Assert.AreEqual(2, connectors.Count);
 
-            var connector = connectors[0] as TimelineSignal;
+            var connector = connectors[0] as Connector.Event.TimelineSignal;
             Assert.NotNull(connector);
             HasAssert = true;
         }

@@ -30,10 +30,10 @@ namespace UniFlow.Connector.Event
             get => transformPath;
             private set => transformPath = value;
         }
-        private Animator Animator
+        public Animator Animator
         {
             get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
-            set => animator = value;
+            private set => animator = value;
         }
         private SimpleAnimation SimpleAnimation
         {

@@ -30,6 +30,7 @@ namespace UniFlow
         PlayableController,
         TimelineEvent,
         TimelineSignal,
+        KeyInputController,
         RaycasterController,
         RaycastTargetController,
         TransformSiblingController,

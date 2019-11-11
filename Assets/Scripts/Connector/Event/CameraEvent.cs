@@ -17,7 +17,7 @@ namespace UniFlow.Connector.Event
             get => component ? component : component = this;
             set => component = value;
         }
-        private CameraEventType CameraEventType => cameraEventType;
+        public CameraEventType CameraEventType => cameraEventType;
 
         [SerializeField] private ComponentCollector componentCollector = new ComponentCollector();
         private ComponentCollector ComponentCollector => componentCollector;

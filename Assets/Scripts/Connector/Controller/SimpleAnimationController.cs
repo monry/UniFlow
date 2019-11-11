@@ -38,7 +38,7 @@ namespace UniFlow.Connector.Controller
             get => animator != default ? animator : animator = this.GetOrAddComponent<Animator>();
             set => animator = value;
         }
-        private SimpleAnimation SimpleAnimation
+        public SimpleAnimation SimpleAnimation
         {
             get =>
                 simpleAnimation != default
@@ -48,7 +48,7 @@ namespace UniFlow.Connector.Controller
                             ? Animator.GetComponent<SimpleAnimation>()
                             : Animator.gameObject.AddComponent<SimpleAnimation>()
             ;
-            set => simpleAnimation = value;
+            private set => simpleAnimation = value;
         }
         private SimpleAnimationControlMethod SimpleAnimationControlMethod => simpleAnimationControlMethod;
         private AnimationClip AnimationClip

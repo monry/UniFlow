@@ -1,47 +1,54 @@
 using System;
-using UniRx;
-using UniRx.Triggers;
+using System.Collections.Generic;
+using KeyEventHandler;
 using UnityEngine;
 
 namespace UniFlow.Connector.Event
 {
     [AddComponentMenu("UniFlow/Event/KeyEvent", (int) ConnectorType.KeyEvent)]
-    public class KeyEvent : ConnectorBase
+    public class KeyEvent : ConnectorBase, IMessageCollectable
     {
-        [SerializeField] private KeyEventType keyEventType = KeyEventType.Down;
         [SerializeField] private KeyCode keyCode = default;
+        [SerializeField] private KeyEventType keyEventType = default;
 
-        private KeyEventType KeyEventType => keyEventType;
-        private KeyCode KeyCode => keyCode;
-
-        public override IObservable<Message> OnConnectAsObservable()
+        private KeyCode KeyCode
         {
-            return KeyEventAsObservable().Select(this.CreateMessage);
+            get => keyCode;
+            set => keyCode = value;
+        }
+        private KeyEventType KeyEventType
+        {
+            get => keyEventType;
+            set => keyEventType = value;
         }
 
-        private IObservable<Unit> KeyEventAsObservable()
+        [SerializeField] private KeyCodeCollector keyCodeCollector = new KeyCodeCollector();
+        [SerializeField] private KeyEventTypeCollector keyEventTypeCollector = new KeyEventTypeCollector();
+
+        private KeyCodeCollector KeyCodeCollector => keyCodeCollector;
+        private KeyEventTypeCollector KeyEventTypeCollector => keyEventTypeCollector;
+
+        public override IObservable<Message> OnConnectAsObservable()
         {
             switch (KeyEventType)
             {
                 case KeyEventType.Down:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKeyDown(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyDownAsObservable(KeyCode).AsMessageObservable(this);
                 case KeyEventType.Press:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKey(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyPressAsObservable(KeyCode).AsMessageObservable(this);
                 case KeyEventType.Up:
-                    return this
-                        .UpdateAsObservable()
-                        .Where(_ => Input.GetKeyUp(KeyCode))
-                        .AsUnitObservable();
+                    return this.OnKeyUpAsObservable(KeyCode).AsMessageObservable(this);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
+            new[]
+            {
+                CollectableMessageAnnotationFactory.Create(KeyCodeCollector, x => KeyCode = x, nameof(KeyCode)),
+                CollectableMessageAnnotationFactory.Create(KeyEventTypeCollector, x => KeyEventType = x, nameof(KeyEventType)),
+            };
     }
 
     public enum KeyEventType
@@ -49,5 +56,15 @@ namespace UniFlow.Connector.Event
         Down,
         Press,
         Up,
+    }
+
+    [Serializable]
+    public class KeyCodeCollector : ValueCollectorBase<KeyCode>
+    {
+    }
+
+    [Serializable]
+    public class KeyEventTypeCollector : ValueCollectorBase<KeyEventType>
+    {
     }
 }

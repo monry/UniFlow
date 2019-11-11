@@ -27,10 +27,10 @@ namespace UniFlow.Connector.Controller
             get => transformPath;
             private set => transformPath = value;
         }
-        private Animator Animator
+        public Animator Animator
         {
             get => animator ? animator : animator = this.GetOrAddComponent<Animator>();
-            set => animator = value;
+            private set => animator = value;
         }
         private string TriggerName
         {

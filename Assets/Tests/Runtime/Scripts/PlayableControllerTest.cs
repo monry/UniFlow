@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UniFlow.Connector.Controller;
-using UniFlow.Connector.Event;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 
@@ -36,7 +35,7 @@ namespace UniFlow.Tests.Runtime
             }
 
             {
-                var connector = connectors[1] as TimelineSignal;
+                var connector = connectors[1] as Connector.Event.TimelineSignal;
                 Assert.NotNull(connector);
             }
 

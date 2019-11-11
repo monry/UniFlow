@@ -26,12 +26,12 @@ namespace UniFlow.Connector.Event
             get => transformPath;
             private set => transformPath = value;
         }
-        private AudioSource AudioSource
+        public AudioSource AudioSource
         {
             get => audioSource != default ? audioSource : audioSource = this.GetOrAddComponent<AudioSource>();
-            set => audioSource = value;
+            private set => audioSource = value;
         }
-        private AudioEventType AudioEventType => audioEventType;
+        public AudioEventType AudioEventType => audioEventType;
         private AudioClip AudioClip
         {
             get => audioClip;

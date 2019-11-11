@@ -28,10 +28,10 @@ namespace UniFlow.Connector.Event
             get => transformPath;
             private set => transformPath = value;
         }
-        private UIBehaviour UIBehaviour
+        public UIBehaviour UIBehaviour
         {
             get => uiBehaviour ? uiBehaviour : uiBehaviour = ((IBaseGameObjectSpecifyable) this).GetComponent<UIBehaviour>();
-            set => uiBehaviour = value;
+            private set => uiBehaviour = value;
         }
         private EventTriggerType EventTriggerType => eventTriggerType;
         private bool ActivateBeforeConnect
