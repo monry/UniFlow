@@ -1,11 +1,14 @@
 using System;
-using UniRx;
+using System.Collections.Generic;
+using UniFlow.Utility;
 using UnityEngine;
 
 namespace UniFlow.Connector.ValueProvider
 {
-    public abstract class ProviderBase<TValue> : ConnectorBase, IInjectable<TValue>
+    public abstract class ProviderBase<TValue> : ConnectorBase, IInjectable<TValue>, IMessageComposable
     {
+        private const string MessageParameterKey = "Value";
+
         [SerializeField] private TValue value = default;
         public TValue Value
         {
@@ -15,12 +18,18 @@ namespace UniFlow.Connector.ValueProvider
 
         public override IObservable<Message> OnConnectAsObservable()
         {
-            return Observable.Return(this.CreateMessage());
+            return ObservableFactory.ReturnMessage(this, MessageParameterKey, Value);
         }
 
         void IInjectable<TValue>.Inject(TValue v)
         {
             Value = v;
         }
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
+            new[]
+            {
+                ComposableMessageAnnotationFactory.Create(() => Value, MessageParameterKey),
+            };
     }
 }

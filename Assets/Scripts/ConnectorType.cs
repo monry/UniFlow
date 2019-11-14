@@ -36,6 +36,7 @@ namespace UniFlow
         TransformSiblingController,
         MoveParentTransform,
         DontDestroyOnLoad,
+        EventHandlingController,
 
         LoadScene                 = 400,
         LoadScene_Enum,

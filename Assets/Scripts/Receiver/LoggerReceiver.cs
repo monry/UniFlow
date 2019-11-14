@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace UniFlow.Receiver
 {
-    [AddComponentMenu("UniFlow/Receiver/Log", (int) ConnectorType.Receiver)]
-    public class Log : ReceiverBase
+    [AddComponentMenu("UniFlow/Receiver/LoggerReceiver", (int) ConnectorType.Receiver)]
+    public class LoggerReceiver : ReceiverBase
     {
         private IList<IConnector> Connectors { get; } = new List<IConnector>();
 
