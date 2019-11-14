@@ -18,7 +18,7 @@
     "jp.cysharp.unirx": "7.1.0",
     "jp.cysharp.unitask": "1.0.0",
     "dev.monry.unirx-observabletween": "0.0.1-preview.6",
-    "dev.upm-packages.keyeventhandler": "1.0.0-preview.1"
+    "dev.upm-packages.keyeventhandler": "1.0.0-preview.2"
   },
   "repository": {
     "type": "git",
