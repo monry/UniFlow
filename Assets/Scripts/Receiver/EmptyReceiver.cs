@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace UniFlow.Receiver
 {
-    [AddComponentMenu("UniFlow/Receiver/Empty", (int) ConnectorType.Receiver)]
-    public class Empty : ReceiverBase
+    [AddComponentMenu("UniFlow/Receiver/EmptyReceiver", (int) ConnectorType.Receiver)]
+    public class EmptyReceiver : ReceiverBase
     {
         public override void OnReceive()
         {
