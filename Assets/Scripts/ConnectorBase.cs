@@ -70,6 +70,12 @@ namespace UniFlow
             }
         }
 
+        protected virtual IEnumerable<ICollectableMessageAnnotation> MergeMessageCollectableAnnotations() =>
+            new ICollectableMessageAnnotation[0];
+
+        protected virtual IEnumerable<IComposableMessageAnnotation> MergeMessageComposableAnnotations() =>
+            new IComposableMessageAnnotation[0];
+
         void IConnector.Connect(IObservable<Message> source)
         {
 #if UNITY_EDITOR

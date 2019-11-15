@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniFlow.Utility;
 using UnityEngine;
 using Zenject;
@@ -31,7 +32,7 @@ namespace UniFlow.Connector.Controller
         private GameObjectCollector SourceCollector => sourceCollector;
         private TransformCollector ParentCollector => parentCollector;
 
-        private GameObject Instantiated { get; set; }
+        protected GameObject Instantiated { get; set; }
 
         [Inject] private DiContainer DiContainer { get; }
 
@@ -41,17 +42,27 @@ namespace UniFlow.Connector.Controller
             return ObservableFactory.ReturnMessage(this, nameof(Instantiated), Instantiated);
         }
 
-        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() =>
-            new[]
-            {
-                CollectableMessageAnnotationFactory.Create(SourceCollector, x => Source = x, nameof(Source)),
-                CollectableMessageAnnotationFactory.Create(ParentCollector, x => Parent = x, nameof(Parent)),
-            };
+        protected override IEnumerable<ICollectableMessageAnnotation> MergeMessageCollectableAnnotations() =>
+            base.MergeMessageCollectableAnnotations()
+                .Concat(
+                    new[]
+                    {
+                        CollectableMessageAnnotationFactory.Create(SourceCollector, x => Source = x, nameof(Source)),
+                        CollectableMessageAnnotationFactory.Create(ParentCollector, x => Parent = x, nameof(Parent)),
+                    }
+                );
 
-        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() =>
-            new[]
-            {
-                ComposableMessageAnnotationFactory.Create<GameObject>(nameof(Instantiated)),
-            };
+        protected override IEnumerable<IComposableMessageAnnotation> MergeMessageComposableAnnotations() =>
+            base.MergeMessageComposableAnnotations()
+                .Concat(
+                    new[]
+                    {
+                        ComposableMessageAnnotationFactory.Create<GameObject>(nameof(Instantiated)),
+                    }
+                );
+
+        IEnumerable<ICollectableMessageAnnotation> IMessageCollectable.GetMessageCollectableAnnotations() => MergeMessageCollectableAnnotations();
+
+        IEnumerable<IComposableMessageAnnotation> IMessageComposable.GetMessageComposableAnnotations() => MergeMessageComposableAnnotations();
     }
 }
