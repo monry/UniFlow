@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using UniRx;
 using UniRx.Async;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace UniFlow.Connector.Controller
 {
@@ -12,19 +13,23 @@ namespace UniFlow.Connector.Controller
         [UsedImplicitly]
         public abstract IEnumerable<string> SceneNames { get; set; }
 
+        [InjectOptional] private AsyncLoadSceneDelegate AsyncLoadSceneDelegate { get; } = DefaultAsyncLoadScene;
+
         public override IObservable<Message> OnConnectAsObservable()
         {
-            return LoadScenes()
+            return AsyncLoadSceneDelegate(SceneNames)
                 .ToObservable()
                 .Select(this.CreateMessage);
         }
 
-        private async UniTask LoadScenes()
+        private static async UniTask DefaultAsyncLoadScene(IEnumerable<string> sceneNames)
         {
-            foreach (var sceneName in SceneNames)
+            foreach (var sceneName in sceneNames)
             {
                 await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             }
         }
     }
+
+    public delegate UniTask AsyncLoadSceneDelegate(IEnumerable<string> sceneNames);
 }
