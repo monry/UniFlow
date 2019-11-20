@@ -66,16 +66,27 @@ namespace UniFlow.Connector.Event
         private SimpleAnimationCollector SimpleAnimationCollector => simpleAnimationCollector;
         private AnimationClipCollector AnimationClipCollector => animationClipCollector;
 
-        private ISubject<(SimpleAnimationEventType eventType, AnimationClip animationClip)> CurrentStateSubject { get; } = new Subject<(SimpleAnimationEventType, AnimationClip)>();
+        private IReactiveProperty<(SimpleAnimationEventType eventType, AnimationClip animationClip)> CurrentStateProperty { get; } = new ReactiveProperty<(SimpleAnimationEventType eventType, AnimationClip animationClip)>();
 
         private IDictionary<SimpleAnimation.State, bool> PlayingStatuses { get; } = new Dictionary<SimpleAnimation.State, bool>();
 
+        private IObservable<Message> MessageObservable { get; set; }
+
         public override IObservable<Message> OnConnectAsObservable()
         {
-            ObserveSimpleAnimation();
-            return CurrentStateSubject
+            CurrentStateProperty.Value = default;
+
+            if (MessageObservable == default)
+            {
+                ObserveSimpleAnimation();
+            }
+
+            MessageObservable = CurrentStateProperty
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
-                .Select(x => this.CreateMessage(x, MessageParameterKey));
+                .Select(x => this.CreateMessage(x, MessageParameterKey))
+                .FirstOrDefault();
+
+            return MessageObservable;
         }
 
         private void ObserveSimpleAnimation()
@@ -84,7 +95,7 @@ namespace UniFlow.Connector.Event
             {
                 PlayingStatuses[state] = false;
                 state
-                    .ObserveEveryValueChanged(x => (SimpleAnimation.IsPlaying(x.name), x.normalizedTime))
+                    .ObserveEveryValueChanged(x => (SimpleAnimation.IsPlaying(x.name) && !Mathf.Approximately(x.normalizedTime, 1.0f), x.normalizedTime))
                     .Pairwise()
                     .SubscribeWithState(state, OnChangeAnimatorStateInfo)
                     .AddTo(this);
@@ -96,17 +107,17 @@ namespace UniFlow.Connector.Event
             if (pair.Current.isPlaying && !PlayingStatuses[state])
             {
                 PlayingStatuses[state] = true;
-                CurrentStateSubject.OnNext((SimpleAnimationEventType.Play, state.clip));
+                CurrentStateProperty.Value = (SimpleAnimationEventType.Play, state.clip);
             }
             else if (pair.Previous.isPlaying && !pair.Current.isPlaying && PlayingStatuses[state])
             {
                 PlayingStatuses[state] = false;
-                CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
+                CurrentStateProperty.Value = (SimpleAnimationEventType.Stop, state.clip);
             }
             else if (pair.Previous.normalizedTime < 1.0f && Mathf.Approximately(pair.Current.normalizedTime, 1.0f) && PlayingStatuses[state])
             {
                 PlayingStatuses[state] = false;
-                CurrentStateSubject.OnNext((SimpleAnimationEventType.Stop, state.clip));
+                CurrentStateProperty.Value = (SimpleAnimationEventType.Stop, state.clip);
             }
         }
 
