@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UniFlow;
 using UniFlow.Connector.Controller;
 using UniFlow.Utility;
@@ -17,6 +18,7 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
         [SerializeField]
         [Tooltip("If you do not specify it will be obtained by AudioSource.clip")]
         private AudioClip audioClip = default;
+        [SerializeField] private string key = default;
         [SerializeField] private bool loop = true;
         [SerializeField] private bool rewindSameClip = default;
 
@@ -34,6 +36,11 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
         {
             get => audioClip;
             set => audioClip = value;
+        }
+        [UsedImplicitly] private string Key
+        {
+            get => string.IsNullOrEmpty(key) ? AudioClip.name : key;
+            set => key = value;
         }
         private bool Loop
         {
@@ -74,8 +81,10 @@ namespace PretendLand.Edwin.Scripts.Connector.Complex
             switch (AudioControlMethod)
             {
                 case AudioControlMethod.Play:
-                    if (!AudioSource.isPlaying || AudioSource.clip != AudioClip || RewindSameClip)
+                    if (!AudioSource.isPlaying || AudioSource.name != Key || RewindSameClip)
                     {
+                        // Set key to AudioSource.name to compare name
+                        AudioSource.name = Key;
                         AudioSource.clip = AudioClip;
                         AudioSource.loop = Loop;
                         AudioSource.Play();
