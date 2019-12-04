@@ -54,7 +54,7 @@ namespace UniFlow.Connector
     }
 
 
-    public abstract class SignalReceiverWithParameterBase<TSignal, TParameter> : SignalPublisherBase<TSignal>
+    public abstract class SignalReceiverWithParameterBase<TSignal, TParameter> : SignalReceiverBase<TSignal>
         where TSignal : SignalBase<TSignal, TParameter>, new()
         where TParameter : Enum
     {
