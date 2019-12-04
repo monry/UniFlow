@@ -170,7 +170,8 @@ namespace UniFlow.Editor
 
                 {
                     var element = new VisualElement();
-                    var field = new ObjectField("GameObject") {value = ConnectorInfo.GameObject, objectType = typeof(GameObject), allowSceneObjects = true};
+                    var field = new ObjectField("GameObject") {objectType = typeof(GameObject), allowSceneObjects = true};
+                    field.SetValueWithoutNotify(ConnectorInfo.GameObject);
                     field.RegisterValueChangedCallback(
                         x =>
                         {
@@ -305,6 +306,14 @@ namespace UniFlow.Editor
             {
                 label = ToDisplayName(parameter.Name),
             };
+
+            // ReSharper disable once InvertIf
+            if (typeof(TValue) == typeof(Object) && field is ObjectField objectField)
+            {
+                objectField.objectType = parameter.Type;
+                objectField.allowSceneObjects = true;
+            }
+
             if (parameter.Value != default)
             {
                 field.value = (TValue) parameter.Value;
@@ -323,13 +332,6 @@ namespace UniFlow.Editor
                         EditorUtility.SetDirty(connectorInfo.Connector as Component);
                     }
                 );
-            }
-
-            // ReSharper disable once InvertIf
-            if (typeof(TValue) == typeof(Object) && field is ObjectField objectField)
-            {
-                objectField.objectType = parameter.Type;
-                objectField.allowSceneObjects = true;
             }
 
             return field;
