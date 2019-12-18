@@ -115,6 +115,11 @@ namespace CAFUSample.Scripts.Connector.ValueInjector
         protected override void Inject()
         {
             var targetTransform = BaseGameObject.transform as RectTransform;
+            if (targetTransform == null)
+            {
+                return;
+            }
+
             if (HasInjectPosition)
             {
                 if (ActAsLocal)
