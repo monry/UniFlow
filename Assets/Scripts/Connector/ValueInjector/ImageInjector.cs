@@ -13,6 +13,7 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private GameObject baseGameObject = default;
         [SerializeField] private string transformPath = default;
         [SerializeField] private Image image = default;
+        [SerializeField] private Color color = default;
         [SerializeField] private Sprite sprite = default;
         [SerializeField] private bool invokeSetNativeSize = default;
 
@@ -34,7 +35,20 @@ namespace UniFlow.Connector.Controller
         private Sprite Sprite
         {
             get => sprite;
-            set => sprite = value;
+            set
+            {
+                sprite = value;
+                HasInjectSprite = true;
+            }
+        }
+        private Color Color
+        {
+            get => color;
+            set
+            {
+                color = value;
+                HasInjectColor = true;
+            }
         }
         private bool InvokeSetNativeSize
         {
@@ -46,17 +60,31 @@ namespace UniFlow.Connector.Controller
         [SerializeField] private StringCollector transformPathCollector = new StringCollector();
         [SerializeField] private ImageCollector imageCollector = new ImageCollector();
         [SerializeField] private SpriteCollector spriteCollector = new SpriteCollector();
+        [SerializeField] private ColorCollector colorCollector = new ColorCollector();
         [SerializeField] private BoolCollector invokeSetNativeSizeCollector = new BoolCollector();
 
         private GameObjectCollector BaseGameObjectCollector => baseGameObjectCollector;
         private StringCollector TransformPathCollector => transformPathCollector;
         private ImageCollector ImageCollector => imageCollector;
         private SpriteCollector SpriteCollector => spriteCollector;
+        private ColorCollector ColorCollector => colorCollector;
         private BoolCollector InvokeSetNativeSizeCollector => invokeSetNativeSizeCollector;
+
+        private bool HasInjectColor { get; set; }
+        private bool HasInjectSprite { get; set; }
 
         protected override void Inject()
         {
-            Image.sprite = Sprite;
+            if (HasInjectColor)
+            {
+                Image.color = Color;
+            }
+
+            if (HasInjectSprite)
+            {
+                Image.sprite = Sprite;
+            }
+
             if (InvokeSetNativeSize)
             {
                 Image.SetNativeSize();
@@ -70,6 +98,7 @@ namespace UniFlow.Connector.Controller
                 CollectableMessageAnnotationFactory.Create(TransformPathCollector, x => TransformPath = x, nameof(TransformPath)),
                 CollectableMessageAnnotationFactory.Create(ImageCollector, x => Image = x, nameof(Image)),
                 CollectableMessageAnnotationFactory.Create(SpriteCollector, x => Sprite = x, nameof(Sprite)),
+                CollectableMessageAnnotationFactory.Create(ColorCollector, x => Color = x, nameof(Color)),
                 CollectableMessageAnnotationFactory.Create(InvokeSetNativeSizeCollector, x => InvokeSetNativeSize = x, nameof(InvokeSetNativeSize)),
             };
     }
