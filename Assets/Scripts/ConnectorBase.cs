@@ -76,7 +76,7 @@ namespace UniFlow
         protected virtual IEnumerable<IComposableMessageAnnotation> MergeMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[0];
 
-        private ISubject<Unit> ShutdownSubject { get; } = new Subject<Unit>();
+        protected ISubject<Unit> CancellationSubject { get; } = new Subject<Unit>();
 
         void IConnector.Connect(IObservable<Message> source)
         {
@@ -86,12 +86,14 @@ namespace UniFlow
                 OnConnectSubject.Subscribe(_ => Logger.Log(this)).AddTo(this);
             }
 #endif
-            ShutdownSubject.OnNext(Unit.Default);
+
             var observable = source
                 .SelectMany(
                     message =>
                     {
                         StreamedMessages = message.StreamedMessages.ToList();
+
+                        CancellationSubject.OnNext(Unit.Default);
 
                         if (this is IMessageCollectable messageCollectable)
                         {
@@ -100,6 +102,7 @@ namespace UniFlow
 
                         return (this as IConnector)
                             .OnConnectAsObservable()
+                            .TakeUntil(CancellationSubject)
                             .Select(x => this is IMessageComposable messageComposable ? messageComposable.ComposeAll(x) : x)
                             .Do(x => x.StreamedMessages?.Add(x))
 #if UNITY_EDITOR
@@ -108,12 +111,11 @@ namespace UniFlow
                             ;
                     }
                 );
+
             if (TargetConnectors.Count() > 1)
             {
                 observable = observable.Replay().RefCount();
             }
-
-            observable = observable.TakeUntil(ShutdownSubject);
 
 #if UNITY_EDITOR
             TargetConnectors
