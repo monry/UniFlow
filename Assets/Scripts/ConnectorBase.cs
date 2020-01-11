@@ -76,6 +76,8 @@ namespace UniFlow
         protected virtual IEnumerable<IComposableMessageAnnotation> MergeMessageComposableAnnotations() =>
             new IComposableMessageAnnotation[0];
 
+        private ISubject<Unit> ShutdownSubject { get; } = new Subject<Unit>();
+
         void IConnector.Connect(IObservable<Message> source)
         {
 #if UNITY_EDITOR
@@ -84,6 +86,7 @@ namespace UniFlow
                 OnConnectSubject.Subscribe(_ => Logger.Log(this)).AddTo(this);
             }
 #endif
+            ShutdownSubject.OnNext(Unit.Default);
             var observable = source
                 .SelectMany(
                     message =>
@@ -109,6 +112,9 @@ namespace UniFlow
             {
                 observable = observable.Replay().RefCount();
             }
+
+            observable = observable.TakeUntil(ShutdownSubject);
+
 #if UNITY_EDITOR
             TargetConnectors
                 .Select((connector, index) => (connector, index))
