@@ -74,6 +74,7 @@ namespace UniFlow.Connector.Event
         {
             ObserveSimpleAnimation();
             return CurrentStateSubject
+                .TakeUntil(CancellationSubject)
                 .Where(x => (AnimationClip == default || x.animationClip == AnimationClip) && x.eventType == SimpleAnimationEventType)
                 .Select(x => this.CreateMessage(x, MessageParameterKey));
         }
@@ -86,6 +87,7 @@ namespace UniFlow.Connector.Event
                 state
                     .ObserveEveryValueChanged(x => (SimpleAnimation.IsPlaying(x.name), x.normalizedTime))
                     .Pairwise()
+                    .TakeUntil(CancellationSubject)
                     .SubscribeWithState(state, OnChangeAnimatorStateInfo)
                     .AddTo(this);
             }
