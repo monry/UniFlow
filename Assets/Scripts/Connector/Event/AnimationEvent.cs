@@ -76,8 +76,7 @@ namespace UniFlow.Connector.Event
         {
             PrepareAnimationEvent();
             return Subject
-                // Prevents the previous flow from being re-invoked when triggered multiple times
-                .Take(1)
+                .TakeUntil(CancellationSubject)
                 .Select(this.CreateMessage);
         }
 
