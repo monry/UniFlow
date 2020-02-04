@@ -13,7 +13,7 @@
     }
   ],
   "dependencies": {
-    "com.stevevermeulen.extenject": "9.1.0",
+    "com.stevevermeulen.extenject": "9.1.0-5",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "2.0.8",
@@ -32,7 +32,7 @@
     "com.unity.ugui": "1.0.0",
     "com.unity.xr.legacyinputhelpers": "2.0.2",
     "dev.monry.unirx-observabletween": "0.0.1-preview.6",
-    "dev.upm-packages.keyeventhandler": "1.0.0-preview.2",
+    "dev.upm-packages.keyeventhandler": "1.0.0-preview.3",
     "jp.cysharp.unirx": "7.1.0",
     "jp.cysharp.unitask": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

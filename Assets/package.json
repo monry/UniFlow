@@ -14,11 +14,11 @@
   "category": "",
   "dependencies": {
     "com.unity.simpleanimation": "1.0.0",
-    "com.stevevermeulen.extenject": "9.1.0",
+    "com.stevevermeulen.extenject": "9.1.0-5",
     "jp.cysharp.unirx": "7.1.0",
     "jp.cysharp.unitask": "1.0.0",
     "dev.monry.unirx-observabletween": "0.0.1-preview.6",
-    "dev.upm-packages.keyeventhandler": "1.0.0-preview.2"
+    "dev.upm-packages.keyeventhandler": "1.0.0-preview.3"
   },
   "repository": {
     "type": "git",
