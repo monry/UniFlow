@@ -156,11 +156,11 @@
       "url": "https://upm-packages.dev"
     },
     "dev.upm-packages.keyeventhandler": {
-      "version": "1.0.0-preview.3",
+      "version": "1.0.0-preview.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.stevevermeulen.extenject": "9.1.0-5",
+        "com.stevevermeulen.extenject": "9.1.2",
         "jp.cysharp.unirx": "7.1.0"
       },
       "url": "https://upm-packages.dev"
