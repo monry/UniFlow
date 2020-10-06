@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0-preview.43] - 2020-10-06
+
+Fix upm dependencies
+
+### Fixes
+
+- #219 Fix Zenject dependencies
+
 ## [0.1.0-preview.24] - 2019-10-04
 
 ### Implementations
