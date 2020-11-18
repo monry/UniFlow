@@ -64,7 +64,7 @@ namespace UniFlow
         ValueProviderVector3Int,
         ValueProviderColor,
         ValueProviderColor32,
-        ValueProviderRuntimePlatform,
+        ValueProviderCurrentRuntimePlatform,
         CustomValueProvider,
 
         ObjectListSelector        = 1500,
