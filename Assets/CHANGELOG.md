@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0-preview.44] - 2020-11-18
+
+Add CurrentRuntimePlatformProvider
+
+### Features
+
+- #221 Add CurrentRuntimePlatformProvider / Thanks @milkcocoa !!
+
 ## [0.1.0-preview.43] - 2020-10-06
 
 Fix upm dependencies
