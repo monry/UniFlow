@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0-preview.45] - 2021-01-21
+
+Reference UniRx on GitHub instead of Self-hosted registry
+
+### Changes
+
+- Reference UniRx on GitHub instead of Self-hosted registry
+
 ## [0.1.0-preview.44] - 2020-11-18
 
 Add CurrentRuntimePlatformProvider
