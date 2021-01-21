@@ -28,9 +28,8 @@ MonoBehaviour:
     m_Name: Unofficial Unity Package Manager Registry
     m_Url: https://upm-packages.dev
     m_Scopes:
+    - com.stevevermeulen.extenject
     - com.unity.simpleanimation
-    - com.stevevermeulen
-    - jp.cysharp
     - dev.monry
     - dev.upm-packages
     m_IsDefault: 0
@@ -44,9 +43,8 @@ MonoBehaviour:
       m_Name: Unofficial Unity Package Manager Registry
       m_Url: https://upm-packages.dev
       m_Scopes:
+      - com.stevevermeulen.extenject
       - com.unity.simpleanimation
-      - com.stevevermeulen
-      - jp.cysharp
       - dev.monry
       - dev.upm-packages
       m_IsDefault: 0
@@ -55,9 +53,8 @@ MonoBehaviour:
     m_Name: Unofficial Unity Package Manager Registry
     m_Url: https://upm-packages.dev
     m_Scopes:
+    - com.stevevermeulen.extenject
     - com.unity.simpleanimation
-    - com.stevevermeulen
-    - jp.cysharp
     - dev.monry
     - dev.upm-packages
     m_SelectedScopeIndex: 0
