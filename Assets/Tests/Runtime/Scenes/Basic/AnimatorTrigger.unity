@@ -313,9 +313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d730e2e15e4d688fab6e1a6d9f5e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1565437861}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!95 &1565437859
 Animator:
@@ -362,8 +362,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
-  targetConnectorIds: []
+  targetComponents: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &1565437862
 MonoBehaviour:
@@ -377,9 +377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ea2beab68d4b9695c5913d711525ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1565437858}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   animator: {fileID: 0}
   triggerName: TestTrigger

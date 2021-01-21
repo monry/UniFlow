@@ -1,17 +1,17 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Controller;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AudioControllerTest : EventConnectorTestBase
+    public class AudioControllerTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator Play()
@@ -21,7 +21,6 @@ namespace EventConnector.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Play,
                         audioSource =>
                         {
                             Assert.True(audioSource.isPlaying);
@@ -49,7 +48,6 @@ namespace EventConnector.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Stop,
                         audioSource =>
                         {
                             Assert.False(audioSource.isPlaying);
@@ -79,7 +77,6 @@ namespace EventConnector.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.Pause,
                         audioSource =>
                         {
                             Assert.False(audioSource.isPlaying);
@@ -109,7 +106,6 @@ namespace EventConnector.Tests.Runtime
                     "AudioController",
                     em => AssertAudioEvent(
                         em,
-                        AudioControlMethod.UnPause,
                         audioSource =>
                         {
                             Assert.True(audioSource.isPlaying);
@@ -132,19 +128,17 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertAudioEvent(EventMessages eventMessages, AudioControlMethod audioControlMethod, Action<AudioSource> callback)
+        private void AssertAudioEvent(IEnumerable<IConnector> sentConnectors, Action<AudioSource> callback)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(2, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
 
-            Assert.IsInstanceOf<AudioSource>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<AudioControllerEventData>(eventMessages[1].EventData);
+            Assert.NotNull(connectors);
+            Assert.AreEqual(3, connectors.Count);
 
-            Assert.NotNull(eventMessages[1].EventData);
+            var connector = connectors[1] as AudioController;
+            Assert.NotNull(connector);
 
-            Assert.AreEqual(audioControlMethod, ((AudioControllerEventData) eventMessages[1].EventData).AudioControlMethod);
-
-            callback(eventMessages[1].Sender as AudioSource);
+            callback(connector.AudioSource);
 
             HasAssert = true;
         }

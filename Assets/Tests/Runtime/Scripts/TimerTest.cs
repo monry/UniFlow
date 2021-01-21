@@ -1,11 +1,13 @@
 using System.Collections;
-using EventConnector.Connector;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using UniFlow.Connector.Logic;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class TimerTest : EventConnectorTestBase
+    public class TimerTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator Timer()
@@ -19,14 +21,15 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertTimer(EventMessages eventMessages)
+        private void AssertTimer(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.AreEqual(EventType.Timer, eventMessages[0].EventType);
-            Assert.IsInstanceOf<Timer>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<float>(eventMessages[0].EventData);
-            Assert.AreEqual(1.0f, eventMessages[0].EventData);
+            var connector = connectors[0] as Timer;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<float>(connector.Seconds);
+            Assert.AreEqual(1.0f, connector.Seconds);
 
             HasAssert = true;
         }

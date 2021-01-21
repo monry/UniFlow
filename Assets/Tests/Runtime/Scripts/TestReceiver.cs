@@ -1,13 +1,25 @@
-namespace EventConnector.Tests.Runtime
+using System.Collections.Generic;
+using UniRx;
+
+namespace UniFlow.Tests.Runtime
 {
-    public class TestReceiver : EventReceiver
+    public class TestReceiver : ReceiverBase
     {
-        public EventMessages SentEventMessages { get; private set; }
+        public IList<IConnector> SentConnectors { get; } = new List<IConnector>();
         public int ReceiveCount { get; private set; }
 
-        public override void OnReceive(EventMessages eventMessages)
+        private void Awake()
         {
-            SentEventMessages = eventMessages;
+            Logger.OnMessageAsObservable().Where(x => x != default).Subscribe(SentConnectors.Add);
+        }
+
+        public void Reset()
+        {
+            SentConnectors.Clear();
+        }
+
+        public override void OnReceive()
+        {
             ReceiveCount++;
         }
     }

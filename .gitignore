@@ -57,3 +57,7 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# PlayMode Test generated file
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta

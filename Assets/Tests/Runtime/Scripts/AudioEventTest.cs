@@ -1,18 +1,18 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AudioEventTest : EventConnectorTestBase
+    public class AudioEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator PlayEvent()
@@ -178,14 +178,15 @@ namespace EventConnector.Tests.Runtime
             yield return
                 RunAssert(
                     "AudioEvent",
-                    em =>
+                    sentConnectors =>
                     {
-                        Assert.NotNull(em);
-                        Assert.AreEqual(4, em.Count);
-                        Assert.AreEqual(AudioEventType.Play, ((AudioEventData) em[0].EventData).EventType);
-                        Assert.AreEqual(AudioEventType.Pause, ((AudioEventData) em[1].EventData).EventType);
-                        Assert.AreEqual(AudioEventType.UnPause, ((AudioEventData) em[2].EventData).EventType);
-                        Assert.AreEqual(AudioEventType.Stop, ((AudioEventData) em[3].EventData).EventType);
+                        var connectors = sentConnectors.ToList();
+                        Assert.NotNull(sentConnectors);
+                        Assert.AreEqual(5, connectors.Count);
+                        Assert.AreEqual(AudioEventType.Play, (connectors[0] as AudioEvent)?.AudioEventType);
+                        Assert.AreEqual(AudioEventType.Pause, (connectors[1] as AudioEvent)?.AudioEventType);
+                        Assert.AreEqual(AudioEventType.UnPause, (connectors[2] as AudioEvent)?.AudioEventType);
+                        Assert.AreEqual(AudioEventType.Stop, (connectors[3] as AudioEvent)?.AudioEventType);
                         HasAssert = true;
                     },
                     () =>
@@ -205,18 +206,18 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertAudioEvent(EventMessages eventMessages, AudioEventType audioEventType, int receiveCount = 1)
+        private void AssertAudioEvent(IEnumerable<IConnector> sentConnectors, AudioEventType audioEventType, int receiveCount = 1)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2 * receiveCount, connectors.Count);
             Assert.AreEqual(receiveCount, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
 
-            Assert.IsInstanceOf<AudioSource>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<AudioEventData>(eventMessages[0].EventData);
-
-            Assert.NotNull(eventMessages[0].EventData);
-
-            Assert.AreEqual(audioEventType, ((AudioEventData) eventMessages[0].EventData).EventType);
+            var connector = connectors[0] as AudioEvent;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<AudioSource>(connector.AudioSource);
+            Assert.AreEqual(audioEventType, connector.AudioEventType);
 
             HasAssert = true;
         }

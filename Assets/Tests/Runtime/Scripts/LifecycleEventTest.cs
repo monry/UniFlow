@@ -1,18 +1,18 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class LifecycleEventTest : EventConnectorTestBase
+    public class LifecycleEventTest : UniFlowTestBase
     {
         private LifecycleEventType CurrentLifecycleEventType { get; set; }
 
@@ -96,15 +96,15 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertLifecycleEvent(EventMessages eventMessages)
+        private void AssertLifecycleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(eventMessages);
-            Assert.GreaterOrEqual(eventMessages.Count, 1);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.GreaterOrEqual(connectors.Count, 1);
 
-            Assert.IsInstanceOf<LifecycleEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<LifecycleEventData>(eventMessages[0].EventData);
-
-            Assert.AreEqual(CurrentLifecycleEventType, ((LifecycleEventData) eventMessages[0].EventData).EventType);
+            var connector = connectors[0] as LifecycleEvent;
+            Assert.NotNull(connector);
+            Assert.AreEqual(CurrentLifecycleEventType, connector.LifecycleEventType);
 
             HasAssert = true;
         }

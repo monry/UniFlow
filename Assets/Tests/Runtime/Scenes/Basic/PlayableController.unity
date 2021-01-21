@@ -315,9 +315,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7897bf78af8d443e83a6786b2e4fdfda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 400, y: 50}
+  targetComponents:
   - {fileID: 951080161}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &951080156
 MonoBehaviour:
@@ -418,10 +419,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c15fc42dc5482199932c4a3305f962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 50, y: 50}
+  targetComponents:
   - {fileID: 951080155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
+  playableControlMethod: 0
+  timelineAsset: {fileID: 0}
   playableDirector: {fileID: 0}
 --- !u!114 &951080161
 MonoBehaviour:
@@ -435,9 +439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
-  targetConnectorIds: []
-  actAsTrigger: 0
+  flowGraphNodePosition: {x: 750, y: 50}
 --- !u!1 &2126485662
 GameObject:
   m_ObjectHideFlags: 0

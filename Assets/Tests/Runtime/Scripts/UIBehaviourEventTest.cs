@@ -1,14 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class UIBehaviourEventTest : EventConnectorTestBase
+    public class UIBehaviourEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator UIBehaviourEventTrigger()
@@ -24,12 +27,14 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertUIBehaviourEventTrigger(EventMessages eventMessages)
+        private void AssertUIBehaviourEventTrigger(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.IsInstanceOf<Image>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PointerEventData>(eventMessages[0].EventData);
+            var connector = connectors[0] as UIBehaviourEventTrigger;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<Image>(connector.UIBehaviour);
             HasAssert = true;
         }
     }

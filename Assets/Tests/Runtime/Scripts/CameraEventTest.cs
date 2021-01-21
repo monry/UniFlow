@@ -1,17 +1,17 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using EventConnector.Connector;
-using EventConnector.Message;
 using NUnit.Framework;
+using UniFlow.Connector.Event;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class CameraEventTest : EventConnectorTestBase
+    public class CameraEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator CameraBecomeVisibleEvent()
@@ -55,32 +55,30 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertCameraBecomeVisibleEvent(EventMessages eventMessages)
+        private void AssertCameraBecomeVisibleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
+            var connector = connectors[0] as CameraEvent;
+            Assert.NotNull(connector);
 
-            Assert.NotNull(eventMessages[0].EventData);
-
-            Assert.AreEqual(CameraEventType.BecomeVisible, ((CameraEventData) eventMessages[0].EventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeVisible, connector.CameraEventType);
 
             HasAssert = true;
         }
 
-        private void AssertCameraBecomeInvisibleEvent(EventMessages eventMessages)
+        private void AssertCameraBecomeInvisibleEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.NotNull(eventMessages);
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.IsInstanceOf<CameraEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<CameraEventData>(eventMessages[0].EventData);
+            var connector = connectors[0] as CameraEvent;
+            Assert.NotNull(connector);
 
-            Assert.NotNull(eventMessages[0].EventData);
-
-            Assert.AreEqual(CameraEventType.BecomeInvisible, ((CameraEventData) eventMessages[0].EventData).EventType);
+            Assert.AreEqual(CameraEventType.BecomeInvisible, connector.CameraEventType);
 
             HasAssert = true;
         }

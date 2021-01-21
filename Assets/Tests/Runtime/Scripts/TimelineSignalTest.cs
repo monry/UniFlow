@@ -1,12 +1,12 @@
 using System.Collections;
-using EventConnector.Connector;
-using EventConnector.Message;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class TimelineSignalTest : EventConnectorTestBase
+    public class TimelineSignalTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator TimelineSignal()
@@ -20,15 +20,13 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertTimelineSignal(EventMessages eventMessages)
+        private void AssertTimelineSignal(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[0].EventData);
-            var timelineEvent = eventMessages[0].EventData as TimelineEventData;
-            Assert.NotNull(timelineEvent);
-            Assert.AreEqual("TimelineSignalTest", timelineEvent.StringParameter);
+            var connector = connectors[0] as Connector.Event.TimelineSignal;
+            Assert.NotNull(connector);
             HasAssert = true;
         }
     }

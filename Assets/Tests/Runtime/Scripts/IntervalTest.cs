@@ -1,11 +1,14 @@
 using System.Collections;
-using EventConnector.Connector;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using UniFlow.Connector.Logic;
+using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class IntervalTest : EventConnectorTestBase
+    public class IntervalTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator Interval()
@@ -19,15 +22,16 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertInterval(EventMessages eventMessages)
+        private void AssertInterval(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(2, UnityEngine.Object.FindObjectOfType<TestReceiver>().ReceiveCount);
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, Object.FindObjectOfType<TestReceiver>().ReceiveCount);
+            Assert.AreEqual(4, connectors.Count);
 
-            Assert.AreEqual(EventType.Interval, eventMessages[0].EventType);
-            Assert.IsInstanceOf<Interval>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<float>(eventMessages[0].EventData);
-            Assert.AreEqual(1.0f, eventMessages[0].EventData);
+            var connector = connectors[0] as Interval;
+            Assert.NotNull(connector);
+            Assert.IsInstanceOf<float>(connector.Seconds);
+            Assert.AreEqual(1.0f, connector.Seconds);
 
             HasAssert = true;
         }

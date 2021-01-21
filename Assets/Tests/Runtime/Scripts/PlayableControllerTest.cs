@@ -1,13 +1,14 @@
 using System.Collections;
-using EventConnector.Connector;
-using EventConnector.Message;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using UniFlow.Connector.Controller;
 using UnityEngine.Playables;
 using UnityEngine.TestTools;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class PlayableControllerTest : EventConnectorTestBase
+    public class PlayableControllerTest : UniFlowTestBase
     {
 
         [UnityTest]
@@ -22,18 +23,22 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertPlayableController(EventMessages eventMessages)
+        private void AssertPlayableController(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(2, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(3, connectors.Count);
 
-            Assert.IsInstanceOf<PlayableDirector>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<PlayableControllerEventData>(eventMessages[0].EventData);
+            {
+                var connector = connectors[0] as PlayableController;
+                Assert.NotNull(connector);
+                Assert.IsInstanceOf<PlayableDirector>(connector.PlayableDirector);
+            }
 
-            Assert.IsInstanceOf<TimelineSignal>(eventMessages[1].Sender);
-            Assert.IsInstanceOf<TimelineEventData>(eventMessages[1].EventData);
-            var timelineEvent = eventMessages[1].EventData as TimelineEventData;
-            Assert.NotNull(timelineEvent);
-            Assert.AreEqual("PlayableControllerTest", timelineEvent.StringParameter);
+            {
+                var connector = connectors[1] as Connector.Event.TimelineSignal;
+                Assert.NotNull(connector);
+            }
+
             HasAssert = true;
         }
     }

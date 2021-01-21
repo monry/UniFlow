@@ -1,0 +1,17 @@
+{
+    "name": "UniFlow.Editor",
+    "references": [
+        "GUID:04f82f1ff3df44e29a1b2cce70510c34",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

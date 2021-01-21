@@ -323,9 +323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c68da8d20a7460881ef721586f08251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 1929524893}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   seconds: 1
 --- !u!4 &1929524895

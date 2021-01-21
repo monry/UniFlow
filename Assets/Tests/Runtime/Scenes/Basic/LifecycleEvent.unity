@@ -149,9 +149,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 3
   component: {fileID: 0}
@@ -268,9 +268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 2
   component: {fileID: 0}
@@ -317,9 +317,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 5
   component: {fileID: 0}
@@ -366,9 +366,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 4
   component: {fileID: 0}
@@ -506,9 +506,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 6
   component: {fileID: 0}
@@ -555,9 +555,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 0
   component: {fileID: 0}
@@ -604,9 +604,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a0f26910644eac9392a5b944f82349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  targetComponents:
   - {fileID: 2041475155}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   lifecycleEventType: 1
   component: {fileID: 0}
@@ -653,8 +653,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
-  targetConnectorIds: []
+  targetComponents: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!4 &2041475156
 Transform:

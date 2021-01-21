@@ -310,10 +310,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c15fc42dc5482199932c4a3305f962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 1100, y: 50}
+  targetComponents:
   - {fileID: 2024507135}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
+  playableControlMethod: 0
+  timelineAsset: {fileID: 0}
   playableDirector: {fileID: 2024507138}
 --- !u!4 &578503983
 Transform:
@@ -459,9 +462,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 986c65454dfa4cf6a69ff9328f793990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 50, y: 50}
+  targetComponents:
   - {fileID: 1565437862}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 1
   eventTriggerType: 2
   uiBehaviour: {fileID: 0}
@@ -631,9 +635,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ea2beab68d4b9695c5913d711525ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 400, y: 50}
+  targetComponents:
   - {fileID: 1729537389}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
   animator: {fileID: 1729537390}
   triggerName: TestTrigger
@@ -681,10 +686,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d730e2e15e4d688fab6e1a6d9f5e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 750, y: 50}
+  targetComponents:
   - {fileID: 578503981}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
+  animationClip: {fileID: 0}
+  cullingMode: 0
+  updateMode: 0
+  animator: {fileID: 0}
+  simpleAnimation: {fileID: 0}
 --- !u!95 &1729537390
 Animator:
   serializedVersion: 3
@@ -750,9 +761,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7897bf78af8d443e83a6786b2e4fdfda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances:
+  flowGraphNodePosition: {x: 1450, y: 50}
+  targetComponents:
   - {fileID: 2070612652}
-  targetConnectorIds: []
+  targetIds: []
   actAsTrigger: 0
 --- !u!114 &2024507136
 MonoBehaviour:
@@ -852,9 +864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f05c1452df4e608e510b8e0954c294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetConnectorInstances: []
-  targetConnectorIds: []
-  actAsTrigger: 0
+  flowGraphNodePosition: {x: 1800, y: 50}
 --- !u!4 &2070612653
 Transform:
   m_ObjectHideFlags: 0

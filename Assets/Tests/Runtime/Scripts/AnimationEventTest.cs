@@ -1,12 +1,13 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
-using UnityEngine;
+using UniFlow.Connector.Event;
 using UnityEngine.TestTools;
-using AnimationEvent = EventConnector.Connector.AnimationEvent;
 
-namespace EventConnector.Tests.Runtime
+namespace UniFlow.Tests.Runtime
 {
-    public class AnimationEventTest : EventConnectorTestBase
+    public class AnimationEventTest : UniFlowTestBase
     {
         [UnityTest]
         public IEnumerator AnimationEvent()
@@ -20,19 +21,14 @@ namespace EventConnector.Tests.Runtime
                 );
         }
 
-        private void AssertAnimationEvent(EventMessages eventMessages)
+        private void AssertAnimationEvent(IEnumerable<IConnector> sentConnectors)
         {
-            Assert.AreEqual(1, eventMessages.Count);
+            var connectors = sentConnectors.ToList();
+            Assert.AreEqual(2, connectors.Count);
 
-            Assert.IsInstanceOf<AnimationEvent>(eventMessages[0].Sender);
-            Assert.IsInstanceOf<UnityEngine.AnimationEvent>(eventMessages[0].EventData);
-            var animationEvent = eventMessages[0].EventData as UnityEngine.AnimationEvent;
-            Assert.NotNull(animationEvent);
-            Assert.AreEqual(11.1f, animationEvent.floatParameter);
-            Assert.AreEqual(22, animationEvent.intParameter);
-            Assert.AreEqual("33", animationEvent.stringParameter);
-            Assert.IsInstanceOf<Material>(animationEvent.objectReferenceParameter);
-            Assert.AreEqual("AnimationEvent", animationEvent.objectReferenceParameter.name);
+            var connector = connectors[0] as AnimationEvent;
+            Assert.NotNull(connector);
+
             HasAssert = true;
         }
     }

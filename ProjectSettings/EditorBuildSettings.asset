@@ -41,4 +41,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tests/Runtime/Scenes/Basic/Interval.unity
     guid: ac7afeeb1f8314eb9b16f588850cdda0
+  - enabled: 1
+    path: Assets/Tests/Runtime/Scenes/Basic/SimpleAnimationController.unity
+    guid: 6977b8f896215433887311c3be8b846e
+  - enabled: 1
+    path: Assets/Tests/Runtime/Scenes/Basic/SimpleAnimationEvent.unity
+    guid: c4ecb70dbd61f493a8b69cfeaf14d49d
   m_configObjects: {}
