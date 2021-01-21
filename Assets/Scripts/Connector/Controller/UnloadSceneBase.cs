@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using UniRx;
-using UniRx.Async;
 using UnityEngine.SceneManagement;
 using Zenject;
 

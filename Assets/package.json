@@ -1,7 +1,7 @@
 {
   "name": "dev.monry.uniflow",
   "displayName": "UniFlow",
-  "version": "0.1.0-preview.44",
+  "version": "0.1.0-preview.45",
   "unity": "2019.2",
   "description": "UniFlow is a library that can connect various Unity events including user interaction without writing any C# script. Processes such as \"Tutorial that accepts user interaction\" and \"Waiting for the end of playback of Animation, Audio, Timeline, etc.\" can be implemented easily.",
   "author": {
@@ -14,11 +14,9 @@
   "category": "",
   "dependencies": {
     "com.unity.simpleanimation": "1.0.0",
-    "com.stevevermeulen.extenject": "9.1.2",
-    "jp.cysharp.unirx": "7.1.0",
-    "jp.cysharp.unitask": "1.0.0",
-    "dev.monry.unirx-observabletween": "0.0.1-preview.6",
-    "dev.upm-packages.keyeventhandler": "1.0.0-preview.4"
+    "com.stevevermeulen.extenject": "9.1.3",
+    "dev.monry.unirx-observabletween": "0.1.0",
+    "dev.upm-packages.keyeventhandler": "1.1.1"
   },
   "repository": {
     "type": "git",
