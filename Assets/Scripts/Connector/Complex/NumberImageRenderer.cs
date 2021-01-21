@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UniRx;
-using UniRx.Async;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
